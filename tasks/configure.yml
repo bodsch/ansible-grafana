@@ -1,0 +1,38 @@
+---
+
+# - name: create grafana configuration directory
+#   file:
+#     path: "{{ grafana_config_dir }}"
+#     state: directory
+#     owner: root
+#     group: "{{ grafana_system_group }}"
+#     mode: 0775
+
+- name: create grafana.ini
+  template:
+    src: "grafana/grafana.ini.j2"
+    dest: "{{ grafana_config_dir }}/grafana.ini"
+    force: true
+    owner: root
+    group: "{{ grafana_system_group }}"
+    mode: 0664
+  notify:
+    - validate config
+    - reload grafana
+
+- name: create ldap.toml
+  template:
+    src: "grafana/ldap.toml.j2"
+    dest: "{{ grafana_config_dir }}/ldap.toml"
+    force: true
+    owner: root
+    group: "{{ grafana_system_group }}"
+    mode: 0664
+  notify:
+    - validate config
+    - reload grafana
+
+- name: restart grafana if needed
+  meta: flush_handlers
+
+...

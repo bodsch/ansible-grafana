@@ -1,0 +1,10 @@
+---
+
+- name: ensure grafana is enabled on boot
+  become: true
+  service:
+    name: grafana-server
+    enabled: true
+    state: started
+
+...

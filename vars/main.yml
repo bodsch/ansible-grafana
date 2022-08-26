@@ -1,0 +1,87 @@
+---
+
+grafana_main_version: "{{ grafana_version[0:3] }}"
+
+grafana_install_path: /usr/local/grafana/{{ grafana_version }}
+
+grafana_delegate_to: localhost
+
+grafana_local_tmp_directory: "{{
+  lookup('env', 'CUSTOM_LOCAL_TMP_DIRECTORY') |
+  default(lookup('env', 'HOME') ~ '/.cache/ansible/grafana', true) }}/{{ grafana_version }}"
+
+grafana_cache_directory: /var/cache/ansible/grafana
+
+grafana_remote_tmp_directory: "{{ grafana_cache_directory }}/{{ grafana_version }}"
+
+grafana_requirements:
+  - iproute2
+  - gzip
+
+# https://dl.grafana.com/enterprise/release/grafana-enterprise-9.1.1.linux-amd64.tar.gz
+# https://dl.grafana.com/oss/release/grafana-9.1.1.linux-amd64.tar.gz
+grafana_download_file: "grafana{{ '-enterprise' if grafana_edition == 'enterprise' else '' }}-{{ grafana_version }}.linux-{{ system_architecture }}.tar.gz"
+
+# ----------------------------------------------------------------------------------------
+
+grafana_defaults_general:
+  app_mode: production
+  instance_name: "{{ ansible_hostname }}"
+  force_migration: false
+
+grafana_defaults_alerting: {}
+grafana_defaults_analytics: {}
+grafana_defaults_annotations: {}
+grafana_defaults_auth: {}
+grafana_defaults_aws: {}
+grafana_defaults_azure: {}
+grafana_defaults_dashboards: {}
+grafana_defaults_database: {}
+grafana_defaults_dataproxy: {}
+grafana_defaults_datasources: {}
+grafana_defaults_date_formats: {}
+grafana_defaults_emails: {}
+grafana_defaults_enterprise: {}
+grafana_defaults_explore: {}
+grafana_defaults_expressions: {}
+grafana_defaults_external_image_storage: {}
+grafana_defaults_feature_toggles: {}
+grafana_defaults_geomap: {}
+grafana_defaults_grafana_com: {}
+grafana_defaults_help: {}
+grafana_defaults_live: {}
+grafana_defaults_log: {}
+grafana_defaults_metrics: {}
+grafana_defaults_panels: {}
+grafana_defaults_path: {}
+grafana_defaults_plugin: {}
+grafana_defaults_plugins: {}
+grafana_defaults_profile: {}
+grafana_defaults_query_history: {}
+grafana_defaults_quota: {}
+grafana_defaults_rbac: {}
+grafana_defaults_remote_cache: {}
+grafana_defaults_rendering: {}
+grafana_defaults_security: {}
+grafana_defaults_server: {}
+grafana_defaults_smtp: {}
+grafana_defaults_snapshots: {}
+grafana_defaults_tracing: {}
+grafana_defaults_unified_alerting: {}
+grafana_defaults_users: {}
+
+# ----------------------------------------------------------------------------------------
+
+grafana_defaults_directory: /etc/default
+
+go_arch_map:
+  x86_64: 'amd64'
+  aarch64: 'arm64'
+  armv7l: 'armv7'
+  armv6l: 'armv6'
+
+system_architecture: "{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}"
+
+systemd_lib_directory: /lib/systemd/system
+
+...

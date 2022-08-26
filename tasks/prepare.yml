@@ -1,0 +1,199 @@
+---
+
+- name: include OS specific configuration ({{ ansible_distribution }} ({{ ansible_os_family }}) {{ ansible_distribution_major_version }})
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      paths:
+        - "vars"
+      files:
+        # eg. debian-10 / ubuntu-20.04 / centos-8 / oraclelinux-8
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+        # eg. archlinux-systemd / archlinux-openrc
+        - "{{ ansible_distribution | lower }}-{{ ansible_service_mgr | lower }}.yml"
+        # eg. debian / ubuntu / centos / oraclelinux
+        - "{{ ansible_distribution | lower }}.yml"
+        # eg. redhat / debian / archlinux
+        - "{{ ansible_os_family | lower }}.yml"
+        # artixlinux
+        - "{{ ansible_os_family | lower | replace(' ', '') }}.yml"
+        - default.yaml
+      skip: true
+
+- name: update package cache
+  package:
+    update_cache: true
+
+- name: define delegate instance for download handling
+  set_fact:
+    grafana_delegate_to: "{{ ansible_host }}"
+    grafana_local_tmp_directory: "{{
+        lookup('env', 'CUSTOM_LOCAL_TMP_DIRECTORY') |
+        default('/var/cache/ansible/grafana', true) }}/{{ grafana_version }}"
+  when:
+    - grafana_direct_download
+
+- name: install dependency
+  package:
+    name: "{{ grafana_requirements }}"
+    state: present
+
+- block:
+    - name: get latest release
+      uri:
+        url: "https://api.github.com/repos/grafana/grafana/releases/latest"
+        method: GET
+        return_content: true
+        status_code: 200
+        body_format: json
+        validate_certs: false
+        user: "{{ lookup('env', 'GH_USER') | default(omit) }}"
+        password: "{{ lookup('env', 'GH_TOKEN') | default(omit) }}"
+      # no_log: "{{ not lookup('env', 'ANSIBLE_DEBUG') | bool }}"
+      register: _latest_release
+      until: _latest_release.status == 200
+      retries: 5
+
+    - name: set grafana version to {{ _latest_release.json.tag_name[1:] }}
+      set_fact:
+        grafana_version: "{{ _latest_release.json.tag_name[1:] }}"
+  when:
+    - grafana_version == "latest"
+
+- name: detect our installation path '{{ grafana_install_path | dirname }}'
+  stat:
+    path: "{{ grafana_install_path | dirname }}"
+    get_checksum: false
+  register: stat_grafana_path
+  ignore_errors: true
+
+- name: old installation
+  block:
+    - name: stop old service
+      service:
+        name: grafana
+        state: stopped
+        enabled: false
+      notify:
+        - daemon-reload
+
+    - name: remove installed systemd unit
+      file:
+        state: absent
+        path: /etc/systemd/system/grafana.service
+      when:
+        - ansible_service_mgr | lower == "systemd"
+
+    - name: remove installed grafana
+      file:
+        state: absent
+        path: "{{ stat_grafana_path.stat.path }}"
+  when:
+    - stat_grafana_path is defined
+    - stat_grafana_path.stat is defined
+    - stat_grafana_path.stat.isdir is defined
+    - not stat_grafana_path.stat.isdir
+
+- name: flush handlers
+  meta: flush_handlers
+
+- name: detect installed grafana binary
+  stat:
+    path: "{{ grafana_install_path }}/bin/grafana"
+  register: stat_grafana_binary
+
+- name: create download directory
+  become: false
+  delegate_to: "{{ grafana_delegate_to }}"
+  file:
+    path: "{{ grafana_local_tmp_directory }}"
+    state: directory
+    mode: 0750
+
+- name: user and group handling
+  block:
+    - name: create grafana group
+      group:
+        name: "{{ grafana_system_group }}"
+        state: present
+        system: true
+
+    - name: create grafana user
+      user:
+        name: "{{ grafana_system_user }}"
+        groups: "{{ grafana_system_group }}"
+        append: true
+        shell: /usr/sbin/nologin
+        system: true
+        createhome: false
+        home: /nonexistent
+  when:
+    - grafana_system_user != "root"
+
+- name: create install directory
+  file:
+    path: "{{ grafana_install_path }}"
+    state: directory
+    owner: "{{ grafana_system_user }}"
+    group: "{{ grafana_system_group }}"
+    mode: 0755
+
+- name: create ansible local facts directory
+  file:
+    dest: /etc/ansible/facts.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+
+- name: merge grafana configuration between defaults and custom
+  set_fact:
+    # grafana_service: "{{ grafana_defaults_service | combine( grafana_service, recursive=True) }}"
+    # grafana_config: "{{ grafana_defaults_config | combine( grafana_config, recursive=True) }}"
+    # grafana_backends: "{{ grafana_defaults_backends | combine( grafana_backends, recursive=True) }}"
+    # grafana_users: "{{ grafana_defaults_users | combine( grafana_users, recursive=True) }}"
+    # grafana_groups: "{{ grafana_defaults_groups | combine( grafana_groups, recursive=True) }}"
+    # grafana_behaviors: "{{ grafana_defaults_behaviors | combine( grafana_behaviors, recursive=True) }}"
+    # grafana_api: "{{ grafana_defaults_api | combine( grafana_api, recursive=True) }}"
+    grafana_alerting: "{{ grafana_defaults_alerting | combine(grafana_alerting, recursive=True) }}"
+    grafana_analytics: "{{ grafana_defaults_analytics | combine(grafana_analytics, recursive=True) }}"
+    grafana_annotations: "{{ grafana_defaults_annotations | combine(grafana_annotations, recursive=True) }}"
+    grafana_auth: "{{ grafana_defaults_auth | combine(grafana_auth, recursive=True) }}"
+    grafana_aws: "{{ grafana_defaults_aws | combine(grafana_aws, recursive=True) }}"
+    grafana_azure: "{{ grafana_defaults_azure | combine(grafana_azure, recursive=True) }}"
+    grafana_dashboards: "{{ grafana_defaults_dashboards | combine(grafana_dashboards, recursive=True) }}"
+    grafana_database: "{{ grafana_defaults_database | combine(grafana_database, recursive=True) }}"
+    grafana_dataproxy: "{{ grafana_defaults_dataproxy | combine(grafana_dataproxy, recursive=True) }}"
+    grafana_datasources: "{{ grafana_defaults_datasources | combine(grafana_datasources, recursive=True) }}"
+    grafana_date_formats: "{{ grafana_defaults_date_formats | combine(grafana_date_formats, recursive=True) }}"
+    grafana_emails: "{{ grafana_defaults_emails | combine(grafana_emails, recursive=True) }}"
+    grafana_enterprise: "{{ grafana_defaults_enterprise | combine(grafana_enterprise, recursive=True) }}"
+    grafana_explore: "{{ grafana_defaults_explore | combine(grafana_explore, recursive=True) }}"
+    grafana_expressions: "{{ grafana_defaults_expressions | combine(grafana_expressions, recursive=True) }}"
+    grafana_external_image_storage: "{{ grafana_defaults_external_image_storage | combine(grafana_external_image_storage, recursive=True) }}"
+    grafana_feature_toggles: "{{ grafana_defaults_feature_toggles | combine(grafana_feature_toggles, recursive=True) }}"
+    grafana_general: "{{ grafana_defaults_general | combine(grafana_general, recursive=True) }}"
+    grafana_geomap: "{{ grafana_defaults_geomap | combine(grafana_geomap, recursive=True) }}"
+    grafana_grafana_com: "{{ grafana_defaults_grafana_com | combine(grafana_grafana_com, recursive=True) }}"
+    grafana_help: "{{ grafana_defaults_help | combine(grafana_help, recursive=True) }}"
+    grafana_live: "{{ grafana_defaults_live | combine(grafana_live, recursive=True) }}"
+    grafana_log: "{{ grafana_defaults_log | combine(grafana_log, recursive=True) }}"
+    grafana_metrics: "{{ grafana_defaults_metrics | combine(grafana_metrics, recursive=True) }}"
+    grafana_panels: "{{ grafana_defaults_panels | combine(grafana_panels, recursive=True) }}"
+    grafana_path: "{{ grafana_defaults_path | combine(grafana_path, recursive=True) }}"
+    grafana_plugin: "{{ grafana_defaults_plugin | combine(grafana_plugin, recursive=True) }}"
+    grafana_plugins: "{{ grafana_defaults_plugins | combine(grafana_plugins, recursive=True) }}"
+    grafana_profile: "{{ grafana_defaults_profile | combine(grafana_profile, recursive=True) }}"
+    grafana_query_history: "{{ grafana_defaults_query_history | combine(grafana_query_history, recursive=True) }}"
+    grafana_quota: "{{ grafana_defaults_quota | combine(grafana_quota, recursive=True) }}"
+    grafana_rbac: "{{ grafana_defaults_rbac | combine(grafana_rbac, recursive=True) }}"
+    grafana_remote_cache: "{{ grafana_defaults_remote_cache | combine(grafana_remote_cache, recursive=True) }}"
+    grafana_rendering: "{{ grafana_defaults_rendering | combine(grafana_rendering, recursive=True) }}"
+    grafana_security: "{{ grafana_defaults_security | combine(grafana_security, recursive=True) }}"
+    grafana_server: "{{ grafana_defaults_server | combine(grafana_server, recursive=True) }}"
+    grafana_smtp: "{{ grafana_defaults_smtp | combine(grafana_smtp, recursive=True) }}"
+    grafana_snapshots: "{{ grafana_defaults_snapshots | combine(grafana_snapshots, recursive=True) }}"
+    grafana_tracing: "{{ grafana_defaults_tracing | combine(grafana_tracing, recursive=True) }}"
+    grafana_unified_alerting: "{{ grafana_defaults_unified_alerting | combine(grafana_unified_alerting, recursive=True) }}"
+    grafana_users: "{{ grafana_defaults_users | combine(grafana_users, recursive=True) }}"
+...

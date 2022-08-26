@@ -1,0 +1,65 @@
+---
+
+grafana_version: 9.1.1
+
+# enterprise or oss
+grafana_edition: enterprise
+
+grafana_urls:
+  releases: https://github.com/grafana/grafana/releases
+  downloads: https://dl.grafana.com/{{ grafana_edition }}/release
+
+grafana_system_user: grafana
+grafana_system_group: grafana
+grafana_config_dir: /etc/grafana
+grafana_data_dir: /var/lib/grafana
+grafana_share_dir: /usr/share/grafana
+grafana_log_dir: /var/log/grafana
+
+grafana_direct_download: false
+
+grafana_service: {}
+
+grafana_alerting: {}
+grafana_analytics: {}
+grafana_annotations: {}
+grafana_auth: {}
+grafana_aws: {}
+grafana_azure: {}
+grafana_dashboards: {}
+grafana_database: {}
+grafana_dataproxy: {}
+grafana_datasources: {}
+grafana_date_formats: {}
+grafana_emails: {}
+grafana_enterprise: {}
+grafana_explore: {}
+grafana_expressions: {}
+grafana_external_image_storage: {}
+grafana_feature_toggles: {}
+grafana_general: {}
+grafana_geomap: {}
+grafana_grafana_com: {}
+grafana_help: {}
+grafana_live: {}
+grafana_log: {}
+grafana_metrics: {}
+grafana_panels: {}
+grafana_path: {}
+grafana_plugin: {}
+grafana_plugins: {}
+grafana_profile: {}
+grafana_query_history: {}
+grafana_quota: {}
+grafana_rbac: {}
+grafana_remote_cache: {}
+grafana_rendering: {}
+grafana_security: {}
+grafana_server: {}
+grafana_smtp: {}
+grafana_snapshots: {}
+grafana_tracing: {}
+grafana_unified_alerting: {}
+grafana_users: {}
+
+...

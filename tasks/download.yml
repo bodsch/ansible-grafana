@@ -1,0 +1,15 @@
+---
+
+- name: download grafana binary archive
+  become: false
+  delegate_to: "{{ grafana_delegate_to }}"
+  get_url:
+    url: "{{ grafana_urls.downloads }}/{{ grafana_download_file }}"
+    dest: "{{ grafana_local_tmp_directory }}/{{ grafana_download_file }}"
+  register: _download_archive
+  until: _download_archive is succeeded
+  retries: 5
+  delay: 2
+  check_mode: false
+
+...

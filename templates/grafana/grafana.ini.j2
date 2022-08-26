@@ -1,0 +1,49 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+; {{ ansible_managed }}
+
+{% include('grafana.d/general.j2') %}
+
+{% include('grafana.d/alerting.j2') %}
+{% include('grafana.d/analytics.j2') %}
+{% include('grafana.d/annotations.j2') %}
+
+{% include('grafana.d/aws.j2') %}
+{% include('grafana.d/azure.j2') %}
+{% include('grafana.d/dashboards.j2') %}
+{% include('grafana.d/database.j2') %}
+{% include('grafana.d/dataproxy.j2') %}
+{% include('grafana.d/datasources.j2') %}
+{% include('grafana.d/date_formats.j2') %}
+
+{% include('grafana.d/enterprise.j2') %}
+{% include('grafana.d/explore.j2') %}
+{% include('grafana.d/expressions.j2') %}
+{% include('grafana.d/external_image_storage.j2') %}
+{% include('grafana.d/feature_toggles.j2') %}
+{% include('grafana.d/geomap.j2') %}
+{% include('grafana.d/grafana_com.j2') %}
+{% include('grafana.d/help.j2') %}
+{% include('grafana.d/live.j2') %}
+{% include('grafana.d/log.j2') %}
+{% include('grafana.d/metrics.j2') %}
+{% include('grafana.d/panels.j2') %}
+{% include('grafana.d/path.j2') %}
+{% include('grafana.d/plugin.j2') %}
+{% include('grafana.d/plugins.j2') %}
+{% include('grafana.d/profile.j2') %}
+{% include('grafana.d/query_history.j2') %}
+{% include('grafana.d/quota.j2') %}
+{% include('grafana.d/rbac.j2') %}
+{% include('grafana.d/remote_cache.j2') %}
+{% include('grafana.d/rendering.j2') %}
+{% include('grafana.d/security.j2') %}
+{% include('grafana.d/server.j2') %}
+
+{% include('grafana.d/smtp.j2') %}
+{% include('grafana.d/emails.j2') %}
+
+{% include('grafana.d/snapshots.j2') %}
+{% include('grafana.d/tracing.j2') %}
+{% include('grafana.d/unified_alerting.j2') %}
+{% include('grafana.d/users.j2') %}
+{% include('grafana.d/auth.j2') %}

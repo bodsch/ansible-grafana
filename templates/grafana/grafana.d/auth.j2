@@ -1,0 +1,209 @@
+[auth]
+# Login cookie name
+;login_cookie_name = grafana_session
+
+# The maximum lifetime (duration) an authenticated user can be inactive before being required to login at next visit. Default is 7 days (7d). This setting should be expressed as a duration, e.g. 5m (minutes), 6h (hours), 10d (days), 2w (weeks), 1M (month). The lifetime resets at each successful token rotation.
+;login_maximum_inactive_lifetime_duration =
+
+# The maximum lifetime (duration) an authenticated user can be logged in since login time before being required to login. Default is 30 days (30d). This setting should be expressed as a duration, e.g. 5m (minutes), 6h (hours), 10d (days), 2w (weeks), 1M (month).
+;login_maximum_lifetime_duration =
+
+# How often should auth tokens be rotated for authenticated users when being active. The default is each 10 minutes.
+;token_rotation_interval_minutes = 10
+
+# Set to true to disable (hide) the login form, useful if you use OAuth, defaults to false
+;disable_login_form = false
+
+# Set to true to disable the sign out link in the side menu. Useful if you use auth.proxy or auth.jwt, defaults to false
+;disable_signout_menu = false
+
+# URL to redirect the user to after sign out
+;signout_redirect_url =
+
+# Set to true to attempt login with OAuth automatically, skipping the login screen.
+# This setting is ignored if multiple OAuth providers are configured.
+;oauth_auto_login = false
+
+# OAuth state max age cookie duration in seconds. Defaults to 600 seconds.
+;oauth_state_cookie_max_age = 600
+
+# Skip forced assignment of OrgID 1 or 'auto_assign_org_id' for social logins
+;oauth_skip_org_role_update_sync = false
+
+# limit of api_key seconds to live before expiration
+;api_key_max_seconds_to_live = -1
+
+# Set to true to enable SigV4 authentication option for HTTP-based datasources.
+;sigv4_auth_enabled = false
+
+# Set to true to enable verbose logging of SigV4 request signing
+;sigv4_verbose_logging = false
+
+# Set to true to enable Azure authentication option for HTTP-based datasources.
+;azure_auth_enabled = false
+#################################### Anonymous Auth ######################
+[auth.anonymous]
+# enable anonymous access
+;enabled = false
+
+# specify organization name that should be used for unauthenticated users
+;org_name = Main Org.
+
+# specify role for unauthenticated users
+;org_role = Viewer
+
+# mask the Grafana version number for unauthenticated users
+;hide_version = false
+
+#################################### GitHub Auth ##########################
+[auth.github]
+;enabled = false
+;allow_sign_up = true
+;client_id = some_id
+;client_secret = some_secret
+;scopes = user:email,read:org
+;auth_url = https://github.com/login/oauth/authorize
+;token_url = https://github.com/login/oauth/access_token
+;api_url = https://api.github.com/user
+;allowed_domains =
+;team_ids =
+;allowed_organizations =
+
+#################################### GitLab Auth #########################
+[auth.gitlab]
+;enabled = false
+;allow_sign_up = true
+;client_id = some_id
+;client_secret = some_secret
+;scopes = api
+;auth_url = https://gitlab.com/oauth/authorize
+;token_url = https://gitlab.com/oauth/token
+;api_url = https://gitlab.com/api/v4
+;allowed_domains =
+;allowed_groups =
+
+#################################### Google Auth ##########################
+[auth.google]
+;enabled = false
+;allow_sign_up = true
+;client_id = some_client_id
+;client_secret = some_client_secret
+;scopes = https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
+;auth_url = https://accounts.google.com/o/oauth2/auth
+;token_url = https://accounts.google.com/o/oauth2/token
+;api_url = https://www.googleapis.com/oauth2/v1/userinfo
+;allowed_domains =
+;hosted_domain =
+
+#################################### Grafana.com Auth ####################
+[auth.grafana_com]
+;enabled = false
+;allow_sign_up = true
+;client_id = some_id
+;client_secret = some_secret
+;scopes = user:email
+;allowed_organizations =
+
+#################################### Azure AD OAuth #######################
+[auth.azuread]
+;name = Azure AD
+;enabled = false
+;allow_sign_up = true
+;client_id = some_client_id
+;client_secret = some_client_secret
+;scopes = openid email profile
+;auth_url = https://login.microsoftonline.com/<tenant-id>/oauth2/v2.0/authorize
+;token_url = https://login.microsoftonline.com/<tenant-id>/oauth2/v2.0/token
+;allowed_domains =
+;allowed_groups =
+;role_attribute_strict = false
+#################################### Okta OAuth #######################
+[auth.okta]
+;name = Okta
+;enabled = false
+;allow_sign_up = true
+;client_id = some_id
+;client_secret = some_secret
+;scopes = openid profile email groups
+;auth_url = https://<tenant-id>.okta.com/oauth2/v1/authorize
+;token_url = https://<tenant-id>.okta.com/oauth2/v1/token
+;api_url = https://<tenant-id>.okta.com/oauth2/v1/userinfo
+;allowed_domains =
+;allowed_groups =
+;role_attribute_path =
+;role_attribute_strict = false
+
+#################################### Generic OAuth ##########################
+[auth.generic_oauth]
+;enabled = false
+;name = OAuth
+;allow_sign_up = true
+;client_id = some_id
+;client_secret = some_secret
+;scopes = user:email,read:org
+;empty_scopes = false
+;email_attribute_name = email:primary
+;email_attribute_path =
+;login_attribute_path =
+;name_attribute_path =
+;id_token_attribute_name =
+;auth_url = https://foo.bar/login/oauth/authorize
+;token_url = https://foo.bar/login/oauth/access_token
+;api_url = https://foo.bar/user
+;teams_url =
+;allowed_domains =
+;team_ids =
+;allowed_organizations =
+;role_attribute_path =
+;role_attribute_strict = false
+;groups_attribute_path =
+;team_ids_attribute_path =
+;tls_skip_verify_insecure = false
+;tls_client_cert =
+;tls_client_key =
+;tls_client_ca =
+;use_pkce = false
+;auth_style =
+
+#################################### Basic Auth ##########################
+[auth.basic]
+;enabled = true
+
+#################################### Auth Proxy ##########################
+[auth.proxy]
+;enabled = false
+;header_name = X-WEBAUTH-USER
+;header_property = username
+;auto_sign_up = true
+;sync_ttl = 60
+;whitelist = 192.168.1.1, 192.168.2.1
+;headers = Email:X-User-Email, Name:X-User-Name
+# Non-ASCII strings in header values are encoded using quoted-printable encoding
+;headers_encoded = false
+# Read the auth proxy docs for details on what the setting below enables
+;enable_login_token = false
+
+#################################### Auth JWT ##########################
+[auth.jwt]
+;enabled = true
+;header_name = X-JWT-Assertion
+;email_claim = sub
+;username_claim = sub
+;jwk_set_url = https://foo.bar/.well-known/jwks.json
+;jwk_set_file = /path/to/jwks.json
+;cache_ttl = 60m
+;expected_claims = {"aud": ["foo", "bar"]}
+;key_file = /path/to/key/file
+;auto_sign_up = false
+
+#################################### Auth LDAP ##########################
+[auth.ldap]
+;enabled = false
+;config_file = /etc/grafana/ldap.toml
+;allow_sign_up = true
+
+# LDAP background sync (Enterprise only)
+# At 1 am every day
+;sync_cron = "0 1 * * *"
+;active_sync_enabled = true
+

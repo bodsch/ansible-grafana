@@ -1,0 +1,72 @@
+#!/usr/bin/openrc-run
+
+# Copyright 2016-2018 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+description="grafana, a lightweight LDAP server for development, home use, or CI"
+pidfile=${pidfile:-"/run/${RC_SVCNAME}.pid"}
+user=${user:-${SVCNAME}}
+group=${group:-${SVCNAME}}
+
+command="/usr/bin/grafana"
+supervisor="supervise-daemon"
+
+command_args="${command_args:--config=/etc/grafana/grafana.conf}"
+command_user="${user}:${group}"
+
+command_args_background="--background"
+required_files="/etc/grafana/grafana.conf"
+
+output_log="/var/log/${RC_SVCNAME}/${RC_SVCNAME}.log"
+error_log="${output_log}"
+extra_started_commands="reload"
+
+depend() {
+  # need localmount net
+  # use dns
+  after sysfs net
+}
+
+start_pre() {
+  [ -d $(dirname ${output_log}) ] ||  mkdir $(dirname ${output_log})
+  chown -R ${command_user} $(dirname ${output_log})
+  chown -R ${command_user} /var/lib/grafana/
+}
+
+# start() {
+#   ebegin "Starting ${SVCNAME}"
+#
+#   start-stop-daemon \
+#     --start \
+#     --background \
+#     --exec "${command}" \
+#     --stdout ${output_log} \
+#     --stderr ${error_log} \
+#     --make-pidfile \
+#     --pidfile ${pidfile} \
+#     --user ${command_user} \
+#     -- ${command_args}
+#
+#   pidof grafana > "${pidfile}"
+#
+#   eend $? "Failed to start ${SVCNAME}"
+# }
+
+# stop() {
+#   ebegin "Stopping ${SVCNAME}"
+#   start-stop-daemon \
+#     --stop \
+#     --pidfile "${pidfile}"
+#
+#   eend $? "Failed to stop ${SVCNAME}"
+# }
+
+reload() {
+  ebegin "Reloading ${SVCNAME}"
+  if [ ! -r "${pidfile}" ]; then
+    eend 1 "${RC_SVCNAME} not running"
+  else
+    kill -s HUP $(cat "${pidfile}") 2> /dev/null
+    eend $?
+  fi
+}
