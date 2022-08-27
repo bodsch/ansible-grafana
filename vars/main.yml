@@ -29,8 +29,32 @@ grafana_defaults_general:
   instance_name: "{{ ansible_hostname }}"
   force_migration: false
 
-grafana_defaults_alerting: {}
-grafana_defaults_analytics: {}
+grafana_defaults_alerting:
+  enabled: false
+  execute_alerts: true
+  error_or_timeout: alerting
+  nodata_or_nullvalues: no_data
+  concurrent_render_limit: 5
+  evaluation_timeout_seconds: 30
+  notification_timeout_seconds: 30
+  max_attempts: 3
+  min_interval_seconds: 1
+  max_annotation_age: ""
+  max_annotations_to_keep: ""
+
+grafana_defaults_analytics:
+  reporting_enabled: false
+  reporting_distributor: grafana-labs
+  check_for_updates: true
+  check_for_plugin_updates: true
+  google_analytics_ua_id: ""
+  google_tag_manager_id: ""
+  rudderstack_write_key: ""
+  rudderstack_data_plane_url: ""
+  rudderstack_sdk_url: ""
+  rudderstack_config_url: ""
+  feedback_links_enabled: true
+
 grafana_defaults_annotations: {}
 grafana_defaults_auth: {}
 grafana_defaults_aws: {}
