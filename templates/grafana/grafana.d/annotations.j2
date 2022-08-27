@@ -1,25 +1,44 @@
 #################################### Annotations #########################
 [annotations]
 # Configures the batch size for the annotation clean-up job. This setting is used for dashboard, API, and alert annotations.
-;cleanupjob_batchsize = 100
+{% if grafana_annotations.cleanupjob_batchsize is defined and
+      grafana_annotations.cleanupjob_batchsize | string | length > 0 %}
+cleanupjob_batchsize =  {{ grafana_annotations.cleanupjob_batchsize }}
+{% endif %}
 
 [annotations.dashboard]
+{% if grafana_annotations.dashboard is defined %}
 # Dashboard annotations means that annotations are associated with the dashboard they are created on.
 
 # Configures how long dashboard annotations are stored. Default is 0, which keeps them forever.
 # This setting should be expressed as a duration. Examples: 6h (hours), 10d (days), 2w (weeks), 1M (month).
-;max_age =
+  {% if grafana_annotations.dashboard.max_age is defined and
+        grafana_annotations.dashboard.max_age | string | length > 0 %}
+max_age = {{ grafana_annotations.dashboard.max_age }}
+  {% endif %}
 
 # Configures max number of dashboard annotations that Grafana stores. Default value is 0, which keeps all dashboard annotations.
-;max_annotations_to_keep =
+  {% if grafana_annotations.dashboard.max_annotations_to_keep is defined and
+        grafana_annotations.dashboard.max_annotations_to_keep | string | length > 0 %}
+max_annotations_to_keep = {{ grafana_annotations.dashboard.max_annotations_to_keep }}
+  {% endif %}
+{% endif %}
 
 [annotations.api]
+{% if grafana_annotations.api is defined %}
 # API annotations means that the annotations have been created using the API without any
 # association with a dashboard.
 
 # Configures how long Grafana stores API annotations. Default is 0, which keeps them forever.
 # This setting should be expressed as a duration. Examples: 6h (hours), 10d (days), 2w (weeks), 1M (month).
-;max_age =
+  {% if grafana_annotations.api.max_age is defined and
+        grafana_annotations.api.max_age | string | length > 0 %}
+max_age = {{ grafana_annotations.api.max_age }}
+  {% endif %}
 
 # Configures max number of API annotations that Grafana keeps. Default value is 0, which keeps all API annotations.
-;max_annotations_to_keep =
+  {% if grafana_annotations.api.max_annotations_to_keep is defined and
+        grafana_annotations.api.max_annotations_to_keep | string | length > 0 %}
+max_annotations_to_keep = {{ grafana_annotations.api.max_annotations_to_keep }}
+  {% endif %}
+{% endif %}

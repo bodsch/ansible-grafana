@@ -41,7 +41,9 @@
 
 # Set to true to enable Azure authentication option for HTTP-based datasources.
 ;azure_auth_enabled = false
+
 #################################### Anonymous Auth ######################
+{% if grafana_auth.anonymous.enabled %}
 [auth.anonymous]
 # enable anonymous access
 ;enabled = false
@@ -54,8 +56,10 @@
 
 # mask the Grafana version number for unauthenticated users
 ;hide_version = false
+{% endif %}
 
 #################################### GitHub Auth ##########################
+{% if grafana_auth.github.enabled %}
 [auth.github]
 ;enabled = false
 ;allow_sign_up = true
@@ -68,8 +72,10 @@
 ;allowed_domains =
 ;team_ids =
 ;allowed_organizations =
+{% endif %}
 
 #################################### GitLab Auth #########################
+{% if grafana_auth.gitlab.enabled %}
 [auth.gitlab]
 ;enabled = false
 ;allow_sign_up = true
@@ -81,8 +87,10 @@
 ;api_url = https://gitlab.com/api/v4
 ;allowed_domains =
 ;allowed_groups =
+{% endif %}
 
 #################################### Google Auth ##########################
+{% if grafana_auth.google.enabled %}
 [auth.google]
 ;enabled = false
 ;allow_sign_up = true
@@ -94,8 +102,10 @@
 ;api_url = https://www.googleapis.com/oauth2/v1/userinfo
 ;allowed_domains =
 ;hosted_domain =
+{% endif %}
 
 #################################### Grafana.com Auth ####################
+{% if grafana_auth.grafana_com.enabled %}
 [auth.grafana_com]
 ;enabled = false
 ;allow_sign_up = true
@@ -103,8 +113,10 @@
 ;client_secret = some_secret
 ;scopes = user:email
 ;allowed_organizations =
+{% endif %}
 
 #################################### Azure AD OAuth #######################
+{% if grafana_auth.azuread.enabled %}
 [auth.azuread]
 ;name = Azure AD
 ;enabled = false
@@ -117,7 +129,10 @@
 ;allowed_domains =
 ;allowed_groups =
 ;role_attribute_strict = false
+{% endif %}
+
 #################################### Okta OAuth #######################
+{% if grafana_auth.okta.enabled %}
 [auth.okta]
 ;name = Okta
 ;enabled = false
@@ -132,8 +147,10 @@
 ;allowed_groups =
 ;role_attribute_path =
 ;role_attribute_strict = false
+{% endif %}
 
 #################################### Generic OAuth ##########################
+{% if grafana_auth.generic_oauth.enabled %}
 [auth.generic_oauth]
 ;enabled = false
 ;name = OAuth
@@ -164,12 +181,16 @@
 ;tls_client_ca =
 ;use_pkce = false
 ;auth_style =
+{% endif %}
 
 #################################### Basic Auth ##########################
+{% if grafana_auth.basic.enabled %}
 [auth.basic]
 ;enabled = true
+{% endif %}
 
 #################################### Auth Proxy ##########################
+{% if grafana_auth.proxy.enabled %}
 [auth.proxy]
 ;enabled = false
 ;header_name = X-WEBAUTH-USER
@@ -182,8 +203,10 @@
 ;headers_encoded = false
 # Read the auth proxy docs for details on what the setting below enables
 ;enable_login_token = false
+{% endif %}
 
 #################################### Auth JWT ##########################
+{% if grafana_auth.jwt.enabled %}
 [auth.jwt]
 ;enabled = true
 ;header_name = X-JWT-Assertion
@@ -195,8 +218,10 @@
 ;expected_claims = {"aud": ["foo", "bar"]}
 ;key_file = /path/to/key/file
 ;auto_sign_up = false
+{% endif %}
 
 #################################### Auth LDAP ##########################
+{% if grafana_auth.ldap.enabled %}
 [auth.ldap]
 ;enabled = false
 ;config_file = /etc/grafana/ldap.toml
@@ -206,4 +231,5 @@
 # At 1 am every day
 ;sync_cron = "0 1 * * *"
 ;active_sync_enabled = true
+{% endif %}
 

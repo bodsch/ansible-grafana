@@ -4,12 +4,12 @@
 
 # force migration will run migrations that might cause dataloss
 {% if grafana_alerting.enabled is defined %}
-enabled = {{ grafana_general.enabled | bool | ternary('true', 'false') }}
+enabled = {{ grafana_alerting.enabled | bool | ternary('true', 'false') }}
 {% endif %}
 
 # Makes it possible to turn off alert execution but alerting UI is visible
 {% if grafana_alerting.execute_alerts is defined %}
-execute_alerts = {{ grafana_general.execute_alerts | bool | ternary('true', 'false') }}
+execute_alerts = {{ grafana_alerting.execute_alerts | bool | ternary('true', 'false') }}
 {% endif %}
 
 # Default setting for new alert rules. Defaults to categorize error and timeouts as alerting. (alerting, keep_state)
