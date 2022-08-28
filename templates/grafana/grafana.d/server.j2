@@ -1,47 +1,59 @@
-#################################### Server ####################################
+
 [server]
-# Protocol (http, https, h2, socket)
-;protocol = http
-
-# The ip address to bind to, empty will bind to all interfaces
-;http_addr =
-
-# The http port  to use
-;http_port = 3000
-
-# The public facing domain name used to access grafana from a browser
-;domain = localhost
-
-# Redirect to correct domain if host header does not match domain
-# Prevents DNS rebinding attacks
-;enforce_domain = false
-
-# The full public facing url you use in browser, used for redirects and emails
-# If you use reverse proxy and sub path specify full url (with sub path)
-;root_url = %(protocol)s://%(domain)s:%(http_port)s/
-
-# Serve Grafana from subpath specified in `root_url` setting. By default it is set to `false` for compatibility reasons.
-;serve_from_sub_path = false
-
-# Log web requests
-;router_logging = false
-
-# the path relative working path
-;static_root_path = public
-
-# enable gzip
-;enable_gzip = false
-
-# https certs & key file
-;cert_file =
-;cert_key =
-
-# Unix socket path
-;socket =
-
-# CDN Url
-;cdn_url =
-
-# Sets the maximum time using a duration format (5s/5m/5ms) before timing out read of an incoming request and closing idle connections.
-# `0` means there is no timeout for reading the request.
-;read_timeout = 0
+{% if grafana_server.protocol is defined and
+      grafana_server.protocol | string | length > 0 and
+      grafana_server.protocol in ["http", "https", "h2", "socket"] %}
+protocol = {{ grafana_server.protocol }}
+{% endif %}
+{% if grafana_server.http_addr is defined and
+      grafana_server.http_addr | string | length > 0 %}
+http_addr = {{ grafana_server.http_addr }}
+{% endif %}
+{% if grafana_server.http_port is defined and
+      grafana_server.http_port | string | length > 0 %}
+http_port = {{ grafana_server.http_port }}
+{% endif %}
+{% if grafana_server.domain is defined and
+      grafana_server.domain | string | length > 0 %}
+domain = {{ grafana_server.domain }}
+{% endif %}
+{% if grafana_server.enforce_domain is defined %}
+enforce_domain = {{ grafana_server.enforce_domain | bool | ternary('true', 'false') }}
+{% endif %}
+{% if grafana_server.root_url is defined and
+      grafana_server.root_url | string | length > 0 %}
+root_url =  {{ grafana_server.root_url }}
+{% endif %}
+{% if grafana_server.serve_from_sub_path is defined %}
+serve_from_sub_path = {{ grafana_server.serve_from_sub_path | bool | ternary('true', 'false') }}
+{% endif %}
+{% if grafana_server.router_logging is defined %}
+router_logging = {{ grafana_server.router_logging | bool | ternary('true', 'false') }}
+{% endif %}
+{% if grafana_server.static_root_path is defined and
+      grafana_server.static_root_path | string | length > 0 %}
+static_root_path = {{ grafana_server.static_root_path }}
+{% endif %}
+{% if grafana_server.enable_gzip is defined %}
+enable_gzip = {{ grafana_server.enable_gzip | bool | ternary('true', 'false') }}
+{% endif %}
+{% if grafana_server.protocol == "https" and
+      grafana_server.cert_file is defined and
+      grafana_server.cert_key is defined and
+      grafana_server.cert_file | string | length > 0 and
+      grafana_server.cert_key | string | length > 0 %}
+cert_file = {{ grafana_server.cert_file }}
+cert_key = {{ grafana_server.cert_key }}
+{% endif %}
+{% if grafana_server.socket is defined and
+      grafana_server.socket | string | length > 0 %}
+socket = {{grafana_server.socket }}
+{% endif %}
+{% if grafana_server.cdn_url is defined and
+      grafana_server.cdn_url | string | length > 0 %}
+cdn_url = {{ grafana_server.cdn_url }}
+{% endif %}
+{% if grafana_server.read_timeout is defined and
+      grafana_server.read_timeout | string | length > 0 %}
+read_timeout = {{ grafana_server.read_timeout }}
+{% endif %}

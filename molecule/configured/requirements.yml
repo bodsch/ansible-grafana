@@ -7,4 +7,7 @@
 - name: syslog-ng
   src: bodsch.syslog_ng
 
+- name: nginx
+  src: bodsch.nginx
+
 ...

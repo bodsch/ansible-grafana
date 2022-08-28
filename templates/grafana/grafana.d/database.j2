@@ -1,51 +1,91 @@
-#################################### Database ####################################
+
 [database]
-# You can configure the database connection by specifying type, host, name, user and password
-# as separate properties or as on string using the url properties.
-
-# Either "mysql", "postgres" or "sqlite3", it's your choice
-;type = sqlite3
-;host = 127.0.0.1:3306
-;name = grafana
-;user = root
-# If the password contains # or ; you have to wrap it with triple quotes. Ex """#password;"""
-;password =
-
-# Use either URL or the previous fields to configure the database
-# Example: mysql://user:secret@host:port/database
-;url =
-
-# For "postgres" only, either "disable", "require" or "verify-full"
-;ssl_mode = disable
-
-# Database drivers may support different transaction isolation levels.
-# Currently, only "mysql" driver supports isolation levels.
-# If the value is empty - driver's default isolation level is applied.
-# For "mysql" use "READ-UNCOMMITTED", "READ-COMMITTED", "REPEATABLE-READ" or "SERIALIZABLE".
-;isolation_level =
-
-;ca_cert_path =
-;client_key_path =
-;client_cert_path =
-;server_cert_name =
-
-# For "sqlite3" only, path relative to data_path setting
-;path = grafana.db
-
-# Max idle conn setting default is 2
-;max_idle_conn = 2
-
-# Max conn setting default is 0 (mean not set)
-;max_open_conn =
-
-# Connection Max Lifetime default is 14400 (means 14400 seconds or 4 hours)
-;conn_max_lifetime = 14400
-
-# Set to true to log the sql calls and execution times.
-;log_queries =
-
-# For "sqlite3" only. cache mode setting used for connecting to the database. (private, shared)
-;cache_mode = private
-
-# For "mysql" only if migrationLocking feature toggle is set. How many seconds to wait before failing to lock the database for the migrations, default is 0.
-;locking_attempt_timeout_sec = 0
+{% if grafana_database is defined %}
+  {% if grafana_database.type is defined and
+        grafana_database.type | string | length > 0 and
+        grafana_database.type in ["sqlite3", "mysql", "postgres"] %}
+type = {{ grafana_database.type }}
+  {% endif %}
+  {% if grafana_database.type == "sqlite3" %}
+    {% if grafana_database.path is defined and
+          grafana_database.path | string | length > 0 %}
+path = {{ grafana_database.path }}
+    {% endif %}
+    {% if grafana_database.cache_mode is defined and
+          grafana_database.cache_mode | string | length > 0 and
+          grafana_database.cache_mode in ["private", "shared"] %}
+cache_mode = {{ grafana_database.cache_mode }}
+    {% endif %}
+  {% endif %}
+  {% if grafana_database.type in ["mysql", "postgres"] %}
+    {% if grafana_database.host is defined and
+          grafana_database.host | string | length > 0 %}
+host = {{ grafana_database.host }}
+    {% endif %}
+    {% if grafana_database.name is defined and
+          grafana_database.name | string | length > 0 %}
+name = {{ grafana_database.name }}
+    {% if grafana_database.user is defined and
+          grafana_database.user | string | length > 0 %}
+    {% endif %}
+user = {{ grafana_database.user }}
+    {% endif %}
+    {% if grafana_database.password is defined and
+          grafana_database.password | string | length > 0 %}
+password = {{ grafana_database.password }}
+    {% endif %}
+    {% if grafana_database.url is defined and
+          grafana_database.url | string | length > 0 %}
+url = {{ grafana_database.url }}
+    {% endif %}
+    {% if grafana_database.type == "postgres" %}
+      {% if grafana_database.ssl_mode is defined and
+            grafana_database.ssl_mode | string | length > 0 and
+            grafana_database.ssl_mode in ["disable", "require", "verify-full"] %}
+ssl_mode = {{ grafana_database.ssl_mode }}
+      {% endif %}
+    {% endif %}
+    {% if grafana_database.type == "mysql" %}
+      {% if grafana_database.isolation_level is defined
+            grafana_database.isolation_level | string | length > 0 and
+            grafana_database.isolation_level | lower in ["read-uncommitted", "read-committed", "repeatable-read", "serializable" ] %}
+isolation_level = {{ grafana_database.isolation_level | upper }}
+      {% endif %}
+    {% endif %}
+    {% if grafana_database.ca_cert_path is defined and
+          grafana_database.ca_cert_path | string | length > 0 %}
+ca_cert_path = {{ grafana_database.ca_cert_path }}
+    {% endif %}
+    {% if grafana_database.client_key_path is defined and
+          grafana_database.client_key_path | string | length > 0 %}
+client_key_path = {{ grafana_database.client_key_path }}
+    {% endif %}
+    {% if grafana_database.client_cert_path is defined and
+          grafana_database.client_cert_path | string | length > 0 %}
+client_cert_path = {{ grafana_database.client_cert_path }}
+    {% endif %}
+    {% if grafana_database.server_cert_name is defined and
+          grafana_database.server_cert_name | string | length > 0 %}
+server_cert_name = {{ grafana_database.server_cert_name }}
+    {% endif %}
+  {% endif %}
+  {% if grafana_database.max_idle_conn is defined and
+        grafana_database.max_idle_conn | string | length > 0 %}
+max_idle_conn = {{ grafana_database.max_idle_conn }}
+  {% endif %}
+  {% if grafana_database.max_open_conn is defined and
+        grafana_database.max_open_conn | string | length > 0 %}
+max_open_conn = {{ grafana_database.max_open_conn }}
+  {% endif %}
+  {% if grafana_database.conn_max_lifetime is defined and
+        grafana_database.conn_max_lifetime | string | length > 0 %}
+conn_max_lifetime = {{ grafana_database.conn_max_lifetime }}
+  {% endif %}
+  {% if grafana_database.log_queries is defined %}
+log_queries = {{ grafana_database.log_queries | bool | ternary('true', 'false') }}
+  {% endif %}
+  {% if grafana_database.locking_attempt_timeout_sec is defined and
+        grafana_database.locking_attempt_timeout_sec | string | length > 0 %}
+locking_attempt_timeout_sec = {{ grafana_database.locking_attempt_timeout_sec }}
+  {% endif %}
+{% endif %}

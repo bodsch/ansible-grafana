@@ -1,15 +1,15 @@
-#################################### Azure ###############################
+
 [azure]
-# Azure cloud environment where Grafana is hosted
-# Possible values are AzureCloud, AzureChinaCloud, AzureUSGovernment and AzureGermanCloud
-# Default value is AzureCloud (i.e. public cloud)
-;cloud = AzureCloud
+{% if grafana_azure.cloud is defined and
+      grafana_azure.cloud | string | length > 0 and
+      grafana_azure.cloud in ["AzureCloud", "AzureChinaCloud", "AzureUSGovernment", "AzureGermanCloud"] %}
+cloud = {{ grafana_azure.cloud }}
 
-# Specifies whether Grafana hosted in Azure service with Managed Identity configured (e.g. Azure Virtual Machines instance)
-# If enabled, the managed identity can be used for authentication of Grafana in Azure services
-# Disabled by default, needs to be explicitly enabled
-;managed_identity_enabled = false
-
-# Client ID to use for user-assigned managed identity
-# Should be set for user-assigned identity and should be empty for system-assigned identity
-;managed_identity_client_id =
+  {% if grafana_azure.managed_identity_enabled is defined %}
+managed_identity_enabled = {{ grafana_azure.managed_identity_enabled | bool | ternary('true', 'false') }}
+  {% endif %}
+  {% if grafana_azure.managed_identity_client_id is defined and
+        grafana_azure.managed_identity_client_id | string | length > 0 %}
+managed_identity_client_id = {{ grafana_azure.managed_identity_client_id }}
+  {% endif %}
+{% endif %}

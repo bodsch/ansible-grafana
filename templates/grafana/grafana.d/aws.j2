@@ -1,9 +1,10 @@
-#################################### AWS ###########################
-[aws]
-# Enter a comma-separated list of allowed AWS authentication providers.
-# Options are: default (AWS SDK Default), keys (Access && secret key), credentials (Credentials field), ec2_iam_role (EC2 IAM Role)
-; allowed_auth_providers = default,keys,credentials
 
-# Allow AWS users to assume a role using temporary security credentials.
-# If true, assume role will be enabled for all AWS authentication providers that are specified in aws_auth_providers
-; assume_role_enabled = true
+[aws]
+{% if grafana_aws.allowed_auth_providers is defined and
+      grafana_aws.allowed_auth_providers | string | length > 0 and
+      grafana_aws.allowed_auth_providers | compare_list(["default", "keys", "credentials", "ec2_iam_role"]) %}
+allowed_auth_providers = {{ grafana_aws.allowed_auth_providers | join(',') }}
+  {% if grafana_aws.assume_role_enabled is defined %}
+assume_role_enabled = {{ grafana_aws.assume_role_enabled | bool | ternary('true', 'false') }}
+  {% endif %}
+{% endif %}

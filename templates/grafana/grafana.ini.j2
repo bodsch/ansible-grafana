@@ -1,12 +1,22 @@
 #jinja2: trim_blocks: True, lstrip_blocks: True
 ; {{ ansible_managed }}
 
-{% include('grafana.d/general.j2') %}
+{% if grafana_general.app_mode is defined and
+      grafana_general.app_mode | string | length > 0 and
+      grafana_general.app_mode in ["production", "development"] %}
+app_mode          = {{ grafana_general.app_mode }}
+{% endif %}
+{% if grafana_general.instance_name is defined and
+      grafana_general.instance_name | string | length > 0 %}
+instance_name     = {{ grafana_general.instance_name }}
+{% endif %}
+{% if grafana_general.force_migration is defined %}
+force_migration   = {{ grafana_general.force_migration | bool | ternary('true', 'false') }}
+{% endif %}
 
 {% include('grafana.d/alerting.j2') %}
 {% include('grafana.d/analytics.j2') %}
 {% include('grafana.d/annotations.j2') %}
-
 {% include('grafana.d/aws.j2') %}
 {% include('grafana.d/azure.j2') %}
 {% include('grafana.d/dashboards.j2') %}
@@ -14,7 +24,6 @@
 {% include('grafana.d/dataproxy.j2') %}
 {% include('grafana.d/datasources.j2') %}
 {% include('grafana.d/date_formats.j2') %}
-
 {% include('grafana.d/enterprise.j2') %}
 {% include('grafana.d/explore.j2') %}
 {% include('grafana.d/expressions.j2') %}
@@ -38,10 +47,8 @@
 {% include('grafana.d/rendering.j2') %}
 {% include('grafana.d/security.j2') %}
 {% include('grafana.d/server.j2') %}
-
 {% include('grafana.d/smtp.j2') %}
 {% include('grafana.d/emails.j2') %}
-
 {% include('grafana.d/snapshots.j2') %}
 {% include('grafana.d/tracing.j2') %}
 {% include('grafana.d/unified_alerting.j2') %}

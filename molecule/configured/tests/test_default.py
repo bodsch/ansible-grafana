@@ -171,3 +171,12 @@ def test_service(host, get_vars):
     service = host.service("grafana-server")
     assert not service.is_enabled
     assert service.is_running
+
+# without configuration, we have no port binding
+# def test_open_port(host, get_vars):
+#     """
+#     """
+#     listen_address = "0.0.0.0:389"
+#
+#     service = host.socket(f"tcp://{listen_address}")
+#     assert service.is_listening
