@@ -148,13 +148,6 @@
 
 - name: merge grafana configuration between defaults and custom
   set_fact:
-    # grafana_service: "{{ grafana_defaults_service | combine( grafana_service, recursive=True) }}"
-    # grafana_config: "{{ grafana_defaults_config | combine( grafana_config, recursive=True) }}"
-    # grafana_backends: "{{ grafana_defaults_backends | combine( grafana_backends, recursive=True) }}"
-    # grafana_users: "{{ grafana_defaults_users | combine( grafana_users, recursive=True) }}"
-    # grafana_groups: "{{ grafana_defaults_groups | combine( grafana_groups, recursive=True) }}"
-    # grafana_behaviors: "{{ grafana_defaults_behaviors | combine( grafana_behaviors, recursive=True) }}"
-    # grafana_api: "{{ grafana_defaults_api | combine( grafana_api, recursive=True) }}"
     grafana_alerting: "{{ grafana_defaults_alerting | combine(grafana_alerting, recursive=True) }}"
     grafana_analytics: "{{ grafana_defaults_analytics | combine(grafana_analytics, recursive=True) }}"
     grafana_annotations: "{{ grafana_defaults_annotations | combine(grafana_annotations, recursive=True) }}"

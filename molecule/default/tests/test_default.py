@@ -169,5 +169,5 @@ def test_user(host, get_vars):
 
 def test_service(host, get_vars):
     service = host.service("grafana-server")
-    assert not service.is_enabled
+    assert service.is_enabled
     assert service.is_running
