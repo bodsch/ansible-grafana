@@ -12,9 +12,9 @@ grafana_urls:
 grafana_system_user: grafana
 grafana_system_group: grafana
 grafana_config_dir: /etc/grafana
-grafana_data_dir: /var/lib/grafana
+grafana_data_dir: "{{ grafana_paths.data }}"
 grafana_share_dir: /usr/share/grafana
-grafana_log_dir: /var/log/grafana
+grafana_log_dir: "{{ grafana_paths.logs }}"
 
 grafana_direct_download: false
 
@@ -45,7 +45,7 @@ grafana_live: {}
 grafana_log: {}
 grafana_metrics: {}
 grafana_panels: {}
-grafana_path: {}
+grafana_paths: {}
 grafana_plugin: {}
 grafana_plugins: {}
 grafana_profile: {}

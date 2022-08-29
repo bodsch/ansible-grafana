@@ -3,22 +3,24 @@
 # Copyright 2016-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-description="grafana, a lightweight LDAP server for development, home use, or CI"
+description="grafana server"
+
 pidfile=${pidfile:-"/run/${RC_SVCNAME}.pid"}
 user=${user:-${SVCNAME}}
 group=${group:-${SVCNAME}}
 
-command="/usr/bin/grafana"
+command="/usr/sbin/grafana-server"
 supervisor="supervise-daemon"
 
-command_args="${command_args:--config=/etc/grafana/grafana.conf}"
-command_user="${user}:${group}"
+command_args="${command_args:--config=/etc/grafana/grafana.ini}"
+command_user="${user}"
+# command_chroot="${chroot}"
 
 command_args_background="--background"
-required_files="/etc/grafana/grafana.conf"
+required_files="/etc/grafana/grafana.ini"
 
 output_log="/var/log/${RC_SVCNAME}/${RC_SVCNAME}.log"
-error_log="${output_log}"
+error_log="/var/log/${RC_SVCNAME}/${RC_SVCNAME}.err"
 extra_started_commands="reload"
 
 depend() {
@@ -29,40 +31,20 @@ depend() {
 
 start_pre() {
   [ -d $(dirname ${output_log}) ] ||  mkdir $(dirname ${output_log})
+  [ -d $(dirname ${pidfile}) ] ||  mkdir $(dirname ${pidfile})
+
+  checkpath -d -o "${command_user}:${group}" -m750 "/var/lib/grafana"
+  checkpath -d -o "${command_user}:${group}" -m750 "/var/lib/grafana/sessions"
+  checkpath -d -o "${command_user}:${group}" -m770 $(dirname ${output_log})
+
   chown -R ${command_user} $(dirname ${output_log})
+  chown -R ${command_user}:${group} $(dirname ${pidfile})
   chown -R ${command_user} /var/lib/grafana/
 }
 
-# start() {
-#   ebegin "Starting ${SVCNAME}"
-#
-#   start-stop-daemon \
-#     --start \
-#     --background \
-#     --exec "${command}" \
-#     --stdout ${output_log} \
-#     --stderr ${error_log} \
-#     --make-pidfile \
-#     --pidfile ${pidfile} \
-#     --user ${command_user} \
-#     -- ${command_args}
-#
-#   pidof grafana > "${pidfile}"
-#
-#   eend $? "Failed to start ${SVCNAME}"
-# }
-
-# stop() {
-#   ebegin "Stopping ${SVCNAME}"
-#   start-stop-daemon \
-#     --stop \
-#     --pidfile "${pidfile}"
-#
-#   eend $? "Failed to stop ${SVCNAME}"
-# }
-
 reload() {
   ebegin "Reloading ${SVCNAME}"
+
   if [ ! -r "${pidfile}" ]; then
     eend 1 "${RC_SVCNAME} not running"
   else

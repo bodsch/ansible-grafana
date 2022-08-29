@@ -173,7 +173,7 @@
     grafana_log: "{{ grafana_defaults_log | combine(grafana_log, recursive=True) }}"
     grafana_metrics: "{{ grafana_defaults_metrics | combine(grafana_metrics, recursive=True) }}"
     grafana_panels: "{{ grafana_defaults_panels | combine(grafana_panels, recursive=True) }}"
-    grafana_path: "{{ grafana_defaults_path | combine(grafana_path, recursive=True) }}"
+    grafana_paths: "{{ grafana_defaults_paths | combine(grafana_paths, recursive=True) }}"
     grafana_plugin: "{{ grafana_defaults_plugin | combine(grafana_plugin, recursive=True) }}"
     grafana_plugins: "{{ grafana_defaults_plugins | combine(grafana_plugins, recursive=True) }}"
     grafana_profile: "{{ grafana_defaults_profile | combine(grafana_profile, recursive=True) }}"

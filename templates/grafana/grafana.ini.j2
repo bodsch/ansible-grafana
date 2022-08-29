@@ -36,7 +36,7 @@ force_migration   = {{ grafana_general.force_migration | bool | ternary('true', 
 {% include('grafana.d/log.j2') %}
 {% include('grafana.d/metrics.j2') %}
 {% include('grafana.d/panels.j2') %}
-{% include('grafana.d/path.j2') %}
+{% include('grafana.d/paths.j2') %}
 {% include('grafana.d/plugin.j2') %}
 {% include('grafana.d/plugins.j2') %}
 {% include('grafana.d/profile.j2') %}

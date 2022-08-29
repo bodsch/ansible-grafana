@@ -87,9 +87,19 @@
 - name: create grafana lib directory
   file:
     state: directory
-    path: "{{ grafana_data_dir }}"
+    path: "{{ grafana_data_dir }}/{{ item }}"
+    owner: "{{ grafana_system_user }}"
     group: "{{ grafana_system_group }}"
     mode: 0775
+  loop:
+    - alerting
+    - csv
+    - dashboards
+    - plugins
+    - png
+    - sessions
+    - storage
+
 
 - name: create grafana log directory
   file:
@@ -124,24 +134,24 @@
   when:
     - ansible_service_mgr | lower == "systemd"
 
-# - name: openrc
-#   block:
-#     - name: create openrc service configuration
-#       template:
-#         src: "init/openrc/conf.d/grafana.j2"
-#         dest: "/etc/conf.d/grafana"
-#         owner: root
-#         group: root
-#         mode: 0644
-#
-#     - name: create openrc init configuration
-#       template:
-#         src: "init/openrc/init.d/grafana.j2"
-#         dest: "/etc/init.d/grafana"
-#         owner: root
-#         group: root
-#         mode: 0750
-#   when:
-#     - ansible_service_mgr | lower == "openrc"
+- name: openrc
+  block:
+    - name: create openrc service configuration
+      template:
+        src: "init/openrc/conf.d/grafana-server.j2"
+        dest: "/etc/conf.d/grafana-server"
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: create openrc init configuration
+      template:
+        src: "init/openrc/init.d/grafana-server.j2"
+        dest: "/etc/init.d/grafana-server"
+        owner: root
+        group: root
+        mode: 0750
+  when:
+    - ansible_service_mgr | lower == "openrc"
 
 ...
