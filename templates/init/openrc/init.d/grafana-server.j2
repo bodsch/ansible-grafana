@@ -19,8 +19,8 @@ command_user="${user}"
 command_args_background="--background"
 required_files="/etc/grafana/grafana.ini"
 
-output_log="/var/log/${RC_SVCNAME}/${RC_SVCNAME}.log"
-error_log="/var/log/${RC_SVCNAME}/${RC_SVCNAME}.err"
+output_log="/var/log/grafana/grafana.log"
+error_log="/var/log/grafana/grafana.err"
 extra_started_commands="reload"
 
 depend() {
