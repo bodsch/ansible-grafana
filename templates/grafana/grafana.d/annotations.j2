@@ -1,30 +1,30 @@
 
 [annotations]
-{% if grafana_annotations.cleanupjob_batchsize is defined and
-      grafana_annotations.cleanupjob_batchsize | string | length > 0 %}
-cleanupjob_batchsize =  {{ grafana_annotations.cleanupjob_batchsize }}
+{% if grafana_config_annotations.cleanupjob_batchsize is defined and
+      grafana_config_annotations.cleanupjob_batchsize | string | length > 0 %}
+cleanupjob_batchsize =  {{ grafana_config_annotations.cleanupjob_batchsize }}
 {% endif %}
-{% if grafana_annotations.dashboard is defined %}
+{% if grafana_config_annotations.dashboard is defined %}
 
 [annotations.dashboard]
-  {% if grafana_annotations.dashboard.max_age is defined and
-        grafana_annotations.dashboard.max_age | string | length > 0 %}
-max_age = {{ grafana_annotations.dashboard.max_age }}
+  {% if grafana_config_annotations.dashboard.max_age is defined and
+        grafana_config_annotations.dashboard.max_age | string | length > 0 %}
+max_age = {{ grafana_config_annotations.dashboard.max_age }}
   {% endif %}
-  {% if grafana_annotations.dashboard.max_annotations_to_keep is defined and
-        grafana_annotations.dashboard.max_annotations_to_keep | string | length > 0 %}
-max_annotations_to_keep = {{ grafana_annotations.dashboard.max_annotations_to_keep }}
+  {% if grafana_config_annotations.dashboard.max_annotations_to_keep is defined and
+        grafana_config_annotations.dashboard.max_annotations_to_keep | string | length > 0 %}
+max_annotations_to_keep = {{ grafana_config_annotations.dashboard.max_annotations_to_keep }}
   {% endif %}
 {% endif %}
-{% if grafana_annotations.api is defined %}
+{% if grafana_config_annotations.api is defined %}
 
 [annotations.api]
-  {% if grafana_annotations.api.max_age is defined and
-        grafana_annotations.api.max_age | string | length > 0 %}
-max_age = {{ grafana_annotations.api.max_age }}
+  {% if grafana_config_annotations.api.max_age is defined and
+        grafana_config_annotations.api.max_age | string | length > 0 %}
+max_age = {{ grafana_config_annotations.api.max_age }}
   {% endif %}
-  {% if grafana_annotations.api.max_annotations_to_keep is defined and
-        grafana_annotations.api.max_annotations_to_keep | string | length > 0 %}
-max_annotations_to_keep = {{ grafana_annotations.api.max_annotations_to_keep }}
+  {% if grafana_config_annotations.api.max_annotations_to_keep is defined and
+        grafana_config_annotations.api.max_annotations_to_keep | string | length > 0 %}
+max_annotations_to_keep = {{ grafana_config_annotations.api.max_annotations_to_keep }}
   {% endif %}
 {% endif %}

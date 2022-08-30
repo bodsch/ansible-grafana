@@ -1,17 +1,17 @@
 #jinja2: trim_blocks: True, lstrip_blocks: True
 ; {{ ansible_managed }}
 
-{% if grafana_general.app_mode is defined and
-      grafana_general.app_mode | string | length > 0 and
-      grafana_general.app_mode in ["production", "development"] %}
-app_mode          = {{ grafana_general.app_mode }}
+{% if grafana_config_general.app_mode is defined and
+      grafana_config_general.app_mode | string | length > 0 and
+      grafana_config_general.app_mode in ["production", "development"] %}
+app_mode          = {{ grafana_config_general.app_mode }}
 {% endif %}
-{% if grafana_general.instance_name is defined and
-      grafana_general.instance_name | string | length > 0 %}
-instance_name     = {{ grafana_general.instance_name }}
+{% if grafana_config_general.instance_name is defined and
+      grafana_config_general.instance_name | string | length > 0 %}
+instance_name     = {{ grafana_config_general.instance_name }}
 {% endif %}
-{% if grafana_general.force_migration is defined %}
-force_migration   = {{ grafana_general.force_migration | bool | ternary('true', 'false') }}
+{% if grafana_config_general.force_migration is defined %}
+force_migration   = {{ grafana_config_general.force_migration | bool | ternary('true', 'false') }}
 {% endif %}
 
 {% include('grafana.d/alerting.j2') %}

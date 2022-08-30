@@ -1,43 +1,43 @@
 
 [analytics]
-{% if grafana_analytics.reporting_enabled is defined %}
-reporting_enabled = {{ grafana_analytics.reporting_enabled | bool | ternary('true', 'false') }}
+{% if grafana_config_analytics.reporting_enabled is defined %}
+reporting_enabled = {{ grafana_config_analytics.reporting_enabled | bool | ternary('true', 'false') }}
 {% endif %}
-{% if grafana_analytics.reporting_distributor is defined and
-      grafana_analytics.reporting_distributor | string | length > 0 and
-      grafana_analytics.reporting_distributor in ["hosted-grafana", "grafana-labs"] %}
-reporting_distributor = {{ grafana_analytics.reporting_distributor }}
+{% if grafana_config_analytics.reporting_distributor is defined and
+      grafana_config_analytics.reporting_distributor | string | length > 0 and
+      grafana_config_analytics.reporting_distributor in ["hosted-grafana", "grafana-labs"] %}
+reporting_distributor = {{ grafana_config_analytics.reporting_distributor }}
 {% endif %}
-{% if grafana_analytics.check_for_updates is defined %}
-check_for_updates = {{ grafana_analytics.check_for_updates | bool | ternary('true', 'false') }}
+{% if grafana_config_analytics.check_for_updates is defined %}
+check_for_updates = {{ grafana_config_analytics.check_for_updates | bool | ternary('true', 'false') }}
 {% endif %}
-{% if grafana_analytics.check_for_plugin_updates is defined %}
-check_for_plugin_updates = {{ grafana_analytics.check_for_plugin_updates | bool | ternary('true', 'false') }}
+{% if grafana_config_analytics.check_for_plugin_updates is defined %}
+check_for_plugin_updates = {{ grafana_config_analytics.check_for_plugin_updates | bool | ternary('true', 'false') }}
 {% endif %}
-{% if grafana_analytics.google_analytics_ua_id is defined and
-      grafana_analytics.google_analytics_ua_id | string | length > 0 %}
-google_analytics_ua_id =  {{ grafana_analytics.google_analytics_ua_id }}
+{% if grafana_config_analytics.google_analytics_ua_id is defined and
+      grafana_config_analytics.google_analytics_ua_id | string | length > 0 %}
+google_analytics_ua_id =  {{ grafana_config_analytics.google_analytics_ua_id }}
 {% endif %}
-{% if grafana_analytics.google_tag_manager_id is defined and
-      grafana_analytics.google_tag_manager_id | string | length > 0 %}
-google_tag_manager_id =  {{ grafana_analytics.google_tag_manager_id }}
+{% if grafana_config_analytics.google_tag_manager_id is defined and
+      grafana_config_analytics.google_tag_manager_id | string | length > 0 %}
+google_tag_manager_id =  {{ grafana_config_analytics.google_tag_manager_id }}
 {% endif %}
-{% if grafana_analytics.rudderstack_write_key is defined and
-      grafana_analytics.rudderstack_write_key | string | length > 0 %}
-rudderstack_write_key =  {{ grafana_analytics.rudderstack_write_key }}
+{% if grafana_config_analytics.rudderstack_write_key is defined and
+      grafana_config_analytics.rudderstack_write_key | string | length > 0 %}
+rudderstack_write_key =  {{ grafana_config_analytics.rudderstack_write_key }}
 {% endif %}
-{% if grafana_analytics.rudderstack_data_plane_url is defined and
-      grafana_analytics.rudderstack_data_plane_url | string | length > 0 %}
-rudderstack_data_plane_url =  {{ grafana_analytics.rudderstack_data_plane_url }}
+{% if grafana_config_analytics.rudderstack_data_plane_url is defined and
+      grafana_config_analytics.rudderstack_data_plane_url | string | length > 0 %}
+rudderstack_data_plane_url =  {{ grafana_config_analytics.rudderstack_data_plane_url }}
 {% endif %}
-{% if grafana_analytics.rudderstack_sdk_url is defined and
-      grafana_analytics.rudderstack_sdk_url | string | length > 0 %}
-rudderstack_sdk_url =  {{ grafana_analytics.rudderstack_sdk_url }}
+{% if grafana_config_analytics.rudderstack_sdk_url is defined and
+      grafana_config_analytics.rudderstack_sdk_url | string | length > 0 %}
+rudderstack_sdk_url =  {{ grafana_config_analytics.rudderstack_sdk_url }}
 {% endif %}
-{% if grafana_analytics.rudderstack_config_url is defined and
-      grafana_analytics.rudderstack_config_url | string | length > 0 %}
-rudderstack_config_url =  {{ grafana_analytics.rudderstack_config_url }}
+{% if grafana_config_analytics.rudderstack_config_url is defined and
+      grafana_config_analytics.rudderstack_config_url | string | length > 0 %}
+rudderstack_config_url =  {{ grafana_config_analytics.rudderstack_config_url }}
 {% endif %}
-{% if grafana_analytics.feedback_links_enabled is defined %}
-feedback_links_enabled = {{ grafana_analytics.feedback_links_enabled | bool | ternary('true', 'false') }}
+{% if grafana_config_analytics.feedback_links_enabled is defined %}
+feedback_links_enabled = {{ grafana_config_analytics.feedback_links_enabled | bool | ternary('true', 'false') }}
 {% endif %}

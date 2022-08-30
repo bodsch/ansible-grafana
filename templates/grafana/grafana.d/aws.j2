@@ -1,10 +1,10 @@
 
 [aws]
-{% if grafana_aws.allowed_auth_providers is defined and
-      grafana_aws.allowed_auth_providers | string | length > 0 and
-      grafana_aws.allowed_auth_providers | compare_list(["default", "keys", "credentials", "ec2_iam_role"]) %}
-allowed_auth_providers = {{ grafana_aws.allowed_auth_providers | join(',') }}
-  {% if grafana_aws.assume_role_enabled is defined %}
-assume_role_enabled = {{ grafana_aws.assume_role_enabled | bool | ternary('true', 'false') }}
+{% if grafana_config_aws.allowed_auth_providers is defined and
+      grafana_config_aws.allowed_auth_providers | string | length > 0 and
+      grafana_config_aws.allowed_auth_providers | compare_list(["default", "keys", "credentials", "ec2_iam_role"]) %}
+allowed_auth_providers = {{ grafana_config_aws.allowed_auth_providers | join(',') }}
+  {% if grafana_config_aws.assume_role_enabled is defined %}
+assume_role_enabled = {{ grafana_config_aws.assume_role_enabled | bool | ternary('true', 'false') }}
   {% endif %}
 {% endif %}

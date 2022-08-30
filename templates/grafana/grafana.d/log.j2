@@ -1,98 +1,98 @@
 
-{% if grafana_log is defined %}
+{% if grafana_config_log is defined %}
 [log]
-  {% if grafana_log.mode is defined and
-        grafana_log.mode | default([]) | count > 0 and
-        grafana_log.mode | compare_list(["console", "file", "syslog"]) %}
-mode = {{ grafana_log.mode | join(' ') }}
+  {% if grafana_config_log.mode is defined and
+        grafana_config_log.mode | default([]) | count > 0 and
+        grafana_config_log.mode | compare_list(["console", "file", "syslog"]) %}
+mode = {{ grafana_config_log.mode | join(' ') }}
   {% endif %}
-  {% if grafana_log.level is defined and
-        grafana_log.level | string | length > 0 and
-        grafana_log.level in ["debug", "info", "warn", "error", "critical"] %}
-level = {{ grafana_log.level }}
+  {% if grafana_config_log.level is defined and
+        grafana_config_log.level | string | length > 0 and
+        grafana_config_log.level in ["debug", "info", "warn", "error", "critical"] %}
+level = {{ grafana_config_log.level }}
   {% endif %}
-  {% if grafana_log.level is defined %}
+  {% if grafana_config_log.level is defined %}
 ;filters =
   {% endif %}
-  {% if "console" in grafana_log.mode %}
+  {% if "console" in grafana_config_log.mode %}
 
 [log.console]
-    {% if grafana_log.console.level is defined and
-          grafana_log.console.level | string | length > 0 and
-          grafana_log.console.level in ["debug", "info", "warn", "error", "critical"] %}
-level = {{ grafana_log.console.level | default(grafana_log.level) }}
+    {% if grafana_config_log.console.level is defined and
+          grafana_config_log.console.level | string | length > 0 and
+          grafana_config_log.console.level in ["debug", "info", "warn", "error", "critical"] %}
+level = {{ grafana_config_log.console.level | default(grafana_config_log.level) }}
     {% endif %}
-    {% if grafana_log.console.format is defined and
-          grafana_log.console.format | string | length > 0 and
-          grafana_log.console.format in ["text", "console", "json"] %}
-format = {{ grafana_log.console.format }}
+    {% if grafana_config_log.console.format is defined and
+          grafana_config_log.console.format | string | length > 0 and
+          grafana_config_log.console.format in ["text", "console", "json"] %}
+format = {{ grafana_config_log.console.format }}
     {% endif %}
   {% endif %}
-  {% if "file" in grafana_log.mode %}
+  {% if "file" in grafana_config_log.mode %}
 
 [log.file]
-    {% if grafana_log.file.level is defined and
-          grafana_log.file.level | string | length > 0 and
-          grafana_log.file.level in ["debug", "info", "warn", "error", "critical"] %}
-level = {{ grafana_log.file.level | default(grafana_log.level) }}
+    {% if grafana_config_log.file.level is defined and
+          grafana_config_log.file.level | string | length > 0 and
+          grafana_config_log.file.level in ["debug", "info", "warn", "error", "critical"] %}
+level = {{ grafana_config_log.file.level | default(grafana_config_log.level) }}
     {% endif %}
-    {% if grafana_log.file.format is defined and
-          grafana_log.file.format | string | length > 0 and
-          grafana_log.file.format in ["text", "console", "json"] %}
-format = {{ grafana_log.file.format }}
+    {% if grafana_config_log.file.format is defined and
+          grafana_config_log.file.format | string | length > 0 and
+          grafana_config_log.file.format in ["text", "console", "json"] %}
+format = {{ grafana_config_log.file.format }}
     {% endif %}
-    {% if grafana_log.file.log_rotate is defined %}
-log_rotate = {{ grafana_log.file.log_rotate | bool | ternary('true', 'false') }}
+    {% if grafana_config_log.file.log_rotate is defined %}
+log_rotate = {{ grafana_config_log.file.log_rotate | bool | ternary('true', 'false') }}
     {% endif %}
-    {% if grafana_log.file.max_lines is defined and
-          grafana_log.file.max_lines | string | length > 0 %}
-max_lines = {{ grafana_log.file.max_lines }}
+    {% if grafana_config_log.file.max_lines is defined and
+          grafana_config_log.file.max_lines | string | length > 0 %}
+max_lines = {{ grafana_config_log.file.max_lines }}
     {% endif %}
-    {% if grafana_log.file.max_size_shift is defined and
-          grafana_log.file.max_size_shift | string | length > 0 %}
-max_size_shift = {{ grafana_log.file.max_size_shift }}
+    {% if grafana_config_log.file.max_size_shift is defined and
+          grafana_config_log.file.max_size_shift | string | length > 0 %}
+max_size_shift = {{ grafana_config_log.file.max_size_shift }}
     {% endif %}
-    {% if grafana_log.file.daily_rotate is defined %}
-daily_rotate = {{ grafana_log.file.daily_rotate | bool | ternary('true', 'false') }}
+    {% if grafana_config_log.file.daily_rotate is defined %}
+daily_rotate = {{ grafana_config_log.file.daily_rotate | bool | ternary('true', 'false') }}
     {% endif %}
-    {% if grafana_log.file.max_days is defined and
-          grafana_log.file.max_days | string | length > 0 %}
-max_days = {{ grafana_log.file.max_days }}
+    {% if grafana_config_log.file.max_days is defined and
+          grafana_config_log.file.max_days | string | length > 0 %}
+max_days = {{ grafana_config_log.file.max_days }}
     {% endif %}
   {% endif %}
-  {% if "syslog" in grafana_log.mode %}
+  {% if "syslog" in grafana_config_log.mode %}
 
 [log.syslog]
-    {% if grafana_log.syslog.level is defined and
-          grafana_log.syslog.level | string | length > 0 and
-          grafana_log.syslog.level in ["debug", "info", "warn", "error", "critical"] %}
-level = {{ grafana_log.syslog.level | default(grafana_log.level) }}
+    {% if grafana_config_log.syslog.level is defined and
+          grafana_config_log.syslog.level | string | length > 0 and
+          grafana_config_log.syslog.level in ["debug", "info", "warn", "error", "critical"] %}
+level = {{ grafana_config_log.syslog.level | default(grafana_config_log.level) }}
     {% endif %}
-    {% if grafana_log.syslog.format is defined and
-          grafana_log.syslog.format | string | length > 0 and
-          grafana_log.syslog.format in ["text", "console", "json"] %}
-format = {{ grafana_log.syslog.format }}
+    {% if grafana_config_log.syslog.format is defined and
+          grafana_config_log.syslog.format | string | length > 0 and
+          grafana_config_log.syslog.format in ["text", "console", "json"] %}
+format = {{ grafana_config_log.syslog.format }}
     {% endif %}
-    {% if grafana_log.syslog.network is defined and
-          grafana_log.syslog.network | string | length > 0 and
-          grafana_log.syslog.network in ["tcp", "udp", "unix", ""] %}
-network = {{ grafana_log.syslog.network }}
+    {% if grafana_config_log.syslog.network is defined and
+          grafana_config_log.syslog.network | string | length > 0 and
+          grafana_config_log.syslog.network in ["tcp", "udp", "unix", ""] %}
+network = {{ grafana_config_log.syslog.network }}
     {% endif %}
-    {% if grafana_log.syslog.address is defined and
-          grafana_log.syslog.address | string | length > 0%}
-address = {{ grafana_log.syslog.address }}
+    {% if grafana_config_log.syslog.address is defined and
+          grafana_config_log.syslog.address | string | length > 0%}
+address = {{ grafana_config_log.syslog.address }}
     {% endif %}
-    {% if grafana_log.syslog.facility is defined and
-          grafana_log.syslog.facility | string | length > 0 and
-          grafana_log.syslog.facility in ["user","daemon", "local0", "local1", "local2", "local3", "local4", "local5", "local6", "local7" ] %}
-facility = {{ grafana_log.syslog.facility }}
+    {% if grafana_config_log.syslog.facility is defined and
+          grafana_config_log.syslog.facility | string | length > 0 and
+          grafana_config_log.syslog.facility in ["user","daemon", "local0", "local1", "local2", "local3", "local4", "local5", "local6", "local7" ] %}
+facility = {{ grafana_config_log.syslog.facility }}
     {% endif %}
-    {% if grafana_log.syslog.tag is defined and
-          grafana_log.syslog.tag | string | length > 0 %}
-tag = {{ grafana_log.syslog.tag }}
+    {% if grafana_config_log.syslog.tag is defined and
+          grafana_config_log.syslog.tag | string | length > 0 %}
+tag = {{ grafana_config_log.syslog.tag }}
     {% endif %}
   {% endif %}
-  {% if grafana_log.frontend.enabled %}
+  {% if grafana_config_log.frontend.enabled %}
 
 [log.frontend]
 ;enabled = false

@@ -1,13 +1,5 @@
 ---
 
-# - name: create grafana configuration directory
-#   file:
-#     path: "{{ grafana_config_dir }}"
-#     state: directory
-#     owner: root
-#     group: "{{ grafana_system_group }}"
-#     mode: 0775
-
 - name: create grafana.ini
   template:
     src: "grafana/grafana.ini.j2"
@@ -34,5 +26,25 @@
 
 - name: restart grafana if needed
   meta: flush_handlers
+
+# - name: api
+#   include_tasks: configure/api.yml
+#   when:
+#     - grafana_api_keys | default([]) | count > 0
+#
+# - name: datasources
+#   include_tasks: configure/datasources.yml
+#   when:
+#     - grafana_datasources | default({}) | count > 0
+
+# - name: plugins
+#   include_tasks: configure/plugins.yml
+#   when:
+#     - grafana_plugins | default([]) | count > 0
+#
+# - name: notifications
+#   include_tasks: configure/notifications.yml
+#   when:
+#     - grafana_alert_notifications | default([]) | count > 0
 
 ...
