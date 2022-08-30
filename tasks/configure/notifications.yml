@@ -1,0 +1,29 @@
+---
+
+- name: create / delete / update alert notifications channels (via provisioning)
+  become: true
+  template:
+    src: grafana/notifiers/notifiers.yaml.j2
+    dest: "/etc/grafana/provisioning/datasources/ansible.yaml"
+    owner: root
+    group: grafana
+    mode: 0640
+  notify:
+    - restart grafana
+  when:
+    - grafana_provisioning.enabled | default({}) | count > 0
+
+- name: create or update datasources file (provisioning)
+  become: true
+  template:
+    src: grafana/datasources/datasource.yml.j2
+    dest: "/etc/grafana/provisioning/datasources/ansible.yaml"
+    backup: false
+    owner: root
+    group: grafana
+    mode: 0640
+  notify: restart grafana
+  when:
+    - grafana_provisioning.enabled
+
+...

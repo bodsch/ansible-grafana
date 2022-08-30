@@ -1,0 +1,66 @@
+---
+
+- name: D
+  debug:
+    msg: "{{ item.key }}"
+  loop: "{{ grafana_datasources | dict2items }}"
+
+
+- name: ensure datasources are present
+  grafana_datasource:
+    grafana_url: http://127.0.0.1:3000
+    grafana_user: "{{ grafana_security.admin_user }}"
+    grafana_password: "{{ grafana_security.admin_password }}"
+    name: "{{ item.key }}"
+    url: "{{ item.value.url }}"
+    ds_type: "{{ item.value.type }}"
+    access: "{{ item.value.access | default(omit) }}"
+    is_default: "{{ item.value.isDefault | default(omit) }}"
+    basic_auth_user: "{{ item.value.basicAuthUser | default(omit) }}"
+    basic_auth_password: "{{ item.value.basicAuthPassword | default(omit) }}"
+    database: "{{ item.value.database | default(omit) }}"
+    user: "{{ item.value.user | default(omit) }}"
+    password: "{{ item.value.password | default(omit) }}"
+    aws_auth_type: "{{ item.value.aws_auth_type | default(omit) }}"
+    aws_default_region: "{{ item.value.aws_default_region | default(omit) }}"
+    aws_access_key: "{{ item.value.aws_access_key | default(omit) }}"
+    aws_secret_key: "{{ item.value.aws_secret_key | default(omit) }}"
+    aws_credentials_profile: "{{ item.value.aws_credentials_profile | default(omit) }}"
+    aws_custom_metrics_namespaces: "{{ item.value.aws_custom_metrics_namespaces | default(omit) }}"
+  loop: "{{ grafana_datasources | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}, type {{ item.value.type }}"
+  when:
+    - not grafana_provisioning.enabled
+
+- name: create or update datasources file (provisioning)
+  become: true
+  template:
+    src: grafana/datasources/datasource.yml.j2
+    dest: "/etc/grafana/provisioning/datasources/ansible.yaml"
+    backup: false
+    owner: root
+    group: grafana
+    mode: 0640
+  notify: restart grafana
+  when:
+    - grafana_provisioning.enabled
+
+#- name: create or update datasources file (provisioning)
+#  become: true
+#  copy:
+#    dest: "/etc/grafana/provisioning/datasources/ansible.yaml"
+#    content: |
+#      apiVersion: 1
+#      deleteDatasources: []
+#      datasources:
+#      {{ grafana_datasources | to_nice_yaml }}
+#    backup: false
+#    owner: root
+#    group: grafana
+#    mode: 0640
+#  notify: restart grafana
+#  when:
+#    - grafana_provisioning.enabled
+
+...
