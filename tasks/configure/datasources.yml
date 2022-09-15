@@ -1,10 +1,9 @@
 ---
 
-- name: D
-  debug:
-    msg: "{{ item.key }}"
-  loop: "{{ grafana_datasources | dict2items }}"
-
+# - name: D
+#   debug:
+#     msg: "{{ item.key }}"
+#   loop: "{{ grafana_datasources | dict2items }}"
 
 - name: ensure datasources are present
   grafana_datasource:
@@ -42,25 +41,9 @@
     owner: root
     group: grafana
     mode: 0640
-  notify: restart grafana
+  notify:
+    - restart grafana
   when:
     - grafana_provisioning.enabled
-
-#- name: create or update datasources file (provisioning)
-#  become: true
-#  copy:
-#    dest: "/etc/grafana/provisioning/datasources/ansible.yaml"
-#    content: |
-#      apiVersion: 1
-#      deleteDatasources: []
-#      datasources:
-#      {{ grafana_datasources | to_nice_yaml }}
-#    backup: false
-#    owner: root
-#    group: grafana
-#    mode: 0640
-#  notify: restart grafana
-#  when:
-#    - grafana_provisioning.enabled
 
 ...

@@ -57,6 +57,9 @@
     - name: set grafana version to {{ _latest_release.json.tag_name[1:] }}
       set_fact:
         grafana_version: "{{ _latest_release.json.tag_name[1:] }}"
+  delegate_to: localhost
+  become: false
+  run_once: true
   when:
     - grafana_version == "latest"
 
@@ -97,14 +100,15 @@
 - name: flush handlers
   meta: flush_handlers
 
-- name: detect installed grafana binary
+- name: detect installed grafana binary {{ grafana_install_path }}/bin/grafana-server
   stat:
-    path: "{{ grafana_install_path }}/bin/grafana"
+    path: "{{ grafana_install_path }}/bin/grafana-server"
   register: stat_grafana_binary
 
 - name: create download directory
   become: false
   delegate_to: "{{ grafana_delegate_to }}"
+  run_once: "{{ 'false' if grafana_direct_download else 'true' }}"
   file:
     path: "{{ grafana_local_tmp_directory }}"
     state: directory

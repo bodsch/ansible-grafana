@@ -30,12 +30,14 @@
 # - name: api
 #   include_tasks: configure/api.yml
 #   when:
-#     - grafana_api_keys | default([]) | count > 0
-#
-# - name: datasources
-#   include_tasks: configure/datasources.yml
-#   when:
-#     - grafana_datasources | default({}) | count > 0
+#     - grafana_api is defined
+#     - grafana_api.keys is defined
+#     # - grafana_api.keys | default([]) | count > 0
+
+- name: datasources
+  include_tasks: configure/datasources.yml
+  when:
+    - grafana_datasources | default({}) | count > 0
 
 # - name: plugins
 #   include_tasks: configure/plugins.yml

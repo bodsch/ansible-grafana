@@ -288,6 +288,7 @@ grafana_defaults_config_database:
   locking_attempt_timeout_sec: 0
 
 grafana_defaults_config_dataproxy:
+  enabled: false
   # This enables data proxy logging, default is false
   logging: false
   # How long the data proxy waits to read the headers of the response before timing out, default is 30 seconds.
@@ -320,11 +321,13 @@ grafana_defaults_config_dataproxy:
   row_limit: 1000000
 
 grafana_defaults_config_datasources:
+  enabled: false
   # Upper limit of data sources that Grafana will return.
   # This limit is a temporary configuration and it will be deprecated when pagination will be introduced on the list data sources API.
   datasource_limit: 5000
 
 grafana_defaults_config_date_formats:
+  enabled: true
   # For information on what formatting patterns that are supported https://momentjs.com/docs/#/displaying/
   # Default system date format used in time range picker and other places where full time is displayed
   full_date: YYYY-MM-DD HH:mm:ss
@@ -342,8 +345,11 @@ grafana_defaults_config_date_formats:
   default_timezone: browser
 
 grafana_defaults_config_emails:
+  enabled: false
   welcome_email_on_sign_up: false
-  templates_pattern: emails/*.html, emails/*.txt
+  templates_pattern:
+    - emails/*.html
+    - emails/*.txt
   content_types: text/html
 
 grafana_defaults_config_enterprise:
@@ -508,7 +514,7 @@ grafana_defaults_config_log:
 grafana_defaults_config_metrics:
   # Metrics available at HTTP URL /metrics and /metrics/plugins/:pluginId
   # Disable / Enable internal metrics
-  enabled: true
+  enabled: false
   # Graphite Publish interval
   interval_seconds: 10
   # Disable total stats (stat_totals_*) metrics to be generated

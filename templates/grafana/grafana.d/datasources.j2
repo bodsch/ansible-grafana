@@ -1,3 +1,9 @@
 
 [datasources]
-;datasource_limit = 5000
+{% if grafana_config_datasources is defined and
+      grafana_config_datasources.enabled %}
+  {% if grafana_config_datasources.datasource_limit is defined and
+        grafana_config_datasources.datasource_limit | string | length > 0 %}
+datasource_limit = {{ grafana_config_datasources.datasource_limit }}
+  {% endif %}
+{% endif %}

@@ -4,4 +4,30 @@ grafana_server:
   http_addr: "0.0.0.0"
   domain: "matrix.lan"
 
+grafana_api:
+  # API keys to configure
+  keys:
+    - name: "admin"
+      role: "Admin"
+    #- name: bodsch
+    #  role: Admin
+  # The location where the keys should be stored.
+  store_directory: "{{ lookup('env', 'HOME') }}/grafana/keys"
+
+grafana_datasources:
+  prometheus:
+    state: absent
+    type: "prometheus"
+    access: "proxy"
+    url: "http://prometheus.mydomain"
+    basicAuth: true
+    basicAuthUser: "admin"
+    basicAuthPassword: "password"
+    isDefault: true
+    jsonData:
+      tlsAuth: false
+      tlsAuthWithCACert: false
+      tlsSkipVerify: true
+
+
 ...

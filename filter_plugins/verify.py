@@ -68,7 +68,7 @@ class FilterModule(object):
 
         for datasource, values in _data.items():
             res = {}
-            if values.get("state") == "absent":
+            if values.get("state", "present") == "absent":
                 res = dict(
                     name = datasource,
                     orgId = values.get("orgId", 1)
@@ -83,9 +83,18 @@ class FilterModule(object):
         """
         """
         display.v(f"non_existing_api({data}, {existing_api_keys})")
-        result = []
+        display.v(f"  - {type(data)}")
+        display.v(f"  - {type(existing_api_keys)}")
 
+        if len(existing_api_keys) == 0:
+            """
+              no present API data
+            """
+            return data
+
+        result = []
         names = []
+
 
         for d in existing_api_keys:
             names.append(d.get("name"))

@@ -3,8 +3,9 @@
 - name: detect binary file for grafana
   become: false
   delegate_to: "{{ grafana_delegate_to }}"
+  run_once: "{{ 'false' if grafana_direct_download else 'true' }}"
   stat:
-    path: "{{ grafana_install_path }}/bin/grafana"
+    path: "{{ grafana_install_path }}/bin/grafana-server"
   register: stat_file_binary
 
 - block:

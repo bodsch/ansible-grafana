@@ -1,10 +1,12 @@
 ---
 
+# TODO
 - name: ensure grafana key directory exists
   delegate_to: localhost
   become: false
+  run_once: true
   file:
-    path: "{{ grafana_api_keys_dir }}/{{ inventory_hostname }}"
+    path: "{{ grafana_api.store_directory }}/{{ inventory_hostname }}"
     state: directory
 
 - name: check api key list
@@ -20,10 +22,14 @@
 - name: d
   debug:
     msg:
-      - "{{ grafana_api_keys }}"
+      - "{{ grafana_api['keys'] }}"
       - "{{ existing_api_keys.json }}"
+
+- name: d
+  debug:
+    msg:
       # - "{{ ((existing_api_keys.json | selectattr('name', 'equalto', item.name)) | list) | length == 0 }}"
-      - "{{ grafana_api_keys | non_existing_api(existing_api_keys.json) }}"
+      - "{{ grafana_api['keys'] | non_existing_api(existing_api_keys.json) }}"
 
 # - name: create grafana api keys
 #   uri:
@@ -37,10 +43,12 @@
 #     # status_code:
 #     #   - 200
 #     #   - 409  # already created
-#   with_items: "{{ grafana_api_keys }}"
+#   loop: "{{ grafana_api['keys'] | non_existing_api(existing_api_keys.json) }}"
+#   loop_control:
+#     label: "{{ item.name }}"
 #   # no_log: true
-#   when:
-#     - ((existing_api_keys['json'] | selectattr("name", "equalto", item['name'])) | list) | length == 0
+#   #when:
+#   #  - ((existing_api_keys['json'] | selectattr("name", "equalto", item['name'])) | list) | length == 0
 #   register: new_api_keys
 #
 # - name: d
