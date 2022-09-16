@@ -95,7 +95,6 @@ class FilterModule(object):
         result = []
         names = []
 
-
         for d in existing_api_keys:
             names.append(d.get("name"))
 

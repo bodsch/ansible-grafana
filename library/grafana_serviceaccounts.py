@@ -15,6 +15,7 @@ import json
 # - https://github.com/m0nhawk/grafana_api/
 # - https://github.com/panodata/grafana-client
 
+
 class GrafanaServiceAccounts(object):
     """
     """
@@ -24,7 +25,6 @@ class GrafanaServiceAccounts(object):
           Initialize all needed Variables
         """
         self.module = module
-
 
         self._influx = module.get_bin_path("grafana-cli", True)
 
@@ -40,8 +40,6 @@ class GrafanaServiceAccounts(object):
             changed=False,
             msg="Grafana Plugins ..."
         )
-
-
 
 
 # ===========================================

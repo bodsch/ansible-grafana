@@ -9,6 +9,7 @@ import json
 
 # https://grafana.com/docs/grafana/latest/developers/http_api/auth/#api-keys
 
+
 class GrafanaAPIKeys(object):
     """
     """
@@ -18,7 +19,6 @@ class GrafanaAPIKeys(object):
           Initialize all needed Variables
         """
         self.module = module
-
 
         self._influx = module.get_bin_path("grafana-cli", True)
 
@@ -34,8 +34,6 @@ class GrafanaAPIKeys(object):
             changed=False,
             msg="Grafana Plugins ..."
         )
-
-
 
 
 # ===========================================

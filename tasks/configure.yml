@@ -39,11 +39,11 @@
   when:
     - grafana_datasources | default({}) | count > 0
 
-# - name: plugins
-#   include_tasks: configure/plugins.yml
-#   when:
-#     - grafana_plugins | default([]) | count > 0
-#
+- name: plugins
+  include_tasks: configure/plugins.yml
+  when:
+    - grafana_plugins | default([]) | count > 0
+
 # - name: notifications
 #   include_tasks: configure/notifications.yml
 #   when:

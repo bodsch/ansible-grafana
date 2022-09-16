@@ -5,12 +5,32 @@
     command: list
   register: installed_plugins
 
-- name: check which plugins are installed
-  find:
-    file_type: directory
-    recurse: false
-    paths: "{{ grafana_data_dir }}/plugins"
-  register: installed_plugins
+# - name: d
+#   debug:
+#     msg: "{{ installed_plugins }}"
+#
+# - name: check which plugins are installed
+#   find:
+#     file_type: directory
+#     recurse: false
+#     paths: "{{ grafana_config_paths.plugins }}"
+#   register: installed_plugins
+#
+# - name: d
+#   debug:
+#     msg: "{{ installed_plugins }}"
+
+- name: install grafana plugins
+  grafana_plugins:
+    command: install
+    # upgrade: false
+    plugins_dir: "{{ grafana_data_dir }}/plugins"
+    plugins: "{{ grafana_plugins }}"
+  register: install_plugins
+
+- name: d
+  debug:
+    msg: "{{ install_plugins }}"
 
 # TODO
 # - name: install plugins

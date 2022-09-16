@@ -29,5 +29,14 @@ grafana_datasources:
       tlsAuthWithCACert: false
       tlsSkipVerify: true
 
+grafana_plugins:
+  - raintank-worldping-app
+  - grafana-clock-panel
+
+  # maybe ...
+  #- name: raintank-worldping-app
+  #  state: present
+  #  version: 1.2.9
+
 
 ...

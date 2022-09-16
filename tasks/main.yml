@@ -3,16 +3,10 @@
 - name: prepare
   include_tasks: prepare.yml
 
-- name: d
-  debug:
-    msg: "{{ grafana_plugins }}"
-
 - name: plugins
   include_tasks: configure/plugins.yml
   when:
     - grafana_plugins | default([]) | count > 0
-
-
 
 # - name: download
 #   include_tasks: download.yml
@@ -21,9 +15,9 @@
 #
 # - name: install
 #   include_tasks: install.yml
-
+#
 # - name: configure
-#  include_tasks: configure.yml
+#   include_tasks: configure.yml
 #
 # - name: service
 #   include_tasks: service.yml

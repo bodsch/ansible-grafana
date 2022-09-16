@@ -8,7 +8,6 @@ from ansible.module_utils.basic import AnsibleModule
 import json
 
 
-
 class GrafanaAPI(object):
     """
     """
@@ -18,7 +17,6 @@ class GrafanaAPI(object):
           Initialize all needed Variables
         """
         self.module = module
-
 
         self._influx = module.get_bin_path("grafana-cli", True)
 
@@ -34,8 +32,6 @@ class GrafanaAPI(object):
             changed=False,
             msg="Grafana Plugins ..."
         )
-
-
 
 
 # ===========================================
