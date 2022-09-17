@@ -5,7 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 from ansible.module_utils.basic import AnsibleModule
-import json
+
 import re
 
 
@@ -29,8 +29,6 @@ class GrafanaCLI(object):
         """
           runner
         """
-        result_state = []
-
         result = dict(
             rc=0,
             failed=False,
@@ -44,6 +42,8 @@ class GrafanaCLI(object):
         if self.command == "install":
             return self._install()
 
+        return result
+
     def _list(self):
         """
           # grafana-cli plugins ls --help
@@ -56,7 +56,7 @@ class GrafanaCLI(object):
         """
         _failed = True
         _changed = False
-        _msg = "grafana plugin ls"
+        # _msg = "grafana plugin ls"
 
         args = []
 
@@ -135,9 +135,9 @@ class GrafanaCLI(object):
           USAGE:
              Grafana CLI plugins install [command options] [arguments...]
         """
-        _failed = True
-        _changed = False
-        _msg = "grafana plugin install"
+        # _failed = True
+        # _changed = False
+        # _msg = "grafana plugin install"
 
         if len(self.plugins) == 0:
             return dict(
@@ -148,9 +148,8 @@ class GrafanaCLI(object):
 
         plugin_list = self._list()
 
-        self.module.log(msg=f"  plugin_list : '{plugin_list}'")
-
         installed_plugins = plugin_list.get("installed")
+        installed_plugin_list = [i for s in [d.keys() for d in installed_plugins] for i in s]
 
         result_state = []
 
@@ -168,14 +167,17 @@ class GrafanaCLI(object):
         copy_args = args.copy()
 
         for p in self.plugins:
-            if p in installed_plugins:
+            if p in installed_plugin_list:
                 """
                 """
+                v = {v.get("version") for m in installed_plugins for k, v in m.items() if k == p}
+                plugin_version = next(iter(v))
+
                 res = {}
                 res[p] = dict(
                     failed = False,
                     changed = False,
-                    state="already installed."
+                    state=f"already in version {plugin_version} installed."
                 )
                 result_state.append(res)
 
@@ -185,12 +187,18 @@ class GrafanaCLI(object):
 
                 rc, out, err = self.__exec(copy_args)
 
+                pattern = re.compile(r"Downloaded.((?P<plugin>.*) v(?P<version>.*)) zip.*")
+
                 if rc == 0:
+                    re_result = re.search(pattern, out)
+                    # plugin_string = re_result.group('plugin')
+                    version_string = re_result.group('version')
+
                     res = {}
                     res[p] = dict(
                         failed = False,
                         changed = True,
-                        state="successfuly installed."
+                        state=f"version {version_string} successfuly installed."
                     )
                     result_state.append(res)
                 else:
@@ -213,11 +221,11 @@ class GrafanaCLI(object):
         #
         result_msg = {k: v.get('state') for k, v in combined_d.items()}
 
-        self.module.log(msg=f"  result_state : '{result_state}'")
-        self.module.log(msg=f"  combined_d   : '{combined_d}'")
-        self.module.log(msg=f"  changed      : '{changed}'")
-        self.module.log(msg=f"  failed       : '{failed}'")
-        self.module.log(msg=f"  result_msg   : '{result_msg}'")
+        # self.module.log(msg=f"  result_state : '{result_state}'")
+        # self.module.log(msg=f"  combined_d   : '{combined_d}'")
+        # self.module.log(msg=f"  changed      : '{changed}'")
+        # self.module.log(msg=f"  failed       : '{failed}'")
+        # self.module.log(msg=f"  result_msg   : '{result_msg}'")
 
         return dict(
             failed = failed,
@@ -236,8 +244,16 @@ class GrafanaCLI(object):
         """
         pass
 
-    def __filter_plugins(self, data, drop_version=True):
+    def __filter_plugins(self, data):
         """
+          data:
+            String
+
+          return:
+            [
+              {'grafana-clock-panel': {'version': '2.1.0'}},
+              {'raintank-worldping-app': {'version': '1.2.9'}}
+            ]
         """
         result = []
 
@@ -245,21 +261,28 @@ class GrafanaCLI(object):
         plugins_array = plugins_array.split('|')
 
         plugins_array = list(filter(None, plugins_array))  # remove empty strings
-        plugins_array.pop()  # remove last element
-        plugins_array.pop(0)  # remove first element
+        plugins_array.pop()                                # remove last element ('Please restart Grafana after installing plugins. Refer to Grafana documentation for instructions if necessary.')
 
-        self.module.log(msg=f"  plugins_array   : {plugins_array}")
-
-        pattern = re.compile(r"((?P<plugin>.*) @ (?P<version>.*))")
+        if len(plugins_array) > 0:
+            """
+            """
+            plugins_array.pop(0)                           # remove first element ('installed plugins:')
+            # self.module.log(msg=f"  plugins_array   : {plugins_array}")
+            pattern = re.compile(r"((?P<plugin>.*) @ (?P<version>.*))")
 
         for plugin in plugins_array:
             """
             """
+            res = {}
             re_result = re.search(pattern, plugin)
             plugin_string = re_result.group('plugin')
             version_string = re_result.group('version')
 
-            result.append(plugin_string)
+            res[plugin_string] = dict(
+                version=version_string
+            )
+
+            result.append(res)
 
         return result
 
@@ -268,11 +291,9 @@ class GrafanaCLI(object):
           execute shell program
         """
         rc, out, err = self.module.run_command(commands, check_rc=check_rc)
-
-        self.module.log(msg=f"  rc : '{rc}'")
-        self.module.log(msg=f"  out: '{out}'")
-        self.module.log(msg=f"  err: '{err}'")
-
+        # self.module.log(msg=f"  rc : '{rc}'")
+        # self.module.log(msg=f"  out: '{out}'")
+        # self.module.log(msg=f"  err: '{err}'")
         return rc, out, err
 
 # ===========================================
