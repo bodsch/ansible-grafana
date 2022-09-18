@@ -1,10 +1,8 @@
 ---
+
 - name: information
   hosts: all
   gather_facts: true
-
-  environment:
-    NETRC: ''
 
   pre_tasks:
     - name: arch- / artixlinux
@@ -34,17 +32,31 @@
           - "ansible version      : {{ ansible_version.full }}"
           - "python version       : {{ ansible_python.version.major }}.{{ ansible_python.version.minor }}"
 
+
 - name: prepare container
   hosts: all
   gather_facts: true
 
-  environment:
-    NETRC: ''
+  roles:
+    - role: apparmor
+    - role: snapd
+
+- name: prepare influxdb
+  hosts: influxdb
+  gather_facts: true
+
+  pre_tasks:
+    - name: install pip
+      package:
+        name: python3-pip
+        state: present
+      when:
+        - ansible_distribution | lower == 'debian'
 
   roles:
-    - role: syslog-ng
+    - role: influxdb
 
-- name: prepare container
+- name: prepare databases
   hosts: database
   gather_facts: true
 
@@ -52,6 +64,8 @@
     NETRC: ''
 
   roles:
-    - role: influxdb
+    - role: syslog-ng
+    - role: snakeoil
+    - role: glauth
 
 ...

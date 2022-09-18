@@ -31,6 +31,20 @@
       # - "{{ ((existing_api_keys.json | selectattr('name', 'equalto', item.name)) | list) | length == 0 }}"
       - "{{ grafana_api['keys'] | non_existing_api(existing_api_keys.json) }}"
 
+- name: check api key list
+  grafana_api_keys:
+    # grafana_server: localhost
+    # grafana_port: 3000
+    # grafana_scheme: http
+    grafana_url: "http://127.0.0.1:3000"
+    grafana_admin:
+      user: "{{ grafana_config_security.admin_user }}"
+      password: "{{ grafana_config_security.admin_password }}"
+    #force_basic_auth: true
+    #return_content: true
+  no_log: false
+  register: existing_api_keys
+
 # - name: create grafana api keys
 #   uri:
 #     url: "http://127.0.0.1:3000/api/auth/keys"

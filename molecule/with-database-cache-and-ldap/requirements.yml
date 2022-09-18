@@ -16,4 +16,13 @@
 - name: mariadb
   src: bodsch.mariadb
 
+- name: influxdb
+  src: mkayontour.influxdb
+  # src: https://github.com/mkayontour/ansible-influxdb.git
+  # scm: git
+  # version: v1.0.0
+
+- name: glauth
+  src: bodsch.glauth
+
 ...

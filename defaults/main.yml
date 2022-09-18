@@ -79,5 +79,5 @@ grafana_config_snapshots: {}
 grafana_config_tracing: {}
 grafana_config_unified_alerting: {}
 grafana_config_users: {}
-
+grafana_config_ldap: {}
 ...

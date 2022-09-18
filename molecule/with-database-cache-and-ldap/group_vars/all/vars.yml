@@ -1,0 +1,104 @@
+---
+
+grafana_server:
+  http_addr: "0.0.0.0"
+  domain: "matrix.lan"
+
+grafana_datasources:
+  prometheus:
+    state: absent
+    type: "prometheus"
+    access: "proxy"
+    url: "http://prometheus.mydomain"
+    basicAuth: true
+    basicAuthUser: "admin"
+    basicAuthPassword: "password"
+    isDefault: true
+    jsonData:
+      tlsAuth: false
+      tlsAuthWithCACert: false
+      tlsSkipVerify: true
+
+  InfluxDB_v1:
+    state: present
+    editable: true
+    type: "influxdb"
+    access: "proxy"
+    url: "http://influxdb:8086"
+    isDefault: true
+    database: molecule
+    user: admin
+    jsonData:
+      httpMode: GET
+    secureJsonData:
+      password: admin
+
+  # see: https://grafana.com/docs/grafana/latest/datasources/influxdb/provision-influxdb/
+
+  InfluxDB_v2_Flux:
+    state: absent
+    type: influxdb
+    access: proxy
+    url: http://localhost:8086
+    secureJsonData:
+      token: token
+    jsonData:
+      version: Flux
+      organization: organization
+      defaultBucket: bucket
+      tlsSkipVerify: true
+
+  InfluxDB_v2_InfluxQL:
+    state: absent
+    type: influxdb
+    access: proxy
+    url: http://localhost:8086
+    # This database should be mapped to a bucket
+    database: site
+    jsonData:
+      httpMode: GET
+      httpHeaderName1: 'Authorization'
+    secureJsonData:
+      httpHeaderValue1: 'Token <token>'
+
+
+
+grafana_plugins:
+  - grafana-clock-panel
+
+grafana_config_ldap:
+  servers:
+    - hosts:
+        - ldap
+      port: 389
+      use_ssl: false
+      start_tls: false
+      ssl_skip_verify: false
+      # root_ca_cert = "/path/to/certificate.crt"
+      # client_cert = "/path/to/client.crt"
+      # client_key = "/path/to/client.key"
+      bind_dn: 'cn=admin,dc=molecule,dc=lan'
+      bind_password: grafana
+      timeout: 10
+      search_filter: (cn=%s)
+      search_base_dns:
+        - 'dc=molecule,dc=lan'
+      # group_search_filter = "(&(objectClass=posixGroup)(memberUid=%s))"
+      # group_search_base_dns = ["ou=groups,dc=molecule,dc=lan"]
+      # group_search_filter_user_attribute = "uid"
+      attributes:
+        name: givenName
+        surname: sn
+        username: cn
+        member_of: memberOf
+        email: email
+      group_mappings:
+        - group_dn: 'cn=admins,ou=groups,dc=molecule,dc=lan'
+          org_role: Admin
+          # org_id = 1
+        - group_dn: 'cn=users,ou=groups,dc=molecule,dc=lan'
+          org_role: Editor
+        - group_dn: '*'
+          org_role: Viewer
+
+...

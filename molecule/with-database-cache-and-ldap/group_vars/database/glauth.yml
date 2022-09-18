@@ -1,42 +1,42 @@
 ---
 
-# grafana_version: latest
+glauth_version: latest
 
-grafana_service:
+glauth_service:
   listen:
     ldap: ""
     ldaps: ""
   tls:
-    cert_file: "/etc/grafana/certs/molecule.lan.pem"
-    key_file: "/etc/grafana/certs/molecule.lan.key"
+    cert_file: "/etc/glauth/certs/molecule.lan.pem"
+    key_file: "/etc/glauth/certs/molecule.lan.key"
 
-grafana_config:
+glauth_config:
   ldaps:
     enabled: false
     listen:
       address: "0.0.0.0"
       port: "636"
     tls:
-      cert_file: "/etc/grafana/certs/molecule.lan.pem"
-      key_file: "/etc/grafana/certs/molecule.lan.key"
+      cert_file: "/etc/glauth/certs/molecule.lan.pem"
+      key_file: "/etc/glauth/certs/molecule.lan.key"
 
-grafana_backends:
+glauth_backends:
   config:
     base_dn: "dc=molecule,dc=lan"
     name_format: "cn"
     group_format: "ou"
 
-grafana_groups:
+glauth_groups:
   admins:
     gid: 3000
-  vpn:
-    gid: 3001
   users:
-    gid: 6000
+    gid: 4000
     include_groups:
-      - 3001
+      - 4001
+  grafana:
+    gid: 4001
 
-grafana_users:
+glauth_users:
   admin:
     enabled: true
     given_name: Admin
@@ -65,10 +65,10 @@ grafana_users:
   bodsch:
     given_name: "B."
     sn: "Schulz"
-    uid: 6000
-    primary_group: 6000
+    uid: 4000
+    primary_group: 4000
     other_groups:
-      - 3001
+      - 4001
     pass:
       sha256: "6b7556f632dc73ea7470a0116d6e55880fda6ca50575b72c7cc5f13df53a2623"
       sha256_apps:
@@ -84,12 +84,13 @@ grafana_users:
       "search":
         object: "dc=molecule,dc=lan"
 
-grafana_behaviors:
+glauth_behaviors:
   ignore_capabilities: true
 
-grafana_api:
+glauth_api:
   enabled: true
   listen:
     address: "0.0.0.0"
 
 ...
+

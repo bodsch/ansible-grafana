@@ -193,4 +193,6 @@
     grafana_config_tracing: "{{ grafana_defaults_config_tracing | combine(grafana_config_tracing, recursive=True) }}"
     grafana_config_unified_alerting: "{{ grafana_defaults_config_unified_alerting | combine(grafana_config_unified_alerting, recursive=True) }}"
     grafana_config_users: "{{ grafana_defaults_config_users | combine(grafana_config_users, recursive=True) }}"
+    grafana_config_ldap: "{{ grafana_defaults_config_ldap | combine(grafana_config_ldap, recursive=True) }}"
+
 ...

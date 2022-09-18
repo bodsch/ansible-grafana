@@ -22,6 +22,7 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - database
+      - ldap
     docker_networks:
       - name: grafana
         ipam_config:
@@ -30,6 +31,18 @@ platforms:
     networks:
       - name: grafana
         ipv4_address: "10.13.0.10"
+
+  - name: influxdb
+    image: "bodsch/ansible-${DISTRIBUTION:-debian:10}"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    docker_host: "${DOCKER_HOST:-unix://run/docker.sock}"
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    networks:
+      - name: grafana
+        ipv4_address: "10.13.0.11"
 
   - name: instance
     image: "bodsch/ansible-${DISTRIBUTION:-debian:11}"

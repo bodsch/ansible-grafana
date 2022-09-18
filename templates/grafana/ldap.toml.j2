@@ -1,7 +1,125 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+# {{ ansible_managed }}
 # To troubleshoot and get more log info enable ldap debug logging in grafana.ini
 # [log]
 # filters = ldap:debug
 
+{% if grafana_config_ldap is defined and
+      grafana_config_ldap.servers is defined and
+      grafana_config_ldap.servers | count > 0 %}
+  {% for ldap in grafana_config_ldap.servers %}
+[[servers]]
+    {% if ldap.hosts is defined and
+          ldap.hosts | count > 0 %}
+host = "{{ ldap.hosts | join('" "') }}"
+    {% endif %}
+    {% if ldap.port is defined and
+          ldap.port | string | length > 0 %}
+port = {{ ldap.port }}
+    {% endif %}
+    {% if ldap.use_ssl is defined %}
+use_ssl = {{ ldap.use_ssl | bool | ternary('true', 'false') }}
+    {% endif %}
+    {% if ldap.start_tls is defined %}
+start_tls = {{ ldap.start_tls | bool | ternary('true', 'false') }}
+    {% endif %}
+    {% if ldap.ssl_skip_verify is defined %}
+ssl_skip_verify = {{ ldap.ssl_skip_verify | bool | ternary('true', 'false') }}
+    {% endif %}
+    {% if ldap.use_ssl is defined or ldap.start_tls is defined %}
+      {% if ldap.root_ca_cert is defined and
+          ldap.root_ca_cert | string | length > 0 %}
+root_ca_cert = "{{ ldap.root_ca_cert }}"
+      {% endif %}
+      {% if ldap.client_cert is defined and
+          ldap.client_cert | string | length > 0 %}
+client_cert = "{{ ldap.client_cert }}"
+      {% endif %}
+      {% if ldap.client_key is defined and
+          ldap.client_key | string | length > 0 %}
+client_key = "{{ ldap.client_key }}"
+      {% endif %}
+    {% endif %}
+    {% if ldap.bind_dn is defined and
+          ldap.bind_dn | string | length > 0 %}
+bind_dn = "{{ ldap.bind_dn }}"
+    {% endif %}
+    {% if ldap.bind_password is defined and
+          ldap.bind_password | string | length > 0 %}
+bind_password = "{{ ldap.bind_password }}"
+    {% endif %}
+    {% if ldap.timeout is defined and
+          ldap.timeout | string | length > 0 %}
+timeout = {{ ldap.timeout }}
+    {% endif %}
+    {% if ldap.search_filter is defined and
+          ldap.search_filter | string | length > 0 %}
+search_filter = "{{ ldap.search_filter }}"
+    {% endif %}
+    {% if ldap.search_base_dns is defined and
+          ldap.search_base_dns | count > 0 %}
+search_base_dns = {{ ldap.search_base_dns }}
+    {% endif %}
+    {% if ldap.group_search_filter is defined and
+          ldap.group_search_filter | string | length > 0 %}
+group_search_filter = {{ ldap.group_search_filter }}
+    {% endif %}
+    {% if ldap.group_search_base_dns is defined and
+          ldap.group_search_base_dns | string | length > 0 %}
+group_search_base_dns = {{ ldap.group_search_base_dns }}
+    {% endif %}
+    {% if ldap.group_search_filter_user_attribute is defined and
+          ldap.group_search_filter_user_attribute | string | length > 0 %}
+group_search_filter_user_attribute = {{ ldap.group_search_filter_user_attribute }}
+    {% endif %}
+    {% if ldap.attributes is defined and
+          ldap.attributes | count > 0 %}
+
+[servers.attributes]
+      {% if ldap.attributes.name is defined and
+            ldap.attributes.name | string | length > 0 %}
+name = "{{ ldap.attributes.name }}"
+      {% endif %}
+      {% if ldap.attributes.surname is defined and
+            ldap.attributes.surname | string | length > 0 %}
+surname = "{{ ldap.attributes.surname }}"
+      {% endif %}
+      {% if ldap.attributes.username is defined and
+            ldap.attributes.username | string | length > 0 %}
+username = "{{ ldap.attributes.username }}"
+      {% endif %}
+      {% if ldap.attributes.member_of is defined and
+            ldap.attributes.member_of | string | length > 0 %}
+member_of = "{{ ldap.attributes.member_of }}"
+      {% endif %}
+      {% if ldap.attributes.email is defined and
+            ldap.attributes.email | string | length > 0 %}
+email = "{{ ldap.attributes.email }}"
+      {% endif %}
+    {% endif %}
+    {% if ldap.group_mappings is defined and
+          ldap.group_mappings | count > 0 %}
+      {% for mapping in ldap.group_mappings %}
+
+[[servers.group_mappings]]
+        {% if mapping.group_dn is defined and
+              mapping.group_dn | string | length > 0 %}
+group_dn = "{{ mapping.group_dn }}"
+        {% endif %}
+        {% if mapping.org_role is defined and
+              mapping.org_role | string | length > 0 %}
+org_role = "{{ mapping.org_role }}"
+        {% endif %}
+        {% if mapping.org_id is defined and
+              mapping.org_id | string | length > 0 %}
+org_id = {{ mapping.org_id }}
+        {% endif %}
+      {% endfor %}
+
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{#
 [[servers]]
 # Ldap server host (specify multiple hosts space separated)
 host = "127.0.0.1"
@@ -65,3 +183,4 @@ org_role = "Editor"
 # If you want to match all (or no ldap groups) then you can use wildcard
 group_dn = "*"
 org_role = "Viewer"
+#}
