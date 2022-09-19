@@ -176,7 +176,11 @@ def test_service(host, get_vars):
 def test_open_port(host, get_vars):
     """
     """
-    listen_address = "127.0.0.1:3000"
+    for i in host.socket.get_listening_sockets():
+        print(i)
 
-    service = host.socket(f"tcp://{listen_address}")
+    addr = get_vars.get("grafana_config_server", {}).get("http_addr", "127.0.0.1")
+    port = get_vars.get("grafana_config_server", {}).get("http_port", "3000")
+
+    service = host.socket(f"tcp://{addr}:{port}")
     assert service.is_listening

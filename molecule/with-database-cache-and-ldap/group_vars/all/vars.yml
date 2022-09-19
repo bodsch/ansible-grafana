@@ -1,6 +1,7 @@
 ---
 
-grafana_server:
+grafana_config_server:
+# grafana_server:
   http_addr: "0.0.0.0"
   domain: "matrix.lan"
 
