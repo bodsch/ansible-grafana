@@ -11,8 +11,9 @@ mode = {{ grafana_config_log.mode | join(' ') }}
         grafana_config_log.level in ["debug", "info", "warn", "error", "critical"] %}
 level = {{ grafana_config_log.level }}
   {% endif %}
-  {% if grafana_config_log.level is defined %}
-;filters =
+  {% if grafana_config_log.filters is defined and
+        grafana_config_log.filters | count > 0 %}
+filters = {{ grafana_config_log.filters | join(' ') }}
   {% endif %}
   {% if "console" in grafana_config_log.mode %}
 

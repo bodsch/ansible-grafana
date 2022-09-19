@@ -100,8 +100,6 @@ class FilterModule(object):
 
         display.v(f"names {names}")
 
-        #names = {k: v for k, v in data.items() if v.get('name')}
-
         for e in data:
             _name = e.get("name")
             display.v(f"- name {_name}")

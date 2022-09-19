@@ -252,7 +252,7 @@ config_file = /etc/grafana/ldap.toml
   {% if grafana_config_auth.ldap.allow_sign_up is defined %}
 allow_sign_up = {{ grafana_config_auth.ldap.allow_sign_up | bool | ternary('true', 'false') }}
   {% endif %}
-  {% if grafana_config_edition == "enterprise" %}
+  {% if grafana_edition == "enterprise" %}
     {% if grafana_config_auth.ldap.sync_cron is defined and
           grafana_config_auth.ldap.sync_cron | string | length > 0 %}
 sync_cron = {{ grafana_config_auth.ldap.sync_cron }}

@@ -62,7 +62,7 @@ search_base_dns = {{ ldap.search_base_dns }}
     {% endif %}
     {% if ldap.group_search_filter is defined and
           ldap.group_search_filter | string | length > 0 %}
-group_search_filter = {{ ldap.group_search_filter }}
+group_search_filter = "{{ ldap.group_search_filter }}"
     {% endif %}
     {% if ldap.group_search_base_dns is defined and
           ldap.group_search_base_dns | string | length > 0 %}
@@ -70,7 +70,7 @@ group_search_base_dns = {{ ldap.group_search_base_dns }}
     {% endif %}
     {% if ldap.group_search_filter_user_attribute is defined and
           ldap.group_search_filter_user_attribute | string | length > 0 %}
-group_search_filter_user_attribute = {{ ldap.group_search_filter_user_attribute }}
+group_search_filter_user_attribute = "{{ ldap.group_search_filter_user_attribute }}"
     {% endif %}
     {% if ldap.attributes is defined and
           ldap.attributes | count > 0 %}

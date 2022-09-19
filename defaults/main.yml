@@ -26,7 +26,7 @@ grafana_provisioning:
   keep_synced: false
 
 # The location where the keys should be stored.
-grafana_api_keys_dir: "{{ lookup('env', 'HOME') }}/grafana/keys"
+# grafana_api_keys_dir: "{{ lookup('env', 'HOME') }}/grafana/keys"
 
 grafana_datasources: {}
 grafana_plugins: []
@@ -80,4 +80,5 @@ grafana_config_tracing: {}
 grafana_config_unified_alerting: {}
 grafana_config_users: {}
 grafana_config_ldap: {}
+
 ...

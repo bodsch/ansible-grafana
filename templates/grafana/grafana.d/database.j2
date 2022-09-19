@@ -46,7 +46,7 @@ ssl_mode = {{ grafana_config_database.ssl_mode }}
       {% endif %}
     {% endif %}
     {% if grafana_config_database.type == "mysql" %}
-      {% if grafana_config_database.isolation_level is defined
+      {% if grafana_config_database.isolation_level is defined and
             grafana_config_database.isolation_level | string | length > 0 and
             grafana_config_database.isolation_level | lower in ["read-uncommitted", "read-committed", "repeatable-read", "serializable" ] %}
 isolation_level = {{ grafana_config_database.isolation_level | upper }}

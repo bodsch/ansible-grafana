@@ -23,7 +23,7 @@ grafana_requirements:
 
 grafana_python_packages:
   - name: grafana-client
-    # version: 2.0.3
+##     version: 2.0.3
 
 # https://dl.grafana.com/enterprise/release/grafana-enterprise-9.1.1.linux-amd64.tar.gz
 # https://dl.grafana.com/oss/release/grafana-9.1.1.linux-amd64.tar.gz
@@ -461,7 +461,7 @@ grafana_defaults_config_log:
   # Either "debug", "info", "warn", "error", "critical", default is "info"
   level: info
   # optional settings to set different levels for specific loggers. Ex filters: sqlstore:debug
-  filters: ""
+  filters: []
   # For "console" mode only
   console:
     level: ""
@@ -1030,8 +1030,6 @@ grafana_defaults_config_ldap:
           org_role: Editor
         - group_dn: '*'
           org_role: Viewer
-
-
 
 # ----------------------------------------------------------------------------------------
 

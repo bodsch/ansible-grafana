@@ -12,7 +12,7 @@ mariadb_databases:
 mariadb_users:
   - name: grafana
     host: "%"
-    password: grafana
+    password: "{{ vault__database.grafana }}"
     encrypted: false
     priv: "grafana.*:ALL"
 

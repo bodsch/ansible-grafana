@@ -32,8 +32,7 @@
           - "ansible version      : {{ ansible_version.full }}"
           - "python version       : {{ ansible_python.version.major }}.{{ ansible_python.version.minor }}"
 
-
-- name: prepare container
+- name: prepare all
   hosts: all
   gather_facts: true
 
@@ -56,7 +55,7 @@
   roles:
     - role: influxdb
 
-- name: prepare databases
+- name: prepare database
   hosts: database
   gather_facts: true
 
@@ -66,6 +65,18 @@
   roles:
     - role: syslog-ng
     - role: snakeoil
+    - role: mariadb
+    - role: redis
     - role: glauth
+
+- name: prepare instance
+  hosts: instance
+  gather_facts: true
+
+  environment:
+    NETRC: ''
+
+  roles:
+    - role: nginx
 
 ...

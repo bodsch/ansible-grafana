@@ -14,7 +14,7 @@ influxdb_databases:
 influxdb_users:
   - name: molecule
     admin: no
-    password: molecule
+    password: "{{ vault__influxdb.molecule }}"
     grants:
       - database: 'molecule'
         privilege: 'WRITE'

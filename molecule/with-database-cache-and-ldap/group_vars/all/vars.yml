@@ -31,7 +31,7 @@ grafana_datasources:
     jsonData:
       httpMode: GET
     secureJsonData:
-      password: admin
+      password: "{{ vault__influxdb.molecule }}"
 
   # see: https://grafana.com/docs/grafana/latest/datasources/influxdb/provision-influxdb/
 
@@ -61,31 +61,46 @@ grafana_datasources:
     secureJsonData:
       httpHeaderValue1: 'Token <token>'
 
-
-
 grafana_plugins:
   - grafana-clock-panel
+
+grafana_config_log:
+  level: info
+  filters:
+    - "ldap:debug"
+
+grafana_config_database:
+  type: mysql
+  host: database:3306
+  name: grafana
+  user: grafana
+  password: "{{ vault__database.grafana }}"
+
+grafana_config_remote_cache:
+  type: redis
+  connstr: addr=database:6379,pool_size=100,db=0,ssl=false
+
+grafana_config_auth:
+  ldap:
+    enabled: true
+    config_file: /etc/grafana/ldap.toml
+    allow_sign_up: true
 
 grafana_config_ldap:
   servers:
     - hosts:
-        - ldap
+        - database
       port: 389
-      use_ssl: false
-      start_tls: false
-      ssl_skip_verify: false
-      # root_ca_cert = "/path/to/certificate.crt"
-      # client_cert = "/path/to/client.crt"
-      # client_key = "/path/to/client.key"
       bind_dn: 'cn=admin,dc=molecule,dc=lan'
-      bind_password: grafana
+      bind_password: "{{ vault__ldap.admin }}"
       timeout: 10
-      search_filter: (cn=%s)
+      search_filter: "(cn=%s)"
       search_base_dns:
         - 'dc=molecule,dc=lan'
-      # group_search_filter = "(&(objectClass=posixGroup)(memberUid=%s))"
-      # group_search_base_dns = ["ou=groups,dc=molecule,dc=lan"]
-      # group_search_filter_user_attribute = "uid"
+      # group_search_filter: "(&(objectClass=posixGroup)(memberUid=%s))"
+      # group_search_base_dns:
+      #   - "ou=groups,dc=molecule,dc=lan"
+      # group_search_filter_user_attribute: "uid"
       attributes:
         name: givenName
         surname: sn
@@ -96,7 +111,7 @@ grafana_config_ldap:
         - group_dn: 'cn=admins,ou=groups,dc=molecule,dc=lan'
           org_role: Admin
           # org_id = 1
-        - group_dn: 'cn=users,ou=groups,dc=molecule,dc=lan'
+        - group_dn: 'cn=grafana,ou=groups,dc=molecule,dc=lan'
           org_role: Editor
         - group_dn: '*'
           org_role: Viewer
