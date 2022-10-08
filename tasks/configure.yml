@@ -10,7 +10,7 @@
     mode: 0664
   notify:
     - validate config
-    - reload grafana
+    - restart grafana
 
 - name: create ldap.toml
   template:
@@ -20,12 +20,16 @@
     owner: root
     group: "{{ grafana_system_group }}"
     mode: 0664
+  when:
+    - grafana_config_auth is defined
+    - grafana_config_auth.ldap is defined
+    - grafana_config_auth.ldap.enabled | default('false') | bool
   notify:
     - validate config
-    - reload grafana
+    - restart grafana
 
-- name: restart grafana if needed
-  meta: flush_handlers
+# - name: restart grafana if needed
+#   meta: flush_handlers
 
 # - name: api
 #   include_tasks: configure/api.yml

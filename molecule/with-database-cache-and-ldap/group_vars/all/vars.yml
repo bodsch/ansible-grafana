@@ -109,10 +109,10 @@ grafana_config_ldap:
         member_of: memberOf
         email: email
       group_mappings:
-        - group_dn: 'cn=admins,ou=groups,dc=molecule,dc=lan'
+        - group_dn: 'ou=admins,ou=groups,dc=molecule,dc=lan'
           org_role: Admin
           # org_id = 1
-        - group_dn: 'cn=grafana,ou=groups,dc=molecule,dc=lan'
+        - group_dn: 'ou=grafana,ou=groups,dc=molecule,dc=lan'
           org_role: Editor
         - group_dn: '*'
           org_role: Viewer

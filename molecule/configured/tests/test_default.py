@@ -115,7 +115,6 @@ def local_facts(host):
 def test_directories(host, dirs):
     d = host.file(dirs)
     assert d.is_directory
-    assert d.exists
 
 
 def test_files(host, get_vars):
@@ -151,7 +150,6 @@ def test_files(host, get_vars):
 
     for _file in files:
         f = host.file(_file)
-        assert f.exists
         assert f.is_file
 
 
@@ -169,7 +167,7 @@ def test_user(host, get_vars):
 
 def test_service(host, get_vars):
     service = host.service("grafana-server")
-    assert not service.is_enabled
+    assert service.is_enabled
     assert service.is_running
 
 # without configuration, we have no port binding

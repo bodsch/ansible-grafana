@@ -1,5 +1,8 @@
 ---
 
-# grafana_version: latest
+grafana_version: latest
+
+# enterprise or oss
+grafana_edition: oss
 
 ...

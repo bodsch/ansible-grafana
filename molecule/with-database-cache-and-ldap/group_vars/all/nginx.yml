@@ -37,16 +37,20 @@ nginx_logformat:
     # escape: json
 
 nginx_vhosts:
-  default:
+  grafana.molecule.lan:
     filename: 00-grafana.molecule.lan.conf
     state: present  # default: present
     enabled: true   # default: true
 
     domains:
-      - grafana.molecule.lan
+      - molecule.matrix.lan
+      - grafana.matrix.lan
 
     listen:
-      - 80
+      - 443 ssl http2
+
+    redirect:
+      from_port: 80
 
     upstreams:
       - name: grafana
@@ -55,11 +59,18 @@ nginx_vhosts:
 
     logfiles:
       access:
-        file: /var/log/nginx/grafana.molecule.lan/access.log
+        file: /var/log/nginx/grafana.matrix.lan/access.log
         loglevel: json_combined
       error:
-        file: /var/log/nginx/grafana.molecule.lan/error.log
+        file: /var/log/nginx/grafana.matrix.lan/error.log
         loglevel: notice
+
+    # enable ssl
+    ssl:
+      enabled: true
+      certificate: /etc/snakeoil/molecule.lan/molecule.lan.crt
+      certificate_key: /etc/snakeoil/molecule.lan/molecule.lan.key
+      dhparam: /etc/snakeoil/molecule.lan/dh.pem
 
     locations:
       "/":

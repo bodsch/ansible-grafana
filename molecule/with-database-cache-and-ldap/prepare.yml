@@ -64,7 +64,6 @@
 
   roles:
     - role: syslog-ng
-    - role: snakeoil
     - role: mariadb
     - role: redis
     - role: glauth
@@ -77,6 +76,7 @@
     NETRC: ''
 
   roles:
+    - role: snakeoil
     - role: nginx
 
 ...
