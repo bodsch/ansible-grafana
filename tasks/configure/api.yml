@@ -8,6 +8,7 @@
   file:
     path: "{{ grafana_api.store_directory }}/{{ inventory_hostname }}"
     state: directory
+    mode: 0750
 
 - name: check api key list
   uri:

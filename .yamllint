@@ -1,5 +1,4 @@
 ---
-
 extends: default
 rules:
   line-length:
@@ -15,6 +14,7 @@ rules:
 #     spaces: 2
 #   comments: disable
 #   comments-indentation: disable
+#   truthy: disable
 
 ignore: |
   molecule/

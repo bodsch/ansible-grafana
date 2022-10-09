@@ -38,7 +38,13 @@
     name: "{{ grafana_requirements }}"
     state: present
 
-- block:
+- name: get latest release
+  delegate_to: localhost
+  become: false
+  run_once: true
+  when:
+    - grafana_version == "latest"
+  block:
     - name: get latest release
       uri:
         url: "https://api.github.com/repos/grafana/grafana/releases/latest"
@@ -57,11 +63,6 @@
     - name: set grafana version to {{ _latest_release.json.tag_name[1:] }}
       set_fact:
         grafana_version: "{{ _latest_release.json.tag_name[1:] }}"
-  delegate_to: localhost
-  become: false
-  run_once: true
-  when:
-    - grafana_version == "latest"
 
 - name: detect our installation path '{{ grafana_install_path | dirname }}'
   stat:
@@ -71,6 +72,11 @@
   ignore_errors: true
 
 - name: old installation
+  when:
+    - stat_grafana_path is defined
+    - stat_grafana_path.stat is defined
+    - stat_grafana_path.stat.isdir is defined
+    - not stat_grafana_path.stat.isdir
   block:
     - name: stop old service
       service:
@@ -91,11 +97,6 @@
       file:
         state: absent
         path: "{{ stat_grafana_path.stat.path }}"
-  when:
-    - stat_grafana_path is defined
-    - stat_grafana_path.stat is defined
-    - stat_grafana_path.stat.isdir is defined
-    - not stat_grafana_path.stat.isdir
 
 - name: flush handlers
   meta: flush_handlers
@@ -115,6 +116,8 @@
     mode: 0750
 
 - name: user and group handling
+  when:
+    - grafana_system_user != "root"
   block:
     - name: create grafana group
       group:
@@ -131,8 +134,6 @@
         system: true
         createhome: false
         home: /nonexistent
-  when:
-    - grafana_system_user != "root"
 
 - name: create install directory
   file:

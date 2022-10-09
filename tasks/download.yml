@@ -7,6 +7,7 @@
   get_url:
     url: "{{ grafana_urls.downloads }}/{{ grafana_download_file }}"
     dest: "{{ grafana_local_tmp_directory }}/{{ grafana_download_file }}"
+    mode: 0644
   register: _download_archive
   until: _download_archive is succeeded
   retries: 5

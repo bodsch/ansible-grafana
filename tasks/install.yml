@@ -8,7 +8,10 @@
     path: "{{ grafana_install_path }}/bin/grafana-server"
   register: stat_file_binary
 
-- block:
+- name: handle remote binaries
+  when:
+    - not stat_file_binary.stat.exists
+  block:
     - name: create remote temp directory
       file:
         path: "{{ grafana_remote_tmp_directory }}"
@@ -35,9 +38,6 @@
         extra_opts:
           - --strip-components=1
       register: _extract_archive
-
-  when:
-    - not stat_file_binary.stat.exists
 
 - name: create link to working directory
   file:
@@ -108,6 +108,8 @@
     mode: 0755
 
 - name: systemd
+  when:
+    - ansible_service_mgr | lower == "systemd"
   block:
     - name: create systemd service unit
       template:
@@ -131,10 +133,10 @@
       notify:
         - validate config
         - reload grafana
-  when:
-    - ansible_service_mgr | lower == "systemd"
 
 - name: openrc
+  when:
+    - ansible_service_mgr | lower == "openrc"
   block:
     - name: create openrc service configuration
       template:
@@ -151,10 +153,11 @@
         owner: root
         group: root
         mode: 0750
-  when:
-    - ansible_service_mgr | lower == "openrc"
 
 - name: python support
+  when:
+    - grafana_python_packages is defined
+    - grafana_python_packages | length > 0
   block:
     - name: create requirements.txt
       template:
@@ -169,7 +172,4 @@
         executable: pip3
       register: pip_install
 
-  when:
-    - grafana_python_packages is defined
-    - grafana_python_packages | length > 0
 ...

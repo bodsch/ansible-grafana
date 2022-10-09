@@ -15,8 +15,8 @@
   notify:
     - restart grafana
 
-- name: d
-  debug:
-    msg: "{{ install_plugins }}"
+# - name: d
+#   debug:
+#     msg: "{{ install_plugins }}"
 
 ...
