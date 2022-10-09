@@ -1,5 +1,8 @@
 ---
 
+- name: restart grafana if needed
+  meta: flush_handlers
+
 - name: ensure grafana is enabled on boot
   become: true
   service:

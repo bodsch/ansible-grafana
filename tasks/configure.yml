@@ -28,9 +28,6 @@
     - validate config
     - restart grafana
 
-# - name: restart grafana if needed
-#   meta: flush_handlers
-
 # - name: api
 #   include_tasks: configure/api.yml
 #   when:

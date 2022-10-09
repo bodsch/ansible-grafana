@@ -22,5 +22,7 @@
     force: true
   when:
     - ansible_service_mgr | lower == "systemd"
+  notify:
+    - restart grafana
 
 ...
