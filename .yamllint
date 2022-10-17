@@ -1,9 +1,14 @@
 ---
-extends: default
+extends: relaxed
+
 rules:
   line-length:
     max: 195
     level: warning
+  empty-lines:
+    max: 1
+    max-end: 1
+    max-start: 1
 #   braces:
 #     min-spaces-inside: 0
 #     max-spaces-inside: 1
@@ -12,10 +17,10 @@ rules:
 #     max-spaces-inside: 1
 #   indentation:
 #     spaces: 2
-#   comments: disable
-#   comments-indentation: disable
+  comments: disable
+  comments-indentation: disable
 #   truthy: disable
 
-ignore: |
+ignore:
   molecule/
   .github
