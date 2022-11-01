@@ -71,32 +71,42 @@
   register: stat_grafana_path
   ignore_errors: true
 
+- name: detect old installation
+  stat:
+    path: /usr/sbin/grafana-server
+    get_checksum: false
+  register: stat_old_grafana_path
+  ignore_errors: true
+
 - name: old installation
   when:
-    - stat_grafana_path is defined
-    - stat_grafana_path.stat is defined
-    - stat_grafana_path.stat.isdir is defined
-    - not stat_grafana_path.stat.isdir
+    - stat_grafana_path | is_installed(stat_old_grafana_path)
   block:
     - name: stop old service
       service:
-        name: grafana
+        name: grafana-server
         state: stopped
         enabled: false
       notify:
         - daemon-reload
 
+    - name: uninstall old grafana installation
+      package:
+        name: grafana
+        state: absent
+
     - name: remove installed systemd unit
       file:
         state: absent
-        path: /etc/systemd/system/grafana.service
-      when:
-        - ansible_service_mgr | lower == "systemd"
+        path: /etc/systemd/system/grafana-server.service
 
     - name: remove installed grafana
       file:
         state: absent
         path: "{{ stat_grafana_path.stat.path }}"
+      when:
+        - stat_grafana_path.stat.path is defined
+        - stat_grafana_path.stat.path | string | length > 0
 
 - name: flush handlers
   meta: flush_handlers
