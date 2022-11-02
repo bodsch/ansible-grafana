@@ -20,6 +20,7 @@ class FilterModule(object):
             'validate_datasource_type': self.validate_datasource_type,
             'absent_datasources': self.absent_datasources,
             'non_existing_api': self.non_existing_api,
+            'is_installed': self.is_installed,
         }
 
     def compare_list(self, data_list, compare_to_list):
@@ -112,3 +113,44 @@ class FilterModule(object):
         display.v(f" = result {result}")
 
         return result
+
+    def is_installed(self, data, bin_path):
+        """
+        """
+
+        # - stat_grafana_path is defined
+        # - stat_grafana_path.stat is defined
+        # - stat_grafana_path.stat.isdir is defined
+        # - not stat_grafana_path.stat.isdir
+        # - stat_old_grafana_path is defined
+        # - stat_old_grafana_path.stat is defined
+        # - stat_old_grafana_path.stat.islnk is defined
+        # - not stat_old_grafana_path.stat.islnk
+
+        display.v(f"is_installed({data}, {bin_path})")
+
+        directory = False
+        link_to_bin = False
+
+        stat_data = data.get("stat", None)
+        stat_bin_path = bin_path.get("stat", None)
+
+        display.v(f"  - {stat_data}")
+        display.v(f"  - {stat_bin_path}")
+
+        if stat_data:
+            directory = stat_data.get("isdir", False)
+            display.v(f"  - {directory}")
+
+        if stat_bin_path:
+            link_to_bin = stat_bin_path.get("islnk", False)
+            display.v(f"  - {link_to_bin}")
+
+        if directory == False and link_to_bin == False:
+            result = True
+        else:
+            result = False
+
+        display.v(f"return : {result}")
+        return result
+

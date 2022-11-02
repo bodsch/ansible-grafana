@@ -11,6 +11,7 @@
 - name: handle remote binaries
   when:
     - not stat_file_binary.stat.exists
+    - not stat_grafana_binary.stat.exists
   block:
     - name: create remote temp directory
       file:
@@ -46,25 +47,39 @@
     dest: "{{ grafana_share_dir }}"
     force: true
     follow: false
+  notify:
+    - restart grafana
 
-- name: propagate grafana provisioning plugins
-  block:
-    - name: create plugins directory for installed version
-      file:
-        state: directory
-        path: /etc/grafana
-        group: "{{ grafana_system_group }}"
-        mode: 0775
+- name: create config directory
+  file:
+    state: directory
+    path: /etc/grafana
+    group: "{{ grafana_system_group }}"
+    mode: 0755
 
-    - name: create link to provisioning
-      file:
-        state: link
-        src: "{{ grafana_install_path }}/conf/provisioning"
-        dest: /etc/grafana/provisioning
-        force: true
-        follow: false
-      notify:
-        - reload grafana
+- name: find grafana provisioning plugins
+  stat:
+    path: /etc/grafana/provisioning
+    get_checksum: false
+  register: _grafana_provisioning
+  ignore_errors: true
+
+- name: copy sample provisioning configurations
+  copy:
+    src: "{{ grafana_install_path }}/conf/provisioning"
+    dest: /etc/grafana/provisioning
+    owner: root
+    group: "{{ grafana_system_group }}"
+    mode: 0755
+    force: true
+    remote_src: true
+  notify:
+    - reload grafana
+  when:
+    - _grafana_provisioning is defined
+    - _grafana_provisioning.stat is defined
+    - not _grafana_provisioning.stat.exists | default('false')
+    # - not _grafana_provisioning.stat.isdir | default('false')
 
 - name: create link to binaries
   file:
