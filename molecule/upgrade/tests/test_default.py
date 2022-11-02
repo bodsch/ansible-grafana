@@ -110,7 +110,8 @@ def local_facts(host):
 @pytest.mark.parametrize("dirs", [
     "/etc/grafana",
     "/var/lib/grafana",
-    "/usr/local/grafana",
+    "/usr/share/grafana",
+    "/opt/grafana",
 ])
 def test_directories(host, dirs):
     d = host.file(dirs)
@@ -171,6 +172,7 @@ def test_service(host, get_vars):
     service = host.service("grafana-server")
     assert service.is_enabled
     assert service.is_running
+
 
 # without configuration, we have no port binding
 def test_open_port(host, get_vars):

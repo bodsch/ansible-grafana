@@ -14,6 +14,18 @@ Ansible role to install and configure [grafana](https://github.com/grafana/grafa
 [quality]: https://galaxy.ansible.com/bodsch/grafana
 
 
+If `latest` is set for `grafana_version`, the role tries to install the latest release version.  
+**Please use this with caution, as incompatibilities between releases may occur!**
+
+The binaries are installed below `/opt/grafana/${grafana_version}` and later linked to `/usr/sbin`. 
+This should make it possible to downgrade relatively safely.
+
+The Prometheus archive is stored on the Ansible controller, unpacked and then the binaries are copied to the target system.
+The cache directory can be defined via the environment variable `CUSTOM_LOCAL_TMP_DIRECTORY`. 
+By default it is `${HOME}/.cache/ansible/grafana`.
+If this type of installation is not desired, the download can take place directly on the target system. 
+However, this must be explicitly activated by setting `grafana_direct_download` to `true`.
+
 
 ## Operating systems
 
@@ -23,6 +35,91 @@ Tested on
 * Debian based
     - Debian 10 / 11
     - Ubuntu 20.10
+    
+## usage
+
+```yaml
+grafana_version: 9.1.1
+
+# enterprise or oss
+grafana_edition: enterprise
+
+grafana_urls:
+  releases: https://github.com/grafana/grafana/releases
+  downloads: https://dl.grafana.com/{{ grafana_edition }}/release
+
+grafana_system_user: grafana
+grafana_system_group: grafana
+grafana_config_dir: /etc/grafana
+grafana_data_dir: "{{ grafana_config_paths.data }}"
+grafana_share_dir: /usr/share/grafana
+grafana_log_dir: "{{ grafana_config_paths.logs }}"
+
+grafana_direct_download: false
+
+grafana_provisioning:
+  # Should we use the provisioning capability when possible (provisioning require grafana >= 5.0)
+  enabled: true
+  # Should the provisioning be kept synced.
+  # If true, previous provisioned objects will be removed if not referenced anymore.
+  keep_synced: false
+
+# The location where the keys should be stored.
+# grafana_api_keys_dir: "{{ lookup('env', 'HOME') }}/grafana/keys"
+
+grafana_datasources: {}
+grafana_plugins: []
+grafana_alert_notifications: {}
+
+grafana_api:
+  # API keys to configure
+  keys: []
+  # The location where the keys should be stored.
+  store_directory: "{{ lookup('env', 'HOME') }}/grafana/keys"
+
+grafana_config_alerting: {}
+grafana_config_analytics: {}
+grafana_config_annotations: {}
+grafana_config_auth: {}
+grafana_config_aws: {}
+grafana_config_azure: {}
+grafana_config_dashboards: {}
+grafana_config_database: {}
+grafana_config_dataproxy: {}
+grafana_config_datasources: {}
+grafana_config_date_formats: {}
+grafana_config_emails: {}
+grafana_config_enterprise: {}
+grafana_config_explore: {}
+grafana_config_expressions: {}
+grafana_config_external_image_storage: {}
+grafana_config_feature_toggles: {}
+grafana_config_general: {}
+grafana_config_geomap: {}
+grafana_config_grafana_com: {}
+grafana_config_help: {}
+grafana_config_live: {}
+grafana_config_log: {}
+grafana_config_metrics: {}
+grafana_config_panels: {}
+grafana_config_paths: {}
+grafana_config_plugin: {}
+grafana_config_plugins: {}
+grafana_config_profile: {}
+grafana_config_query_history: {}
+grafana_config_quota: {}
+grafana_config_rbac: {}
+grafana_config_remote_cache: {}
+grafana_config_rendering: {}
+grafana_config_security: {}
+grafana_config_server: {}
+grafana_config_smtp: {}
+grafana_config_snapshots: {}
+grafana_config_tracing: {}
+grafana_config_unified_alerting: {}
+grafana_config_users: {}
+grafana_config_ldap: {}
+```
 
 
 ## Contribution

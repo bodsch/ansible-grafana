@@ -2,7 +2,7 @@
 
 grafana_main_version: "{{ grafana_version[0:3] }}"
 
-grafana_install_path: /usr/local/grafana/{{ grafana_version }}
+grafana_install_path: /opt/grafana/{{ grafana_version }}
 
 grafana_delegate_to: localhost
 
@@ -1032,6 +1032,8 @@ grafana_defaults_config_ldap:
           org_role: Viewer
 
 # ----------------------------------------------------------------------------------------
+
+grafana_upgrade: false
 
 grafana_defaults_directory: /etc/default
 

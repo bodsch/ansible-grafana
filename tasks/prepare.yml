@@ -78,9 +78,13 @@
   register: stat_old_grafana_path
   ignore_errors: true
 
+- name: detect if this an upgrade
+  set_fact:
+    grafana_upgrade: "{{ stat_grafana_path | upgrade(stat_old_grafana_path) }}"
+
 - name: old installation
   when:
-    - stat_grafana_path | is_installed(stat_old_grafana_path)
+    - grafana_upgrade
   block:
     - name: stop old service
       service:
@@ -98,7 +102,10 @@
     - name: remove installed systemd unit
       file:
         state: absent
-        path: /etc/systemd/system/grafana-server.service
+        path: "{{ item }}"
+      loop:
+        - /etc/systemd/system/grafana-server.service
+        - /usr/lib/systemd/system/grafana-server.service
 
     - name: remove installed grafana
       file:

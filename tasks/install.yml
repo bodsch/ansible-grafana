@@ -79,7 +79,6 @@
     - _grafana_provisioning is defined
     - _grafana_provisioning.stat is defined
     - not _grafana_provisioning.stat.exists | default('false')
-    # - not _grafana_provisioning.stat.isdir | default('false')
 
 - name: create link to binaries
   file:
