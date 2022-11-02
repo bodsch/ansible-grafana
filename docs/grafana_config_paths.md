@@ -1,0 +1,15 @@
+# `grafana_config_paths`
+
+```yaml
+grafana_config_paths:
+  # Path to where grafana can store temp files, sessions, and the sqlite3 db (if that is used)
+  data: /var/lib/grafana
+  # Temporary files in `data` directory older than given duration will be removed
+  temp_data_lifetime: 24h
+  # Directory where grafana can store logs
+  logs: /var/log/grafana
+  # Directory where grafana will automatically scan and look for plugins
+  plugins: /var/lib/grafana/plugins
+  # folder that contains provisioning config files that grafana will apply on startup and while running.
+  provisioning: conf/provisioning
+```
