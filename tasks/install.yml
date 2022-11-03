@@ -57,17 +57,17 @@
     group: "{{ grafana_system_group }}"
     mode: 0755
 
-- name: find grafana provisioning plugins
+- name: find grafana provisioning
   stat:
     path: /etc/grafana/provisioning
     get_checksum: false
-  register: _grafana_provisioning
+  register: _grafana_provisioning_dir
   ignore_errors: true
 
 - name: copy sample provisioning configurations
   copy:
     src: "{{ grafana_install_path }}/conf/provisioning"
-    dest: /etc/grafana/provisioning
+    dest: /etc/grafana/
     owner: root
     group: "{{ grafana_system_group }}"
     mode: 0755
@@ -76,9 +76,9 @@
   notify:
     - reload grafana
   when:
-    - _grafana_provisioning is defined
-    - _grafana_provisioning.stat is defined
-    - not _grafana_provisioning.stat.exists | default('false')
+    - _grafana_provisioning_dir is defined
+    - _grafana_provisioning_dir.stat is defined
+    - not _grafana_provisioning_dir.stat.exists | default('false')
 
 - name: create link to binaries
   file:

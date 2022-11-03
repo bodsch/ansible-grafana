@@ -8,7 +8,13 @@ apiVersion: 1
 {% if remove_ds is defined and
       remove_ds | count > 0 %}
 deleteDatasources:
-  {{ remove_ds | to_nice_yaml | indent(2, False) }}
+  {% for datasource in remove_ds %}
+  - name: {{ datasource.name }}
+    {% if datasource.orgId is defined and
+          datasource.orgId | string | length > 0 %}
+    orgId: {{ datasource.orgId }}
+    {% endif %}
+  {% endfor %}
 {% endif %}
 
 {% if grafana_datasources is defined %}
