@@ -22,7 +22,11 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - database
-      - ldap
+    published_ports:
+      - 3306:3306
+    labels:
+      service-discovery: "true"
+      service-discover: "true"
     docker_networks:
       - name: grafana
         ipam_config:
@@ -40,9 +44,76 @@ platforms:
     pre_build_image: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    groups:
+      - tsdb
+    published_ports:
+      - 8086:8086
+    labels:
+      service-discovery: "true"
+      service-discover: "true"
     networks:
       - name: grafana
         ipv4_address: "10.13.0.11"
+
+  - name: prometheus
+    image: "bodsch/ansible-${DISTRIBUTION:-debian:11}"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    docker_host: "${DOCKER_HOST:-unix://run/docker.sock}"
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    groups:
+      - tsdb
+    published_ports:
+      - 9090:9090
+    labels:
+      service-discovery: "true"
+      service-discover: "true"
+      service-discover.enabled: "true"
+      service-discover.port.9090: "/metrics"
+    networks:
+      - name: grafana
+        ipv4_address: "10.13.0.12"
+
+  - name: auth
+    image: "bodsch/ansible-${DISTRIBUTION:-debian:11}"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    docker_host: "${DOCKER_HOST:-unix://run/docker.sock}"
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    groups:
+      - ldap
+    published_ports:
+      - 636:636
+      - 389:389
+    labels:
+      service-discover.enabled: "false"
+      service-discovery: "false"
+      service-discover: "false"
+    networks:
+      - name: grafana
+        ipv4_address: "10.13.0.13"
+
+  - name: nginx
+    image: "bodsch/ansible-${DISTRIBUTION:-debian:11}"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    docker_host: "${DOCKER_HOST:-unix://run/docker.sock}"
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    published_ports:
+      - 80:80
+      - 443:443
+    labels:
+      service-discovery: "true"
+      service-discover: "true"
+    networks:
+      - name: grafana
+        ipv4_address: "10.13.0.14"
 
   - name: instance
     image: "bodsch/ansible-${DISTRIBUTION:-debian:11}"
@@ -50,12 +121,13 @@ platforms:
     docker_host: "${DOCKER_HOST:-unix://run/docker.sock}"
     privileged: true
     pre_build_image: true
-    published_ports:
-      - 80:80
-      - 443:443
-      - 3000:3000
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    published_ports:
+      - 3000:3000
+    labels:
+      service-discovery: "true"
+      service-discover: "true"
     networks:
       - name: grafana
         ipv4_address: "10.13.0.20"
