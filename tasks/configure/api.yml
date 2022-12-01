@@ -1,6 +1,8 @@
 ---
 
 # TODO
+# https://grafana.com/docs/grafana/latest/developers/http_api/create-api-tokens-for-org/#how-to-create-a-new-organization-and-an-api-token
+-
 - name: ensure grafana key directory exists
   delegate_to: localhost
   become: false
@@ -10,72 +12,99 @@
     state: directory
     mode: 0750
 
-- name: check api key list
-  uri:
-    url: "http://127.0.0.1:3000/api/auth/keys"
-    user: "{{ grafana_config_security.admin_user }}"
-    password: "{{ grafana_config_security.admin_password }}"
-    force_basic_auth: true
-    return_content: true
-  no_log: false
-  register: existing_api_keys
-
-- name: d
-  debug:
-    msg:
-      - "{{ grafana_api['keys'] }}"
-      - "{{ existing_api_keys.json }}"
-
-- name: d
-  debug:
-    msg:
-      # - "{{ ((existing_api_keys.json | selectattr('name', 'equalto', item.name)) | list) | length == 0 }}"
-      - "{{ grafana_api['keys'] | non_existing_api(existing_api_keys.json) }}"
-
-- name: check api key list
-  grafana_api_keys:
-    ##  grafana_server: localhost
-    ##  grafana_port: 3000
-    ##  grafana_scheme: http
-    grafana_url: "http://127.0.0.1:3000"
-    grafana_admin:
-      user: "{{ grafana_config_security.admin_user }}"
-      password: "{{ grafana_config_security.admin_password }}"
-  no_log: false
-  register: existing_api_keys
-
-# - name: create grafana api keys
+# - name: check api key list
 #   uri:
 #     url: "http://127.0.0.1:3000/api/auth/keys"
 #     user: "{{ grafana_config_security.admin_user }}"
 #     password: "{{ grafana_config_security.admin_password }}"
 #     force_basic_auth: true
-#     method: POST
-#     body_format: json
-#     body: "{{ item | to_json }}"
-#     # status_code:
-#     #   - 200
-#     #   - 409  # already created
-#   loop: "{{ grafana_api['keys'] | non_existing_api(existing_api_keys.json) }}"
-#   loop_control:
-#     label: "{{ item.name }}"
-#   # no_log: true
-#   #when:
-#   #  - ((existing_api_keys['json'] | selectattr("name", "equalto", item['name'])) | list) | length == 0
-#   register: new_api_keys
+#     return_content: true
+#   no_log: false
+#   register: existing_api_keys
 #
 # - name: d
 #   debug:
-#     msg: "{{ new_api_keys.results }}"
+#     msg:
+#       - "{{ grafana_api['keys'] }}"
+#       - "{{ existing_api_keys.json }}"
 #
-# - name: create api keys file to allow the keys to be seen and used by other automation
-#   delegate_to: localhost
-#   become: false
-#   copy:
-#     dest: "{{ grafana_api_keys_dir }}/{{ inventory_hostname }}/{{ item['item']['name'] }}.key"
-#     content: "{{ item['json']['key'] }}"
-#     backup: false
-#   when: item['json'] is defined
-#   with_items: "{{ new_api_keys['results'] }}"
+# - name: d
+#   debug:
+#     msg:
+#       # - "{{ ((existing_api_keys.json | selectattr('name', 'equalto', item.name)) | list) | length == 0 }}"
+#       - "{{ grafana_api['keys'] | non_existing_api(existing_api_keys.json) }}"
+
+# - name: check api key list
+#   grafana_api_keys:
+#     ##  grafana_server: localhost
+#     ##  grafana_port: 3000
+#     ##  grafana_scheme: http
+#     grafana_url: "http://127.0.0.1:3000"
+#     grafana_admin:
+#       username: "{{ grafana_config_security.admin_user }}"
+#       password: "{{ grafana_config_security.admin_password }}"
+#   # no_log: false
+#   register: existing_api_keys
+
+# - name: d
+#   debug:
+#     msg: "{{ existing_api_keys }}"
+#
+# - name: d
+#   debug:
+#     msg: "{{ grafana_api['keys'] }}"
+
+- name: manage api keys
+  grafana_api_keys:
+    state: manage
+    grafana_url: "http://127.0.0.1:3000"
+    grafana_admin:
+      username: "{{ grafana_config_security.admin_user }}"
+      password: "{{ grafana_config_security.admin_password }}"
+    api_keys: "{{ grafana_api['keys'] }}"
+  no_log: true
+  register: manage_api_keys
+
+# - name: d1
+#   debug:
+#     msg:
+#       - "{{ manage_api_keys }}"
+#
+# - name: d2
+#   debug:
+#     msg: "{{ item }}"
+#   loop: "{{ manage_api_keys['result'] | dict2items }}"
+#
+# - name: d3
+#   debug:
+#     msg:
+#       - "{{ item.key }}"
+#       - "{{ item.value.result.key }}"
+#   loop: "{{ manage_api_keys['result'] | dict2items }}"
+#   loop_control:
+#     label: "{{ item.key }}"
+#   when:
+#     - item.value.result is defined
+#     - item.value.result.key is defined
+
+- name: create api keys file to allow the keys to be seen and used by other automation
+  delegate_to: localhost
+  become: false
+  copy:
+    dest: "{{ grafana_api.store_directory }}/{{ inventory_hostname }}/{{ item.key }}.key"
+    content: "{{ item.value.result.key }}"
+    backup: false
+  no_log: true
+  register: written_api_keys_files
+  loop: "{{ manage_api_keys['result'] | dict2items }}"
+  loop_control:
+    label: "{{ grafana_api.store_directory }}/{{ inventory_hostname }}/{{ item.key }}.key"
+  when:
+    - item.value.result is defined
+    - item.value.result.key is defined
+    -
+- name: d1
+  debug:
+    msg: "{{ written_api_keys_files }}"
 
 ...
