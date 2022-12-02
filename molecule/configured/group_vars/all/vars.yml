@@ -9,34 +9,36 @@ grafana_provisioning:
   # Should we use the provisioning capability when possible (provisioning require grafana >= 5.0)
   enabled: false
 
-grafana_api:
-  # API keys to configure
-  keys:
-    - name: foo
-      role: Viewer
-      state: present
-    - name: bar
-      role: Editor
-      state: absent
-    - name: foobar
-      role: Viewer
-      state: absent
-  # The location where the keys should be stored.
-  store_directory: "{{ lookup('env', 'HOME') }}/grafana/keys"
+grafana_api: {}
 
-# grafana_datasources:
-#   prometheus:
-#     # state: absent
-#     type: "prometheus"
-#     access: "proxy"
-#     url: "http://prometheus.mydomain"
-#     basicAuth: true
-#     basicAuthUser: "admin"
-#     basicAuthPassword: "password"
-#     isDefault: true
-#     jsonData:
-#       tlsAuth: false
-#       tlsAuthWithCACert: false
-#       tlsSkipVerify: true
+grafana_service_accounts: {}
+
+grafana_plugins:
+  - grafana-worldmap-panel
+  - marcusolsson-gantt-panel
+
+grafana_datasources:
+
+  prometheus:
+    # state: absent
+    datasource:
+      type: "prometheus"
+      # access: "proxy"
+      url: "http://prometheus.mydomain"
+    # basic_auth:
+    #   # Auth: true
+    #   username: "admin"
+    #   password: "password"
+    default: true
+    # json_data:
+    #   tlsAuth: false
+    #   tlsAuthWithCACert: false
+    #   tlsSkipVerify: true
+
+  loki:
+    datasource:
+      type: "loki"
+      url: "http://loki.cmsops.arri.com"
+    editable: true
 
 ...

@@ -13,7 +13,7 @@ import requests
 from pathlib import Path
 
 
-class GrafanaAPIKeys(object):
+class GrafanaServiceAccount(object):
     """
     """
 
@@ -41,7 +41,7 @@ class GrafanaAPIKeys(object):
             rc=0,
             failed=False,
             changed=False,
-            msg="Grafana API keys ..."
+            msg="Grafana service accounts  ..."
         )
 
         self.__create_directory(self.apikey_directory)
@@ -148,7 +148,7 @@ class GrafanaAPIKeys(object):
 
     def list_api_keys(self):
         """
-            http://127.0.0.1:3000/api/auth/keys
+            http://127.0.0.1:3000/api/serviceaccounts
         """
         error = True
         output = None
@@ -237,21 +237,21 @@ class GrafanaAPIKeys(object):
             authentication = (self.grafana_admin_user, self.grafana_admin_pass)
             if method == 'POST':
                 response = requests.post(
-                    f"{self.grafana_url}/api/auth/keys",
+                    f"{self.grafana_url}/api/serviceaccounts",
                     data=json.dumps(data),
                     headers=headers,
                     auth=authentication
                 )
             elif method == "GET":
                 response = requests.get(
-                    f"{self.grafana_url}/api/auth/keys",
+                    f"{self.grafana_url}/api/serviceaccounts",
                     headers=headers,
                     auth=authentication
                 )
             elif method == "DELETE":
                 if key_id:
                     response = requests.delete(
-                        f"{self.grafana_url}/api/auth/keys/{key_id}",
+                        f"{self.grafana_url}/api/serviceaccounts/{key_id}",
                         headers=headers,
                         auth=authentication
                     )
@@ -321,7 +321,7 @@ class GrafanaAPIKeys(object):
         key = data.get("key", None)
 
         if name and key:
-            file_name = os.path.join(self.apikey_directory, f"api_{name}.key")
+            file_name = os.path.join(self.apikey_directory, f"{name}.key")
 
             with open(file_name, "w") as f:
                 f.write(key)
@@ -362,7 +362,7 @@ def main():
         supports_check_mode=False,
     )
 
-    o = GrafanaAPIKeys(module)
+    o = GrafanaServiceAccount(module)
     result = o.run()
 
     module.log(msg=f"= result: {result}")

@@ -31,6 +31,16 @@ grafana_download_file: "grafana{{ '-enterprise' if grafana_edition == 'enterpris
 
 # ----------------------------------------------------------------------------------------
 
+grafana_defaults_api:
+  # API keys to configure
+  keys: []
+  # The location where the keys should be stored.
+  store_directory: "{{ lookup('env', 'HOME') }}/grafana/api_keys"
+
+grafana_defaults_service_accounts:
+  accounts: []
+  store_directory: "{{ lookup('env', 'HOME') }}/grafana/service_accounts"
+
 grafana_defaults_config_general:
   app_mode: production
   instance_name: "{{ ansible_hostname }}"
@@ -554,7 +564,7 @@ grafana_defaults_config_paths:
   # Directory where grafana will automatically scan and look for plugins
   plugins: /var/lib/grafana/plugins
   # folder that contains provisioning config files that grafana will apply on startup and while running.
-  provisioning: conf/provisioning
+  provisioning: /etc/grafana/provisioning
 
 grafana_defaults_config_plugin:
   #################################### Grafana Image Renderer Plugin ##########################

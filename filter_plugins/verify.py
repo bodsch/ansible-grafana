@@ -56,9 +56,64 @@ class FilterModule(object):
     def validate_datasource_type(self, data):
         """
         """
-        result = True
+        not_supported = []
+        ds_error = []
 
-        return result
+        # valid_datasources = [
+        #     "graphite",
+        #     "prometheus",
+        #     "elasticsearch",
+        #     "influxdb",
+        #     "opentsdb",
+        #     "mysql",
+        #     "postgres",
+        #     "cloudwatch",
+        #     "alexanderzobnin-zabbix-datasource",
+        #     "grafana-azure-monitor-datasource",
+        #     "sni-thruk-datasource",
+        #     "camptocamp-prometheus-alertmanager-datasource",
+        #     "loki",
+        #     "redis-datasource",
+        # ]
+
+        supported_datasources = [
+            "graphite",
+            "prometheus",
+            "influxdb",
+            "loki",
+        ]
+
+        datasource_types = list(data.keys())
+
+        for d in datasource_types:
+            ds_data = data.get(d, {})
+
+            if not ds_data:
+                ds_error.append(f"datasource '{d}' are not propper defined.")
+                continue
+
+            ds_type = ds_data.get("datasource", {}).get("type", None)
+            if not ds_type:
+                ds_error.append(f"datasource '{d}' are not propper defined.")
+                continue
+
+            if ds_type not in supported_datasources:
+                not_supported.append(ds_type)
+
+        if len(not_supported) > 0:
+            not_supported = "', '".join(not_supported)
+            ds_error.append(f"The datasources '{not_supported}' are not supported!")
+
+        if len(ds_error) > 0:
+            return dict(
+                valid=False,
+                msg="\n".join(ds_error)
+            )
+
+        return dict(
+            valid = True,
+            msg = "All datasources are valid."
+        )
 
     def absent_datasources(self, data):
         """
@@ -68,11 +123,11 @@ class FilterModule(object):
         _data = data.copy()
 
         for datasource, values in _data.items():
-            res = {}
+            # res = {}
             if values.get("state", "present") == "absent":
                 res = dict(
                     name = datasource,
-                    orgId = values.get("orgId", 1)
+                    orgId = values.get("org_id", 1)
                 )
                 result.append(res)
 

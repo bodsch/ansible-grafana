@@ -10,9 +10,9 @@ apiVersion: 1
 deleteDatasources:
   {% for datasource in remove_ds %}
   - name: {{ datasource.name }}
-    {% if datasource.orgId is defined and
-          datasource.orgId | string | length > 0 %}
-    orgId: {{ datasource.orgId }}
+    {% if datasource.org_id is defined and
+          datasource.org_id | string | length > 0 %}
+    orgId: {{ datasource.org_id }}
     {% endif %}
   {% endfor %}
 {% endif %}
@@ -20,10 +20,47 @@ deleteDatasources:
 {% if grafana_datasources is defined %}
 datasources:
   {% for datasource, values in grafana_datasources.items() %}
-    {% set _ = values.pop("state") %}
-    {% if values.type in ["influxdb", "prometheus", "graphite"] %}
+    {% if values.datasource.type in ["influxdb", "prometheus", "graphite", "loki"] %}
   - name: {{ datasource }}
-    {{ values | to_nice_yaml | indent(4, False) }}
+    editable: true
+    version: 1
+    type: {{ values.datasource.type }}
+      {% if values.use_proxy is defined %}
+    proxy: "{{ item.value.use_proxy | default('true') | bool | ternary('true', 'false') }}"
+      {% endif %}
+    url: {{ values.datasource.url }}
+      {% if values.datasource.proxy is defined %}
+    proxy: {{ values.datasource.proxy | default('false') | bool | ternary('true', 'false') }}
+      {% endif %}
+      {% if values.org_id is defined %}
+    orgId: {{ values.org_id }}
+      {% endif %}
+      {% if values.user is defined %}
+    user: {{ values.user }}
+      {% endif %}
+      {% if values.database is defined %}
+    database: {{ values.database }}
+      {% endif %}
+      {% if values.basic_auth is defined and
+            values.basic_auth.username is defined and
+            values.basic_auth.username | string | length > 0 and
+            values.basic_auth.password is defined and
+            values.basic_auth.password | string | length > 0 %}
+    basicAuth: true
+    basicAuthUser: {{ values.basic_auth.username }}
+    basicAuthPass: {{ values.basic_auth.password }}
+      {% endif %}
+      {% if values.default is defined %}
+    isDefault: {{ values.default | default('false') | bool | ternary('true', 'false') }}
+      {% endif %}
+      {% if values.json_data is defined %}
+    jsonData:
+      {{ values.json_data | to_nice_yaml | indent(6, False) }}
+      {% endif %}
+      {% if values.json_secure_data is defined %}
+    secureJsonData:
+      {{ values.json_secure_data | to_nice_yaml | indent(6, False) }}
+      {% endif %}
     {% endif %}
   {% endfor %}
 {% endif %}

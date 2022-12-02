@@ -317,35 +317,6 @@ def main():
                 required=False,
                 type="list"
             ),
-            #            repo=dict(
-            #                required=False,
-            #                type="str"
-            #            ),
-            #            plugin_url=dict(
-            #                required=False,
-            #                type="str"
-            #            ),
-            #            insecure=dict(
-            #                required=False,
-            #                type="bool"
-            #            ),
-            #            debug=dict(
-            #                required=False,
-            #                type="bool"
-            #            ),
-            #            homepath=dict(
-            #                required=False,
-            #                type="str"
-            #            ),
-            #            config=dict(
-            #                required=False,
-            #                type="str"
-            #            ),
-            #            config_overrides=dict(
-            #                required=False,
-            #                type="list",
-            #                default=[]
-            #            )
         ),
         supports_check_mode=False,
     )
