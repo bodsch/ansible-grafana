@@ -3,7 +3,7 @@
 grafana_version: 9.1.1
 
 # enterprise or oss
-grafana_edition: enterprise
+grafana_edition: oss
 
 grafana_urls:
   releases: https://github.com/grafana/grafana/releases
@@ -29,12 +29,7 @@ grafana_datasources: {}
 grafana_plugins: []
 grafana_alert_notifications: {}
 
-# The location where the keys should be stored.
-# grafana_api_keys_dir: "{{ lookup('env', 'HOME') }}/grafana/keys"
 grafana_api: {}
-  # keys: []
-  # store_directory: "{{ lookup('env', 'HOME') }}/grafana/api_keys"
-
 grafana_service_accounts: {}
 
 grafana_config_alerting: {}

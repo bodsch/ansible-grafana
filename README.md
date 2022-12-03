@@ -42,7 +42,7 @@ Tested on
 grafana_version: 9.1.1
 
 # enterprise or oss
-grafana_edition: enterprise
+grafana_edition: oss
 
 grafana_urls:
   releases: https://github.com/grafana/grafana/releases
@@ -71,11 +71,8 @@ grafana_datasources: {}
 grafana_plugins: []
 grafana_alert_notifications: {}
 
-grafana_api:
-  # API keys to configure
-  keys: []
-  # The location where the keys should be stored.
-  store_directory: "{{ lookup('env', 'HOME') }}/grafana/keys"
+grafana_api: {}
+grafana_service_accounts: {}
 
 grafana_config_alerting: {}
 grafana_config_analytics: {}
@@ -120,7 +117,6 @@ grafana_config_unified_alerting: {}
 grafana_config_users: {}
 grafana_config_ldap: {}
 ```
-
 
 ## Contribution
 
