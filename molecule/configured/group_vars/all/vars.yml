@@ -17,8 +17,11 @@ grafana_plugins:
   - grafana-worldmap-panel
   - marcusolsson-gantt-panel
 
-grafana_datasources:
+grafana_organisations:
+  molecule: {}
 
+grafana_datasources:
+  #
   prometheus:
     # state: absent
     datasource:

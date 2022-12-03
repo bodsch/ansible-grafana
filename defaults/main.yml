@@ -32,6 +32,8 @@ grafana_alert_notifications: {}
 grafana_api: {}
 grafana_service_accounts: {}
 
+grafana_organisations: {}
+
 grafana_config_alerting: {}
 grafana_config_analytics: {}
 grafana_config_annotations: {}

@@ -1,0 +1,18 @@
+---
+
+# TODO
+
+- name: manage grafana organisations
+  grafana_orgnisations:
+    grafana_url: "http://127.0.0.1:3000"
+    grafana_admin:
+      username: "{{ grafana_config_security.admin_user }}"
+      password: "{{ grafana_config_security.admin_password }}"
+    state: "{{ item.state | default('present') }}"
+    organisation: "{{ item }}"
+  register: _managed_grafana_organisation
+  when:
+    - grafana_organisations is defined
+    - grafana_organisations | default({}) | count > 0
+
+...
