@@ -3,9 +3,9 @@
 
 OPTIONS="
   --config={{ grafana_config_dir }}/grafana.ini            \
-  --pidfile=/run/grafana/grafana-server.pid                \
-  cfg:default.paths.logs=/var/log/grafana                  \
-  cfg:default.paths.data={{ grafana_data_dir }}            \
-  cfg:default.paths.plugins={{ grafana_data_dir }}/plugins \
-  cfg:default.paths.provisioning={{ grafana_config_dir }}/provisioning
+  --pidfile=/run/grafana/grafana-server.pid
 "
+#  cfg:default.paths.logs=/var/log/grafana                  \
+#  cfg:default.paths.data={{ grafana_data_dir }}            \
+#  cfg:default.paths.plugins={{ grafana_data_dir }}/plugins \
+#  cfg:default.paths.provisioning={{ grafana_config_dir }}/provisioning

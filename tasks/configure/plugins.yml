@@ -1,22 +1,19 @@
 ---
 
-# - name: check which plugins are installed
-#   grafana_plugins:
-#     command: list
-#   register: installed_plugins
-
 - name: install grafana plugins
   grafana_plugins:
     command: install
-    # upgrade: false
     plugins_dir: "{{ grafana_data_dir }}/plugins"
     plugins: "{{ grafana_plugins }}"
   register: install_plugins
   notify:
     - restart grafana
 
-# - name: d
-#   debug:
-#     msg: "{{ install_plugins }}"
+- name: information about grafana plugins
+  debug:
+    msg: "{{ install_plugins.msg }}"
+  when:
+    - install_plugins is defined
+    - install_plugins.msg is defined
 
 ...

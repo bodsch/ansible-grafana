@@ -25,18 +25,17 @@ grafana_provisioning:
   # If true, previous provisioned objects will be removed if not referenced anymore.
   keep_synced: false
 
-# The location where the keys should be stored.
-# grafana_api_keys_dir: "{{ lookup('env', 'HOME') }}/grafana/keys"
-
 grafana_datasources: {}
 grafana_plugins: []
 grafana_alert_notifications: {}
 
-grafana_api:
-  # API keys to configure
-  keys: []
-  # The location where the keys should be stored.
-  store_directory: "{{ lookup('env', 'HOME') }}/grafana/keys"
+# The location where the keys should be stored.
+# grafana_api_keys_dir: "{{ lookup('env', 'HOME') }}/grafana/keys"
+grafana_api: {}
+  # keys: []
+  # store_directory: "{{ lookup('env', 'HOME') }}/grafana/api_keys"
+
+grafana_service_accounts: {}
 
 grafana_config_alerting: {}
 grafana_config_analytics: {}

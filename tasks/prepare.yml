@@ -1,7 +1,7 @@
 ---
 
 - name: include OS specific configuration ({{ ansible_distribution }} ({{ ansible_os_family }}) {{ ansible_distribution_major_version }})
-  include_vars: "{{ lookup('first_found', params) }}"
+  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
       paths:
@@ -20,12 +20,23 @@
         - default.yaml
       skip: true
 
+- name: validate datasource types
+  ansible.builtin.set_fact:
+    valid_datasources: "{{ grafana_datasources | validate_datasource_type() }}"
+
+- name: Fails if unsupported data sources have been configured
+  ansible.builtin.fail:
+    msg: "{{ valid_datasources.msg }}"
+  when:
+    - valid_datasources is defined
+    - not valid_datasources.valid
+
 - name: update package cache
-  package:
+  ansible.builtin.package:
     update_cache: true
 
 - name: define delegate instance for download handling
-  set_fact:
+  ansible.builtin.set_fact:
     grafana_delegate_to: "{{ ansible_host }}"
     grafana_local_tmp_directory: "{{
         lookup('env', 'CUSTOM_LOCAL_TMP_DIRECTORY') |
@@ -34,7 +45,7 @@
     - grafana_direct_download
 
 - name: install dependency
-  package:
+  ansible.builtin.package:
     name: "{{ grafana_requirements }}"
     state: present
 
@@ -212,5 +223,7 @@
     grafana_config_unified_alerting: "{{ grafana_defaults_config_unified_alerting | combine(grafana_config_unified_alerting, recursive=True) }}"
     grafana_config_users: "{{ grafana_defaults_config_users | combine(grafana_config_users, recursive=True) }}"
     grafana_config_ldap: "{{ grafana_defaults_config_ldap | combine(grafana_config_ldap, recursive=True) }}"
+    grafana_api: "{{ grafana_defaults_api | combine(grafana_api, recursive=True) }}"
+    grafana_service_accounts: "{{ grafana_defaults_service_accounts | combine(grafana_service_accounts, recursive=True) }}"
 
 ...
