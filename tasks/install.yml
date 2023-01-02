@@ -4,7 +4,7 @@
   become: false
   delegate_to: "{{ grafana_delegate_to }}"
   run_once: "{{ 'false' if grafana_direct_download else 'true' }}"
-  stat:
+  ansible.builtin.stat:
     path: "{{ grafana_install_path }}/bin/grafana-server"
   register: stat_file_binary
 
@@ -14,7 +14,7 @@
     - not stat_grafana_binary.stat.exists
   block:
     - name: create remote temp directory
-      file:
+      ansible.builtin.file:
         path: "{{ grafana_remote_tmp_directory }}"
         state: directory
         mode: 0755
@@ -22,7 +22,7 @@
         - not grafana_direct_download
 
     - name: propagate grafana archive
-      copy:
+      ansible.builtin.copy:
         src: "{{ grafana_local_tmp_directory }}/{{ grafana_download_file }}"
         dest: "{{ grafana_remote_tmp_directory }}"
         mode: 0755
@@ -32,7 +32,7 @@
 
     - name: extract grafana archive
       become: true
-      unarchive:
+      ansible.builtin.unarchive:
         src: "{{ grafana_remote_tmp_directory }}/{{ grafana_download_file }}"
         dest: "{{ grafana_install_path }}"
         copy: false
@@ -41,7 +41,7 @@
       register: _extract_archive
 
 - name: create link to working directory
-  file:
+  ansible.builtin.file:
     state: link
     src: "{{ grafana_install_path }}"
     dest: "{{ grafana_share_dir }}"
@@ -51,21 +51,21 @@
     - restart grafana
 
 - name: create config directory
-  file:
+  ansible.builtin.file:
     state: directory
     path: /etc/grafana
     group: "{{ grafana_system_group }}"
     mode: 0755
 
 - name: find grafana provisioning
-  stat:
+  ansible.builtin.stat:
     path: /etc/grafana/provisioning
     get_checksum: false
   register: _grafana_provisioning_dir
   ignore_errors: true
 
 - name: copy sample provisioning configurations
-  copy:
+  ansible.builtin.copy:
     src: "{{ grafana_install_path }}/conf/provisioning"
     dest: /etc/grafana/
     owner: root
@@ -81,7 +81,7 @@
     - not _grafana_provisioning_dir.stat.exists | default('false')
 
 - name: create link to binaries
-  file:
+  ansible.builtin.file:
     src: "{{ grafana_install_path }}/bin/{{ item }}"
     dest: "/usr/sbin/{{ item }}"
     state: link
@@ -94,13 +94,13 @@
     - restart grafana
 
 - name: create local facts
-  template:
+  ansible.builtin.template:
     src: ansible_facts.j2
     dest: /etc/ansible/facts.d/grafana.fact
     mode: 0755
 
 - name: create grafana lib directory
-  file:
+  ansible.builtin.file:
     state: directory
     path: "{{ grafana_data_dir }}/{{ item }}"
     owner: "{{ grafana_system_user }}"
@@ -116,7 +116,7 @@
     - storage
 
 - name: create grafana log directory
-  file:
+  ansible.builtin.file:
     state: directory
     path: "{{ grafana_log_dir }}"
     mode: 0755
@@ -126,7 +126,7 @@
     - ansible_service_mgr | lower == "systemd"
   block:
     - name: create systemd service unit
-      template:
+      ansible.builtin.template:
         src: "init/systemd/grafana-server.service.j2"
         dest: "{{ systemd_lib_directory }}/grafana-server.service"
         owner: root
@@ -137,7 +137,7 @@
         - restart grafana
 
     - name: create grafana run configuration
-      template:
+      ansible.builtin.template:
         src: "grafana-server.j2"
         dest: "{{ grafana_defaults_directory }}/grafana-server"
         force: true
@@ -153,7 +153,7 @@
     - ansible_service_mgr | lower == "openrc"
   block:
     - name: create openrc service configuration
-      template:
+      ansible.builtin.template:
         src: "init/openrc/conf.d/grafana-server.j2"
         dest: "/etc/conf.d/grafana-server"
         owner: root
@@ -161,7 +161,7 @@
         mode: 0644
 
     - name: create openrc init configuration
-      template:
+      ansible.builtin.template:
         src: "init/openrc/init.d/grafana-server.j2"
         dest: "/etc/init.d/grafana-server"
         owner: root
@@ -174,13 +174,13 @@
     - grafana_python_packages | length > 0
   block:
     - name: create requirements.txt
-      template:
+      ansible.builtin.template:
         src: requirements.txt.j2
         dest: /tmp/grafana-requirements.txt
         mode: 0660
 
     - name: ensure python bindings for grafana packages 1st
-      pip:
+      ansible.builtin.pip:
         requirements: /tmp/grafana-requirements.txt
         state: present
         executable: pip3

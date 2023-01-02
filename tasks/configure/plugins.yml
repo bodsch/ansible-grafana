@@ -10,7 +10,7 @@
     - restart grafana
 
 - name: information about grafana plugins
-  debug:
+  ansible.builtin.debug:
     msg: "{{ install_plugins.msg }}"
   when:
     - install_plugins is defined

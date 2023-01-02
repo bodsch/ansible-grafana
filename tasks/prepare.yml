@@ -57,7 +57,7 @@
     - grafana_version == "latest"
   block:
     - name: get latest release
-      uri:
+      ansible.builtin.uri:
         url: "https://api.github.com/repos/grafana/grafana/releases/latest"
         method: GET
         return_content: true
@@ -72,25 +72,25 @@
       retries: 5
 
     - name: set grafana version to {{ _latest_release.json.tag_name[1:] }}
-      set_fact:
+      ansible.builtin.set_fact:
         grafana_version: "{{ _latest_release.json.tag_name[1:] }}"
 
 - name: detect our installation path '{{ grafana_install_path | dirname }}'
-  stat:
+  ansible.builtin.stat:
     path: "{{ grafana_install_path | dirname }}"
     get_checksum: false
   register: stat_grafana_path
   ignore_errors: true
 
 - name: detect old installation
-  stat:
+  ansible.builtin.stat:
     path: /usr/sbin/grafana-server
     get_checksum: false
   register: stat_old_grafana_path
   ignore_errors: true
 
 - name: detect if this an upgrade
-  set_fact:
+  ansible.builtin.set_fact:
     grafana_upgrade: "{{ stat_grafana_path | upgrade(stat_old_grafana_path) }}"
 
 - name: old installation
@@ -98,7 +98,7 @@
     - grafana_upgrade
   block:
     - name: stop old service
-      service:
+      ansible.builtin.service:
         name: grafana-server
         state: stopped
         enabled: false
@@ -106,12 +106,12 @@
         - daemon-reload
 
     - name: uninstall old grafana installation
-      package:
+      ansible.builtin.package:
         name: grafana
         state: absent
 
     - name: remove installed systemd unit
-      file:
+      ansible.builtin.file:
         state: absent
         path: "{{ item }}"
       loop:
@@ -119,7 +119,7 @@
         - /usr/lib/systemd/system/grafana-server.service
 
     - name: remove installed grafana
-      file:
+      ansible.builtin.file:
         state: absent
         path: "{{ stat_grafana_path.stat.path }}"
       when:
@@ -127,10 +127,10 @@
         - stat_grafana_path.stat.path | string | length > 0
 
 - name: flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: detect installed grafana binary {{ grafana_install_path }}/bin/grafana-server
-  stat:
+  ansible.builtin.stat:
     path: "{{ grafana_install_path }}/bin/grafana-server"
   register: stat_grafana_binary
 
@@ -138,7 +138,7 @@
   become: false
   delegate_to: "{{ grafana_delegate_to }}"
   run_once: "{{ 'false' if grafana_direct_download else 'true' }}"
-  file:
+  ansible.builtin.file:
     path: "{{ grafana_local_tmp_directory }}"
     state: directory
     mode: 0750
@@ -148,13 +148,13 @@
     - grafana_system_user != "root"
   block:
     - name: create grafana group
-      group:
+      ansible.builtin.group:
         name: "{{ grafana_system_group }}"
         state: present
         system: true
 
     - name: create grafana user
-      user:
+      ansible.builtin.user:
         name: "{{ grafana_system_user }}"
         groups: "{{ grafana_system_group }}"
         append: true
@@ -164,7 +164,7 @@
         home: /nonexistent
 
 - name: create install directory
-  file:
+  ansible.builtin.file:
     path: "{{ grafana_install_path }}"
     state: directory
     owner: "{{ grafana_system_user }}"
@@ -172,7 +172,7 @@
     mode: 0755
 
 - name: create ansible local facts directory
-  file:
+  ansible.builtin.file:
     dest: /etc/ansible/facts.d
     state: directory
     owner: root
@@ -180,7 +180,7 @@
     mode: 0775
 
 - name: merge grafana configuration between defaults and custom
-  set_fact:
+  ansible.builtin.set_fact:
     grafana_config_alerting: "{{ grafana_defaults_config_alerting | combine(grafana_config_alerting, recursive=True) }}"
     grafana_config_analytics: "{{ grafana_defaults_config_analytics | combine(grafana_config_analytics, recursive=True) }}"
     grafana_config_annotations: "{{ grafana_defaults_config_annotations | combine(grafana_config_annotations, recursive=True) }}"

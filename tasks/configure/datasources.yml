@@ -1,7 +1,7 @@
 ---
 
 - name: ensure datasources are present (without provisioning)
-  grafana_datasource:
+  community.grafana.grafana_datasource:
     name: "{{ item.key }}"
     state: "{{ item.value.state | default('present') }}"
     # grafana
@@ -82,7 +82,7 @@
 
 - name: create or update datasources file (provisioning)
   become: true
-  template:
+  ansible.builtin.template:
     src: grafana/datasources/datasource.yml.j2
     dest: "/etc/grafana/provisioning/datasources/ansible.yaml"
     backup: false

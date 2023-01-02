@@ -3,7 +3,7 @@
 
 Ansible role to install and configure [grafana](https://github.com/grafana/grafana).
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/bodsch/ansible-grafana/CI)][ci]
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bodsch/ansible-grafana/main.yml?branch=main)][ci]
 [![GitHub issues](https://img.shields.io/github/issues/bodsch/ansible-grafana)][issues]
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/bodsch/ansible-grafana)][releases]
 [![Ansible Quality Score](https://img.shields.io/ansible/quality/50067?label=role%20quality)][quality]
@@ -20,9 +20,9 @@ If `latest` is set for `grafana_version`, the role tries to install the latest r
 The binaries are installed below `/opt/grafana/${grafana_version}` and later linked to `/usr/sbin`. 
 This should make it possible to downgrade relatively safely.
 
-The Prometheus archive is stored on the Ansible controller, unpacked and then the binaries are copied to the target system.
+The Grafana archive is stored on the Ansible controller, unpacked and then the binaries are copied to the target system.
 The cache directory can be defined via the environment variable `CUSTOM_LOCAL_TMP_DIRECTORY`. 
-By default it is `${HOME}/.cache/ansible/grafana`.
+By default it is `${HOME}/.cache/ansible/grafana`.  
 If this type of installation is not desired, the download can take place directly on the target system. 
 However, this must be explicitly activated by setting `grafana_direct_download` to `true`.
 
@@ -132,6 +132,7 @@ If you want to use something stable, please use a [Tagged Version](https://githu
 ## Configuration
 
 ```yaml
+
 ```
 
 ---

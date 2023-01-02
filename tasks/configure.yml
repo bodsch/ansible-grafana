@@ -1,7 +1,7 @@
 ---
 
 - name: ensure that {{ grafana_config_dir }} exists
-  file:
+  ansible.builtin.file:
     state: directory
     path: "{{ grafana_config_dir }}"
     owner: root
@@ -9,7 +9,7 @@
     mode: 0755
 
 - name: create grafana.ini
-  template:
+  ansible.builtin.template:
     src: "grafana/grafana.ini.j2"
     dest: "{{ grafana_config_dir }}/grafana.ini"
     force: true
@@ -21,7 +21,7 @@
     - restart grafana
 
 - name: create ldap.toml
-  template:
+  ansible.builtin.template:
     src: "grafana/ldap.toml.j2"
     dest: "{{ grafana_config_dir }}/ldap.toml"
     force: true
@@ -37,16 +37,16 @@
     - restart grafana
 
 - name: flush ansible handlers to start grafana-server
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: ensure grafana is started
   become: true
-  service:
+  ansible.builtin.service:
     name: grafana-server
     state: started
 
 - name: check if grafana-server are available
-  wait_for:
+  ansible.builtin.wait_for:
     host: "127.0.0.1"
     port: "3000"
     delay: 1              # No wait before first check (sec)
@@ -56,19 +56,19 @@
   delay: 10
 
 - name: manage grafana API keys
-  include_tasks: configure/api_keys.yml
+  ansible.builtin.include_tasks: configure/api_keys.yml
   when:
     - grafana_api is defined
     - grafana_api.keys is defined
 
 - name: manage grafana service accounts
-  include_tasks: configure/service_accounts.yml
+  ansible.builtin.include_tasks: configure/service_accounts.yml
   when:
     - grafana_service_accounts is defined
     - grafana_service_accounts.accounts is defined
 
 - name: manage grafana plugins
-  include_tasks: configure/plugins.yml
+  ansible.builtin.include_tasks: configure/plugins.yml
   when:
     - grafana_plugins | default([]) | count > 0
 
@@ -78,7 +78,7 @@
 #     - grafana_alert_notifications | default([]) | count > 0
 
 - name: manage grafana datasources
-  include_tasks: configure/datasources.yml
+  ansible.builtin.include_tasks: configure/datasources.yml
   when:
     - grafana_datasources | default({}) | count > 0
 

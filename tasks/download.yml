@@ -4,7 +4,7 @@
   become: false
   delegate_to: "{{ grafana_delegate_to }}"
   run_once: "{{ 'false' if grafana_direct_download else 'true' }}"
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ grafana_urls.downloads }}/{{ grafana_download_file }}"
     dest: "{{ grafana_local_tmp_directory }}/{{ grafana_download_file }}"
     mode: 0644
