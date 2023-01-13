@@ -1,6 +1,6 @@
 
-[database]
 {% if grafana_config_database is defined %}
+[database]
   {% if grafana_config_database.type is defined and
         grafana_config_database.type | string | length > 0 and
         grafana_config_database.type in ["sqlite3", "mysql", "postgres"] %}

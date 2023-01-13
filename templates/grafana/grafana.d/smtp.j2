@@ -1,6 +1,8 @@
 
+{% if grafana_config_smtp.enabled is defined %}
 [smtp]
-;enabled = false
+enabled = {{ grafana_config_smtp.enabled | bool | ternary('true', 'false') }}
+  {% if grafana_config_smtp.enabled %}
 ;host = localhost:25
 ;user =
 ;password =
@@ -11,3 +13,5 @@
 ;from_name = Grafana
 ;ehlo_identity = dashboard.example.com
 ;startTLS_policy = NoStartTLS
+  {% endif %}
+{% endif %}

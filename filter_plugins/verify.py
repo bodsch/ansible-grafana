@@ -26,7 +26,7 @@ class FilterModule(object):
     def compare_list(self, data_list, compare_to_list):
         """
         """
-        display.v(f"compare_list({data_list}, {compare_to_list})")
+        # display.v(f"compare_list({data_list}, {compare_to_list})")
 
         result = []
 
@@ -34,7 +34,7 @@ class FilterModule(object):
             if i in compare_to_list:
                 result.append(i)
 
-        display.v(f"return : {result}")
+        # display.v(f"return : {result}")
         return result
 
     def validate_attachment_hash(self, data, compare_to_list):
