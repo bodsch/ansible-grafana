@@ -2,19 +2,19 @@
 
 - name: snapd
   src: bodsch.snapd
-  version: 1.1.2
+  version: 1.2.1
 
 - name: apparmor
   src: bodsch.apparmor
-  version: 1.0.1
+  version: 1.0.2
 
 - name: snakeoil
   src: bodsch.snakeoil
-  version: 1.3.0
+  version: 1.3.1
 
 - name: syslog-ng
   src: bodsch.syslog_ng
-  version: 1.4.1
+  version: 1.4.2
 
 - name: nginx
   src: bodsch.nginx
@@ -22,19 +22,19 @@
 
 - name: redis
   src: bodsch.redis
-  version: 1.2.0
+  version: 1.4.0
 
 - name: mariadb
   src: bodsch.mariadb
-  version: 2.3.0
+  version: 2.3.1
 
 - name: influx2
   src: bodsch.influxdb
-  version: 1.0.1
+  version: 1.0.2
 
 - name: prometheus
   src: bodsch.prometheus
-  version: 1.3.0
+  version: 1.3.1
 
 - name: influxdb
   src: mkayontour.influxdb
@@ -44,6 +44,6 @@
 
 - name: glauth
   src: bodsch.glauth
-  version: 1.0.1
+  version: 1.1.1
 
 ...

@@ -31,6 +31,14 @@
     - valid_datasources is defined
     - not valid_datasources.valid
 
+- name: remove grafana apt repository
+  apt_repository:
+    repo: deb https://packages.grafana.com/oss/deb stable main
+    state: absent
+    update_cache: true
+  when:
+    - ansible_pkg_mgr == "apt"
+
 - name: update package cache
   ansible.builtin.package:
     update_cache: true
