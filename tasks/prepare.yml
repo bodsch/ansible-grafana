@@ -32,7 +32,7 @@
     - not valid_datasources.valid
 
 - name: remove grafana apt repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb https://packages.grafana.com/oss/deb stable main
     state: absent
     update_cache: true
@@ -65,23 +65,19 @@
     - grafana_version == "latest"
   block:
     - name: get latest release
-      ansible.builtin.uri:
-        url: "https://api.github.com/repos/grafana/grafana/releases/latest"
-        method: GET
-        return_content: true
-        status_code: 200
-        body_format: json
-        validate_certs: false
+      delegate_to: localhost
+      become: false
+      run_once: true
+      github_latest:
+        project: grafana
+        repository: grafana
         user: "{{ lookup('env', 'GH_USER') | default(omit) }}"
         password: "{{ lookup('env', 'GH_TOKEN') | default(omit) }}"
-      # no_log: "{{ not lookup('env', 'ANSIBLE_DEBUG') | bool }}"
       register: _latest_release
-      until: _latest_release.status == 200
-      retries: 5
 
-    - name: set grafana version to {{ _latest_release.json.tag_name[1:] }}
+    - name: re-define grafana_version
       ansible.builtin.set_fact:
-        grafana_version: "{{ _latest_release.json.tag_name[1:] }}"
+        grafana_version: "{{ _latest_release.latest_release }}"
 
 - name: detect our installation path '{{ grafana_install_path | dirname }}'
   ansible.builtin.stat:
