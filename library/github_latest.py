@@ -65,8 +65,17 @@ class GithubLatest(object):
         self.without_beta = module.params.get("without_beta")
         self.only_version = module.params.get("only_version")
         self.cache_minutes = int(module.params.get("cache"))
+        self.github_releases = module.params.get("github_releases")
+        self.github_tags = module.params.get("github_tags")
 
-        self.github_url = f"https://api.github.com/repos/{self.project}/{self.repository}/releases"
+        self.github_url = f"https://api.github.com/repos/{self.project}/{self.repository}"
+
+        if self.github_tags:
+            self.github_releases = False
+            self.github_url = f"{self.github_url}/tags"
+
+        if self.github_releases:
+            self.github_url = f"{self.github_url}/releases"
 
         self.cache_directory = f"{Path.home()}/.ansible/cache/github/{self.project}"
         self.cache_file_name = os.path.join(self.cache_directory, f"{self.repository}_latest.json")
@@ -80,7 +89,10 @@ class GithubLatest(object):
         self.__create_directory(self.cache_directory)
         data = self.latest_information()
 
-        releases = [v.get("tag_name") for v in data if v.get('tag_name', None)]
+        if self.github_releases:
+            releases = [v.get("tag_name") for v in data if v.get('tag_name', None)]
+        else:
+            releases = [v.get("name") for v in data if v.get('name', None)]
 
         # filter beta version
         if self.without_beta:
@@ -237,6 +249,14 @@ def main():
             repository=dict(
                 required=True,
                 type=str
+            ),
+            github_releases=dict(
+                required=False,
+                default=True,
+            ),
+            github_tags=dict(
+                required=False,
+                default=False,
             ),
             user=dict(
                 required=False,
