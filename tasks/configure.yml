@@ -47,13 +47,11 @@
 
 - name: check if grafana-server are available
   ansible.builtin.wait_for:
-    host: "{{ grafana_config_server.http_addr | default('127.0.0.1') }}"
-    port: "{{ grafana_config_server.http_port | default('3000') }}"
-    delay: 1              # No wait before first check (sec)
-    timeout: 10           # Stop checking after timeout (sec)
+    path: /run/grafana/grafana-server.pid
+    state: present
+    delay: 5
+    msg: "Timeout to find /run/grafana/grafana-server.pid"
   ignore_errors: false
-  retries: 10
-  delay: 10
 
 - name: manage grafana API keys
   ansible.builtin.include_tasks: configure/api_keys.yml
