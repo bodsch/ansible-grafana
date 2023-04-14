@@ -1,10 +1,5 @@
 ---
 
-grafana_version: latest
-
-# enterprise or oss
-grafana_edition: oss
-
 grafana_provisioning:
   # Should we use the provisioning capability when possible (provisioning require grafana >= 5.0)
   enabled: false

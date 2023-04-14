@@ -1,6 +1,6 @@
 ---
 
-grafana_version: 9.1.1
+grafana_version: 9.4.7
 
 # enterprise or oss
 grafana_edition: oss

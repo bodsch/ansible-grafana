@@ -26,6 +26,22 @@ By default it is `${HOME}/.cache/ansible/grafana`.
 If this type of installation is not desired, the download can take place directly on the target system. 
 However, this must be explicitly activated by setting `grafana_direct_download` to `true`.
 
+## Requirements & Dependencies
+
+Ansible Collections
+
+- [bodsch.core](https://github.com/bodsch/ansible-collection-core)
+- [bodsch.scm](https://github.com/bodsch/ansible-collection-scm)
+
+```bash
+ansible-galaxy collection install bodsch.core
+ansible-galaxy collection install bodsch.scm
+```
+or
+```bash
+ansible-galaxy collection install --requirements-file collections.yml
+```
+
 
 ## Operating systems
 
@@ -128,13 +144,6 @@ The `master` Branch is my *Working Horse* includes the "latest, hot shit" and ca
 
 If you want to use something stable, please use a [Tagged Version](https://github.com/bodsch/ansible-grafana/tags)!
 
-
-## Configuration
-
-```yaml
-
-```
-
 ---
 
 ## Author and License
@@ -145,4 +154,4 @@ If you want to use something stable, please use a [Tagged Version](https://githu
 
 [Apache](LICENSE)
 
-`FREE SOFTWARE, HELL YEAH!`
+**FREE SOFTWARE, HELL YEAH!**
