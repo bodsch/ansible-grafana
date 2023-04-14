@@ -42,8 +42,6 @@ jobs:
     steps:
       - name: 🛎 Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: lint
         uses: docker://ghcr.io/github/super-linter:slim-v4
