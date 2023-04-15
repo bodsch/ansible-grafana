@@ -31,6 +31,8 @@ grafana_download_file: "grafana{{ '-enterprise' if grafana_edition == 'enterpris
 
 # ----------------------------------------------------------------------------------------
 
+grafana_pidfile: /run/grafana/grafana-server.pid
+
 grafana_defaults_api:
   # API keys to configure
   keys: []

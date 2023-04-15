@@ -47,10 +47,10 @@
 
 - name: check if grafana-server are available
   ansible.builtin.wait_for:
-    path: /run/grafana/grafana-server.pid
+    path: "{{ grafana_pidfile }}"
     state: present
     delay: 5
-    msg: "Timeout to find /run/grafana/grafana-server.pid"
+    msg: "Timeout to find {{ grafana_pidfile }}"
   ignore_errors: false
 
 - name: manage grafana API keys

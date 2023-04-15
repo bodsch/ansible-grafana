@@ -1,11 +1,11 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
 #!/usr/bin/openrc-run
 
-# Copyright 2016-2018 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
+# {{ ansible_managed }}
 
 description="grafana server"
 
-pidfile=${pidfile:-"/run/${RC_SVCNAME}.pid"}
+pidfile=${pidfile:-"/run/grafana/${RC_SVCNAME}.pid"}
 user=${user:-${SVCNAME}}
 group=${group:-${SVCNAME}}
 
@@ -27,6 +27,17 @@ depend() {
   # need localmount net
   # use dns
   after sysfs net
+  {% if grafana_config_remote_cache.type is defined and
+        grafana_config_remote_cache.type | string | length > 0 and
+        grafana_config_remote_cache.type in ["redis", "memcached"] %}
+  need {{ grafana_config_remote_cache.type }}
+  {% endif %}
+  {% if grafana_config_database.type is defined and
+        grafana_config_database.type | string | length > 0 and
+        grafana_config_database.type in ["mysql", "postgres"] %}
+  need {{ grafana_config_database.type }}
+  {% endif %}
+
 }
 
 start_pre() {
@@ -36,9 +47,10 @@ start_pre() {
   checkpath -d -o "${command_user}:${group}" -m750 "/var/lib/grafana"
   checkpath -d -o "${command_user}:${group}" -m750 "/var/lib/grafana/sessions"
   checkpath -d -o "${command_user}:${group}" -m770 $(dirname ${output_log})
+  checkpath -d -o "${command_user}:${group}" -m750 $(dirname ${pidfile})
 
   chown -R ${command_user} $(dirname ${output_log})
-  chown -R ${command_user}:${group} $(dirname ${pidfile})
+  chown -R ${command_user} $(dirname ${pidfile})
   chown -R ${command_user} /var/lib/grafana/
 }
 

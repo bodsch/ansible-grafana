@@ -3,7 +3,7 @@
 
 OPTIONS="
   --config={{ grafana_config_dir }}/grafana.ini            \
-  --pidfile=/run/grafana/grafana-server.pid
+  --pidfile={{ grafana_pidfile }}
 "
 #  cfg:default.paths.logs=/var/log/grafana                  \
 #  cfg:default.paths.data={{ grafana_data_dir }}            \
