@@ -1,16 +1,16 @@
-
-[emails]
 {% if grafana_config_emails is defined and
       grafana_config_emails.enabled %}
+
+[emails]
   {% if grafana_config_emails.welcome_email_on_sign_up is defined %}
-welcome_email_on_sign_up = {{ grafana_config_emails.welcome_email_on_sign_up | bool | ternary('true', 'false') }}
+welcome_email_on_sign_up        = {{ grafana_config_emails.welcome_email_on_sign_up | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}
   {% endif %}
   {% if grafana_config_emails.templates_pattern is defined and
         grafana_config_emails.templates_pattern | count > 0 %}
-templates_pattern = {{ grafana_config_emails.templates_pattern | join(', ') }}
+templates_pattern               = {{ grafana_config_emails.templates_pattern | join(', ') }}
   {% endif %}
   {% if grafana_config_emails.content_types is defined and
         grafana_config_emails.content_types | string | length > 0 %}
-content_types = {{ grafana_config_emails.content_types }}
+content_types                   = {{ grafana_config_emails.content_types }}
   {% endif %}
 {% endif %}

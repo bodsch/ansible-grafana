@@ -18,13 +18,13 @@ host = "{{ ldap.hosts | join('" "') }}"
 port = {{ ldap.port }}
     {% endif %}
     {% if ldap.use_ssl is defined %}
-use_ssl = {{ ldap.use_ssl | bool | ternary('true', 'false') }}
+use_ssl = {{ ldap.use_ssl | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}
     {% endif %}
     {% if ldap.start_tls is defined %}
-start_tls = {{ ldap.start_tls | bool | ternary('true', 'false') }}
+start_tls = {{ ldap.start_tls | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}
     {% endif %}
     {% if ldap.ssl_skip_verify is defined %}
-ssl_skip_verify = {{ ldap.ssl_skip_verify | bool | ternary('true', 'false') }}
+ssl_skip_verify = {{ ldap.ssl_skip_verify | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}
     {% endif %}
     {% if ldap.use_ssl is defined or ldap.start_tls is defined %}
       {% if ldap.root_ca_cert is defined and

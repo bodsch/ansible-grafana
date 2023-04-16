@@ -1,7 +1,7 @@
-
 {% if grafana_config_smtp.enabled is defined %}
+
 [smtp]
-enabled = {{ grafana_config_smtp.enabled | bool | ternary('true', 'false') }}
+enabled = {{ grafana_config_smtp.enabled | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}
   {% if grafana_config_smtp.enabled %}
 ;host = localhost:25
 ;user =

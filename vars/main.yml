@@ -50,54 +50,54 @@ grafana_defaults_config_general:
 
 grafana_defaults_config_alerting:
   enabled: false
-  execute_alerts: true
-  error_or_timeout: alerting
-  nodata_or_nullvalues: no_data
-  concurrent_render_limit: 5
-  evaluation_timeout_seconds: 30
-  notification_timeout_seconds: 30
-  max_attempts: 3
-  min_interval_seconds: 1
+  execute_alerts: false
+  error_or_timeout: ""                            # alerting
+  nodata_or_nullvalues: ""                        # no_data
+  concurrent_render_limit: ""                     # 5
+  evaluation_timeout_seconds: ""                  # 30
+  notification_timeout_seconds: ""                # 30
+  max_attempts: ""                                # 3
+  min_interval_seconds: ""                        # 1
   max_annotation_age: ""
   max_annotations_to_keep: ""
 
 grafana_defaults_config_analytics:
   reporting_enabled: false
-  reporting_distributor: grafana-labs
-  check_for_updates: true
-  check_for_plugin_updates: true
+  reporting_distributor: ""                       # grafana-labs
+  check_for_updates: ""                           # true
+  check_for_plugin_updates: ""                    # true
   google_analytics_ua_id: ""
   google_tag_manager_id: ""
   rudderstack_write_key: ""
   rudderstack_data_plane_url: ""
   rudderstack_sdk_url: ""
   rudderstack_config_url: ""
-  feedback_links_enabled: true
+  feedback_links_enabled: ""                      # true
 
 grafana_defaults_config_annotations:
-  cleanupjob_batchsize: 100
-  dashboard:
-    max_age: ""
-    max_annotations_to_keep: ""
-  api:
-    max_age: ""
-    max_annotations_to_keep: ""
+  cleanupjob_batchsize: ""                        # 100
+  dashboard: {}
+  #   max_age: ""
+  #   max_annotations_to_keep: ""
+  api: {}
+  #   max_age: ""
+  #   max_annotations_to_keep: ""
 
 grafana_defaults_config_auth:
   login_cookie_name: grafana_session
   login_maximum_inactive_lifetime_duration: ""
   login_maximum_lifetime_duration: ""
-  token_rotation_interval_minutes: 10
-  disable_login_form: false
-  disable_signout_menu: false
+  token_rotation_interval_minutes: ""             # 10
+  disable_login_form: ""                          # false
+  disable_signout_menu: ""                        # false
   signout_redirect_url: ""
-  oauth_auto_login: false
-  oauth_state_cookie_max_age: 600
-  oauth_skip_org_role_update_sync: false
-  api_key_max_seconds_to_live: -1
-  sigv4_auth_enabled: false
-  sigv4_verbose_logging: false
-  azure_auth_enabled: false
+  oauth_auto_login: ""                            # false
+  oauth_state_cookie_max_age: ""                  # 600
+  oauth_skip_org_role_update_sync: ""             # false
+  api_key_max_seconds_to_live: ""                 # -1
+  sigv4_auth_enabled: ""                          # false
+  sigv4_verbose_logging: ""                       # false
+  azure_auth_enabled: ""                          # false
 
   anonymous:
     enabled: false
@@ -218,8 +218,12 @@ grafana_defaults_config_auth:
     header_property: username
     auto_sign_up: true
     sync_ttl: 60
-    whitelist: 192.168.1.1, 192.168.2.1
-    headers: Email:X-User-Email, Name:X-User-Name
+    whitelist:
+      - 192.168.1.1
+      - 192.168.2.1
+    headers:
+      - Email:X-User-Email
+      - Name:X-User-Name
     # Non-ASCII strings in header values are encoded using quoted-printable encoding
     headers_encoded: false
     # Read the auth proxy docs for details on what the setting below enables
@@ -384,10 +388,7 @@ grafana_defaults_config_expressions:
   enabled: true
 
 grafana_defaults_config_external_image_storage:
-  # Used for uploading images to public servers so they can be included in slack/email messages.
-  # you can choose between (s3, webdav, gcs, azure_blob, local)
-  provider: ""
-
+  provider: ""                                    # (s3, webdav, gcs, azure_blob, local)
   s3:
     endpoint: ""
     path_style_access: ""
@@ -396,25 +397,20 @@ grafana_defaults_config_external_image_storage:
     path: ""
     access_key: ""
     secret_key: ""
-
   webdav:
     url: ""
     public_url: ""
     username: ""
     password: ""
-
   gcs:
     key_file: ""
     bucket: ""
     path: ""
-
   azure_blob:
     account_name: ""
     account_key: ""
     container_name: ""
-
   local: {}
-#    does not require any configuration
 
 grafana_defaults_config_feature_toggles: {}
 #   there are currently two ways to enable feature toggles in the `grafana.ini`.
@@ -440,29 +436,16 @@ grafana_defaults_config_geomap: {}
 #   enable_custom_baselayers: true
 
 grafana_defaults_config_grafana_com:
-  # Url used to import dashboards directly from Grafana.com
   url: https://grafana.com
 
 grafana_defaults_config_help:
-  # Enable the Help section
   enabled: true
 
 grafana_defaults_config_live:
-  # max_connections to Grafana Live WebSocket endpoint per Grafana server instance. See Grafana Live docs
-  # if you are planning to make it higher than default 100 since this can require some OS and infrastructure
-  # tuning. 0 disables Live, -1 means unlimited connections.
-  max_connections: 100
-  # allowed_origins is a comma-separated list of origins that can establish connection with Grafana Live.
-  # If not set then origin will be matched over root_url. Supports wildcard symbol "*".
-  allowed_origins: ""
-  # engine defines an HA (high availability) engine to use for Grafana Live. By default no engine used - in
-  # this case Live features work only on a single Grafana server. Available options: "redis".
-  # Setting ha_engine is an EXPERIMENTAL feature.
+  max_connections: ""
+  allowed_origins: []
   ha_engine: ""
-  # ha_engine_address sets a connection address for Live HA engine. Depending on engine type address format can differ.
-  # For now we only support Redis connection address in "host:port" format.
-  # This option is EXPERIMENTAL.
-  ha_engine_address: "127.0.0.1:6379"
+  ha_engine_address: ""
 
 grafana_defaults_config_log:
   # Either "console", "file", "syslog". Default is console and  file
@@ -510,7 +493,7 @@ grafana_defaults_config_log:
     # Should Sentry javascript agent be initialized
     enabled: false
     # Defines which provider to use, default is Sentry
-    provider: sentry
+    provider: Sentry
     # Sentry DSN if you want to send events to Sentry.
     sentry_dsn: ""
     # Custom HTTP endpoint to send events captured by the Sentry agent to. Default will log the events to stdout.
@@ -518,15 +501,17 @@ grafana_defaults_config_log:
     # Rate of events to be reported between 0 (none) and 1 (all), float
     sample_rate: 1.0
     # Requests per second limit enforced an extended period, for Grafana backend log ingestion endpoint (/log).
-    log_endpoint_requests_per_second_limit: 3
+    log_endpoint:
+      requests_per_second_limit: 3
     # Max requests accepted per short interval of time for Grafana backend log ingestion endpoint (/log).
-    log_endpoint_burst_limit: 15
+      burst_limit: 15
     # Should error instrumentation be enabled, only affects Grafana Javascript Agent
-    instrumentations_errors_enabled: true
-    # Should console instrumentation be enabled, only affects Grafana Javascript Agent
-    instrumentations_console_enabled: false
-    # Should webvitals instrumentation be enabled, only affects Grafana Javascript Agent
-    instrumentations_webvitals_enabled: false
+    instrumentations:
+      errors_enabled: true
+      # Should console instrumentation be enabled, only affects Grafana Javascript Agent
+      console_enabled: false
+      # Should webvitals instrumentation be enabled, only affects Grafana Javascript Agent
+      webvitals_enabled: false
     # Api Key, only applies to Grafana Javascript Agent provider
     api_key: testApiKey
 
@@ -539,8 +524,9 @@ grafana_defaults_config_metrics:
   # Disable total stats (stat_totals_*) metrics to be generated
   disable_total_stats: false
   # If both are set, basic auth will be required for the metrics endpoints.
-  basic_auth_username: ""
-  basic_auth_password: ""
+  basic_auth:
+    username: ""
+    password: ""
   # Metrics environment info adds dimensions to the `grafana_environment_info` metric, which
   # can expose more information about the Grafana instance.
   environment_info: {}
@@ -570,66 +556,70 @@ grafana_defaults_config_paths:
 
 grafana_defaults_config_plugin:
   #################################### Grafana Image Renderer Plugin ##########################
-  grafana-image-renderer:
-    # Instruct headless browser instance to use a default timezone when not provided by Grafana, e.g. when rendering panel image of alert.
-    # See ICU<E2><80><99>s metaZones.txt (https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt) for a list of supported
-    # timezone IDs. Fallbacks to TZ environment variable if not set.
-    rendering_timezone: ""
+  grafana_image_renderer:
+    rendering:
+      # Instruct headless browser instance to use a default timezone when not provided by Grafana, e.g. when rendering panel image of alert.
+      # See ICU<E2><80><99>s metaZones.txt (https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt) for a list of supported
+      # timezone IDs. Fallbacks to TZ environment variable if not set.
+      timezone: ""
 
-    # Instruct headless browser instance to use a default language when not provided by Grafana, e.g. when rendering panel image of alert.
-    # Please refer to the HTTP header Accept-Language to understand how to format this value, e.g. 'fr-CH, frq=0.9, enq=0.8, deq=0.7, *q=0.5'.
-    rendering_language: ""
+      # Instruct headless browser instance to use a default language when not provided by Grafana, e.g. when rendering panel image of alert.
+      # Please refer to the HTTP header Accept-Language to understand how to format this value, e.g. 'fr-CH, frq=0.9, enq=0.8, deq=0.7, *q=0.5'.
+      language: ""
 
-    # Instruct headless browser instance to use a default device scale factor when not provided by Grafana, e.g. when rendering panel image of alert.
-    # Default is 1. Using a higher value will produce more detailed images (higher DPI), but will require more disk space to store an image.
-    rendering_viewport_device_scale_factor: ""
+      # Instruct headless browser instance to use a default device scale factor when not provided by Grafana, e.g. when rendering panel image of alert.
+      # Default is 1. Using a higher value will produce more detailed images (higher DPI), but will require more disk space to store an image.
+      viewport_device_scale_factor: ""
 
-    # Instruct headless browser instance whether to ignore HTTPS errors during navigation. Per default HTTPS errors are not ignored. Due to
-    # the security risk it's not recommended to ignore HTTPS errors.
-    rendering_ignore_https_errors: ""
+      # Instruct headless browser instance whether to ignore HTTPS errors during navigation. Per default HTTPS errors are not ignored. Due to
+      # the security risk it's not recommended to ignore HTTPS errors.
+      ignore_https_errors: ""
 
-    # Instruct headless browser instance whether to capture and log verbose information when rendering an image. Default is false and will
-    # only capture and log error messages. When enabled, debug messages are captured and logged as well.
-    # For the verbose information to be included in the Grafana server log you have to adjust the rendering log level to debug, configure
-    # [log].filter: "" rendering:debug.
-    rendering_verbose_logging: ""
+      # Instruct headless browser instance whether to capture and log verbose information when rendering an image. Default is false and will
+      # only capture and log error messages. When enabled, debug messages are captured and logged as well.
+      # For the verbose information to be included in the Grafana server log you have to adjust the rendering log level to debug, configure
+      # [log].filter: "" rendering:debug.
+      verbose_logging: ""
 
-    # Instruct headless browser instance whether to output its debug and error messages into running process of remote rendering service.
-    # Default is false. This can be useful to enable (true) when troubleshooting.
-    rendering_dumpio: ""
+      # Instruct headless browser instance whether to output its debug and error messages into running process of remote rendering service.
+      # Default is false. This can be useful to enable (true) when troubleshooting.
+      dumpio: ""
 
-    # Additional arguments to pass to the headless browser instance. Default is --no-sandbox. The list of Chromium flags can be found
-    # here (https://peter.sh/experiments/chromium-command-line-switches/). Multiple arguments is separated with comma-character.
-    rendering_args: ""
+      # Additional arguments to pass to the headless browser instance. Default is --no-sandbox. The list of Chromium flags can be found
+      # here (https://peter.sh/experiments/chromium-command-line-switches/). Multiple arguments is separated with comma-character.
+      args: []
 
-    # You can configure the plugin to use a different browser binary instead of the pre-packaged version of Chromium.
-    # Please note that this is not recommended, since you may encounter problems if the installed version of Chrome/Chromium is not
-    # compatible with the plugin.
-    rendering_chrome_bin: ""
+      # You can configure the plugin to use a different browser binary instead of the pre-packaged version of Chromium.
+      # Please note that this is not recommended, since you may encounter problems if the installed version of Chrome/Chromium is not
+      # compatible with the plugin.
+      chrome_bin: ""
 
-    # Instruct how headless browser instances are created. Default is 'default' and will create a new browser instance on each request.
-    # Mode 'clustered' will make sure that only a maximum of browsers/incognito pages can execute concurrently.
-    # Mode 'reusable' will have one browser instance and will create a new incognito page on each request.
-    rendering_mode: ""
+      # Instruct how headless browser instances are created. Default is 'default' and will create a new browser instance on each request.
+      # Mode 'clustered' will make sure that only a maximum of browsers/incognito pages can execute concurrently.
+      # Mode 'reusable' will have one browser instance and will create a new incognito page on each request.
+      mode: ""
 
-    # When rendering_mode: "" clustered, you can instruct how many browsers or incognito pages can execute concurrently. Default is 'browser'
-    # and will cluster using browser instances.
-    # Mode 'context' will cluster using incognito pages.
-    rendering_clustering_mode: ""
-    # When rendering_mode: "" clustered, you can define the maximum number of browser instances/incognito pages that can execute concurrently. Default is '5'.
-    rendering_clustering_max_concurrency: ""
-    # When rendering_mode: "" clustered, you can specify the duration a rendering request can take before it will time out. Default is `30` seconds.
-    rendering_clustering_timeout: ""
+      # When mode: "" clustered, you can instruct how many browsers or incognito pages can execute concurrently. Default is 'browser'
+      # and will cluster using browser instances.
+      # Mode 'context' will cluster using incognito pages.
+      clustering:
+        mode: ""
+        # When mode: "" clustered, you can define the maximum number of browser instances/incognito pages that can execute concurrently. Default is '5'.
+        max_concurrency: ""
+        # When mode: "" clustered, you can specify the duration a rendering request can take before it will time out. Default is `30` seconds.
+        timeout: ""
 
-    # Limit the maximum viewport width, height and device scale factor that can be requested.
-    rendering_viewport_max_width: ""
-    rendering_viewport_max_height: ""
-    rendering_viewport_max_device_scale_factor: ""
+      # Limit the maximum viewport width, height and device scale factor that can be requested.
+      viewport:
+        max_width: ""
+        max_height: ""
+        max_device_scale_factor: ""
 
     # Change the listening host and port of the gRPC server. Default host is 127.0.0.1 and default port is 0 and will automatically assign
     # a port not in use.
-    grpc_host: ""
-    grpc_port: ""
+    grpc:
+      host: ""
+      port: ""
 
 grafana_defaults_config_plugins:
   enable_alpha: false
@@ -1010,38 +1000,38 @@ grafana_defaults_config_users:
   # hidden_users: ""
 
 grafana_defaults_config_ldap:
-  servers:
-    - hosts:
-        - 127.0.0.1
-      port: 389
-      use_ssl: false
-      start_tls: false
-      ssl_skip_verify: false
-      # root_ca_cert = "/path/to/certificate.crt"
-      # client_cert = "/path/to/client.crt"
-      # client_key = "/path/to/client.key"
-      bind_dn: 'cn=admin,dc=grafana,dc=org'
-      bind_password: grafana
-      timeout: 10
-      search_filter: (cn=%s)
-      search_base_dns:
-        - 'dc=grafana,dc=org'
-      # group_search_filter = "(&(objectClass=posixGroup)(memberUid=%s))"
-      # group_search_base_dns = ["ou=groups,dc=grafana,dc=org"]
-      # group_search_filter_user_attribute = "uid"
-      attributes:
-        name: givenName
-        surname: sn
-        username: cn
-        member_of: memberOf
-        email: email
-      group_mappings:
-        - group_dn: 'cn=admins,ou=groups,dc=grafana,dc=org'
-          org_role: Admin
-        - group_dn: 'cn=users,ou=groups,dc=grafana,dc=org'
-          org_role: Editor
-        - group_dn: '*'
-          org_role: Viewer
+  servers: []
+  #   - hosts:
+  #       - 127.0.0.1
+  #     port: 389
+  #     use_ssl: false
+  #     start_tls: false
+  #     ssl_skip_verify: false
+  #     # root_ca_cert = "/path/to/certificate.crt"
+  #     # client_cert = "/path/to/client.crt"
+  #     # client_key = "/path/to/client.key"
+  #     bind_dn: 'cn=admin,dc=grafana,dc=org'
+  #     bind_password: grafana
+  #     timeout: 10
+  #     search_filter: (cn=%s)
+  #     search_base_dns:
+  #       - 'dc=grafana,dc=org'
+  #     # group_search_filter = "(&(objectClass=posixGroup)(memberUid=%s))"
+  #     # group_search_base_dns = ["ou=groups,dc=grafana,dc=org"]
+  #     # group_search_filter_user_attribute = "uid"
+  #     attributes:
+  #       name: givenName
+  #       surname: sn
+  #       username: cn
+  #       member_of: memberOf
+  #       email: email
+  #     group_mappings:
+  #       - group_dn: 'cn=admins,ou=groups,dc=grafana,dc=org'
+  #         org_role: Admin
+  #       - group_dn: 'cn=users,ou=groups,dc=grafana,dc=org'
+  #         org_role: Editor
+  #       - group_dn: '*'
+  #         org_role: Viewer
 
 # ----------------------------------------------------------------------------------------
 
