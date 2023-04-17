@@ -88,8 +88,8 @@ client_id                       = {{ grafana_config_auth.github.client_id }}
 client_secret                   = {{ grafana_config_auth.github.client_secret }}
   {% endif %}
   {% if grafana_config_auth.github.scopes is defined and
-        grafana_config_auth.github.scopes | string | length > 0 %}
-scopes                          = {{ grafana_config_auth.github.scopes }}
+        grafana_config_auth.github.scopes | count > 0 %}
+scopes                          = {{ grafana_config_auth.github.scopes | join(', ') }}
   {% endif %}
   {% if grafana_config_auth.github.auth_url is defined and
         grafana_config_auth.github.auth_url | string | length > 0 %}

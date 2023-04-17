@@ -2,7 +2,8 @@
       grafana_config_dataproxy.enabled %}
 
 [dataproxy]
-  {% if grafana_config_dataproxy.logging is defined %}
+  {% if grafana_config_dataproxy.logging is defined and
+        grafana_config_dataproxy.logging | string | length > 0 %}
 logging                         = {{ grafana_config_dataproxy.logging | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}
   {% endif %}
   {% if grafana_config_dataproxy.timeout is defined and
@@ -38,7 +39,7 @@ max_idle_connections            = {{ grafana_config_dataproxy.max_idle_connectio
 idle_conn_timeout_seconds       = {{ grafana_config_dataproxy.idle_conn_timeout_seconds }}
   {% endif %}
   {% if grafana_config_dataproxy.send_user_header is defined and
-        grafana_config_dataproxy.send_user_header %}
+        grafana_config_dataproxy.send_user_header | string | length > 0 %}
 send_user_header                = {{ grafana_config_dataproxy.logging | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}
   {% endif %}
   {% if grafana_config_dataproxy.response_limit is defined and

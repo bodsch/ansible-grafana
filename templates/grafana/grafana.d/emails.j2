@@ -2,7 +2,8 @@
       grafana_config_emails.enabled %}
 
 [emails]
-  {% if grafana_config_emails.welcome_email_on_sign_up is defined %}
+  {% if grafana_config_emails.welcome_email_on_sign_up is defined and
+        grafana_config_emails.welcome_email_on_sign_up | string | length > 0 %}
 welcome_email_on_sign_up        = {{ grafana_config_emails.welcome_email_on_sign_up | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}
   {% endif %}
   {% if grafana_config_emails.templates_pattern is defined and

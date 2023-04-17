@@ -36,7 +36,7 @@ class FilterModule(object):
         def _string(s):
             """
             """
-            if s.startswith("$") or s == "*":
+            if s.startswith("$") or s.startswith("ws:") or s.startswith("wss:") or s.endswith(":") or s == "*" or ".com" in s:
                 return s
             else:
                 return f"'{s}'"
@@ -56,13 +56,15 @@ class FilterModule(object):
                 form-action 'self';
             """
             for key, value in data.items():
-                # display.v(f"  - {key} {value}")
+                # display.v(f"  - '{key}' '{value}'")
                 _v = []
                 for str in value:
-                    _v.append(_string(str))
+                    _value = _string(str)
+                    # display.v(f"    - '{_value}'")
+                    _v.append(_value)
 
                 values = " ".join(_v)
                 result += f"{key} {values}; "
 
-        display.v(f"return : {result}")
+        # display.v(f"return : {result}")
         return result

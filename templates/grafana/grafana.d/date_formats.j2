@@ -31,7 +31,7 @@ interval_month                  = {{ grafana_config_date_formats.interval_month 
 interval_year                   = {{ grafana_config_date_formats.interval_year }}
   {% endif %}
   {% if grafana_config_date_formats.use_browser_locale is defined and
-        grafana_config_date_formats.use_browser_locale %}
+        grafana_config_date_formats.use_browser_locale | string | length > 0 %}
 use_browser_locale              = {{ grafana_config_date_formats.use_browser_locale | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}
   {% endif %}
   {% if grafana_config_date_formats.default_timezone is defined and

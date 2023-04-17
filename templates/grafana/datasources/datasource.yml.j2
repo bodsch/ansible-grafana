@@ -26,11 +26,11 @@ datasources:
     version: 1
     type: {{ values.datasource.type }}
       {% if values.use_proxy is defined %}
-    proxy: "{{ item.value.use_proxy | default('true') | bool | ternary('true', 'false') }}"
+    proxy: "{{ item.value.use_proxy | default('true') | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}"
       {% endif %}
     url: {{ values.datasource.url }}
       {% if values.datasource.proxy is defined %}
-    proxy: {{ values.datasource.proxy | default('false') | bool | ternary('true', 'false') }}
+    proxy: {{ values.datasource.proxy | default('false') | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}
       {% endif %}
       {% if values.org_id is defined %}
     orgId: {{ values.org_id }}
@@ -51,7 +51,7 @@ datasources:
     basicAuthPass: {{ values.basic_auth.password }}
       {% endif %}
       {% if values.default is defined %}
-    isDefault: {{ values.default | default('false') | bool | ternary('true', 'false') }}
+    isDefault: {{ values.default | default('false') | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}
       {% endif %}
       {% if values.json_data is defined %}
     jsonData:

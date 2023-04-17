@@ -108,9 +108,9 @@ grafana_defaults_config_auth:
   github:
     enabled: false
     allow_sign_up: true
-    client_id: some_id
-    client_secret: some_secret
-    scopes: user:email,read:org
+    client_id: ""                                 # some_id
+    client_secret: ""                             # some_secret
+    scopes: []                                    # [user:email, read:org]
     auth_url: https://github.com/login/oauth/authorize
     token_url: https://github.com/login/oauth/access_token
     api_url: https://api.github.com/user
@@ -121,9 +121,9 @@ grafana_defaults_config_auth:
   gitlab:
     enabled: false
     allow_sign_up: true
-    client_id: some_id
-    client_secret: some_secret
-    scopes: api
+    client_id: ""                                 # some_id
+    client_secret: ""                             # some_secret
+    scopes: ""                                    # api
     auth_url: https://gitlab.com/oauth/authorize
     token_url: https://gitlab.com/oauth/token
     api_url: https://gitlab.com/api/v4
@@ -133,9 +133,9 @@ grafana_defaults_config_auth:
   google:
     enabled: false
     allow_sign_up: true
-    client_id: some_client_id
-    client_secret: some_client_secret
-    scopes: https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
+    client_id: ""                                 # some_client_id
+    client_secret: ""                             # some_client_secret
+    scopes: []                                    # [https://www.googleapis.com/auth/userinfo.profile, https://www.googleapis.com/auth/userinfo.email]
     auth_url: https://accounts.google.com/o/oauth2/auth
     token_url: https://accounts.google.com/o/oauth2/token
     api_url: https://www.googleapis.com/oauth2/v1/userinfo
@@ -145,18 +145,18 @@ grafana_defaults_config_auth:
   grafana_com:
     enabled: false
     allow_sign_up: true
-    client_id: some_id
-    client_secret: some_secret
-    scopes: user:email
+    client_id: ""                                 # some_id
+    client_secret: ""                             # some_secret
+    scopes: ""                                    # user:email
     allowed_organizations: ""
 
   azuread:
     name: Azure AD
     enabled: false
     allow_sign_up: true
-    client_id: some_client_id
-    client_secret: some_client_secret
-    scopes: openid email profile
+    client_id: ""                                 # some_client_id
+    client_secret: ""                             # some_client_secret
+    scopes: ""                                    # openid email profile
     auth_url: https://login.microsoftonline.com/<tenant-id>/oauth2/v2.0/authorize
     token_url: https://login.microsoftonline.com/<tenant-id>/oauth2/v2.0/token
     allowed_domains: ""
@@ -167,9 +167,9 @@ grafana_defaults_config_auth:
     name: Okta
     enabled: false
     allow_sign_up: true
-    client_id: some_id
-    client_secret: some_secret
-    scopes: openid profile email groups
+    client_id: ""                                 # some_id
+    client_secret: ""                             # some_secret
+    scopes: []                                    # [openid, profile, email, groups]
     auth_url: https://<tenant-id>.okta.com/oauth2/v1/authorize
     token_url: https://<tenant-id>.okta.com/oauth2/v1/token
     api_url: https://<tenant-id>.okta.com/oauth2/v1/userinfo
@@ -182,11 +182,11 @@ grafana_defaults_config_auth:
     enabled: false
     name: OAuth
     allow_sign_up: true
-    client_id: some_id
-    client_secret: some_secret
-    scopes: user:email,read:org
+    client_id: ""                                 # some_id
+    client_secret: ""                             # some_secret
+    scopes: []                                    # user:email,read:org
     empty_scopes: false
-    email_attribute_name: email:primary
+    email_attribute_name: ""                      # email:primary
     email_attribute_path: ""
     login_attribute_path: ""
     name_attribute_path: ""
@@ -214,31 +214,25 @@ grafana_defaults_config_auth:
 
   proxy:
     enabled: false
-    header_name: X-WEBAUTH-USER
-    header_property: username
+    header_name: ""                               # X-WEBAUTH-USER
+    header_property: ""                           # username
     auto_sign_up: true
-    sync_ttl: 60
-    whitelist:
-      - 192.168.1.1
-      - 192.168.2.1
-    headers:
-      - Email:X-User-Email
-      - Name:X-User-Name
-    # Non-ASCII strings in header values are encoded using quoted-printable encoding
+    sync_ttl: ""                                  # 60
+    whitelist: []                                 # [192.168.1.1, 192.168.2.1]
+    headers: []                                   # [Email:X-User-Email, Name:X-User-Name]
     headers_encoded: false
-    # Read the auth proxy docs for details on what the setting below enables
     enable_login_token: false
 
   jwt:
     enabled: false
-    header_name: X-JWT-Assertion
-    email_claim: sub
-    username_claim: sub
-    jwk_set_url: https://foo.bar/.well-known/jwks.json
-    jwk_set_file: /path/to/jwks.json
-    cache_ttl: 60m
-    expected_claims: '{"aud": ["foo", "bar"]}'
-    key_file: /path/to/key/file
+    header_name: ""                               # X-JWT-Assertion
+    email_claim: ""                               # sub
+    username_claim: ""                            # sub
+    jwk_set_url: ""                               # https://foo.bar/.well-known/jwks.json
+    jwk_set_file: ""                              # /path/to/jwks.json
+    cache_ttl: ""                                 # 60m
+    expected_claims: ""                           # '{"aud": ["foo", "bar"]}'
+    key_file: ""                                  # /path/to/key/file
     auto_sign_up: false
 
   ldap:
@@ -263,108 +257,60 @@ grafana_defaults_config_azure: {}
 #   managed_identity_client_id: ""
 
 grafana_defaults_config_dashboards:
-  # Number dashboard versions to keep (per dashboard). Default: 20, Minimum: 1
-  versions_to_keep: 20
-  # Minimum dashboard refresh interval. When set, this will restrict users to set the refresh interval of a dashboard lower than given interval. Per default this is 5 seconds.
-  # The interval string is a possibly signed sequence of decimal numbers, followed by a unit suffix (ms, s, m, h, d), e.g. 30s or 1m.
-  min_refresh_interval: 5s
-  # Path to the default home dashboard. If this value is empty, then Grafana uses StaticRootPath + "dashboards/home.json"
+  versions_to_keep: ""                            # 20
+  min_refresh_interval: ""                        # 5s
   default_home_dashboard_path: ""
 
 grafana_defaults_config_database:
-  # You can configure the database connection by specifying type, host, name, user and password
-  # as separate properties or as on string using the url properties.
-  # Either "mysql", "postgres" or "sqlite3", it's your choice
-  type: sqlite3
-  # For "sqlite3" only, path relative to data_path setting
-  path: grafana.db
-  # For "sqlite3" only. cache mode setting used for connecting to the database. (private, shared)
-  cache_mode: private
-  host: 127.0.0.1:3306
-  name: grafana
-  user: root
-  # If the password contains # or ; you have to wrap it with triple quotes. Ex """#password;"""
-  password: ""
-  # Use either URL or the previous fields to configure the database
-  # Example: mysql://user:secret@host:port/database
-  url: ""
-  # For "postgres" only, either "disable", "require" or "verify-full"
-  ssl_mode: disable
-  # Database drivers may support different transaction isolation levels.
-  # Currently, only "mysql" driver supports isolation levels.
-  # If the value is empty - driver's default isolation level is applied.
-  # For "mysql" use "READ-UNCOMMITTED", "READ-COMMITTED", "REPEATABLE-READ" or "SERIALIZABLE".
-  isolation_level: ""
+  type: sqlite3                                   # Either "mysql", "postgres" or "sqlite3"
+  path: grafana.db                                #
+  cache_mode: private                             # For "sqlite3" only. cache mode setting used for connecting to the database. (private, shared)
+  host: ""                                        # 127.0.0.1:3306
+  name: ""                                        # grafana
+  user: ""                                        # root
+  password: ""                                    #
+  url: ""                                         # e.g. mysql://user:secret@host:port/database
+  ssl_mode: disable                               # # For "postgres" only, either "disable", "require" or "verify-full"
+  isolation_level: ""                             # For "mysql" use "READ-UNCOMMITTED", "READ-COMMITTED", "REPEATABLE-READ" or "SERIALIZABLE".
   ca_cert_path: ""
   client_key_path: ""
   client_cert_path: ""
   server_cert_name: ""
-  # Max idle conn setting default is 2
-  max_idle_conn: 2
-  # Max conn setting default is 0 (mean not set)
+  max_idle_conn: ""                               # 2
   max_open_conn: ""
-  # Connection Max Lifetime default is 14400 (means 14400 seconds or 4 hours)
-  conn_max_lifetime: 14400
-  # Set to true to log the sql calls and execution times.
+  conn_max_lifetime: ""                           # 14400 (means 14400 seconds or 4 hours)
   log_queries: ""
-  # For "mysql" only if migrationLocking feature toggle is set. How many seconds to wait before failing to lock the database for the migrations, default is 0.
-  locking_attempt_timeout_sec: 0
+  locking_attempt_timeout_sec: ""                 # 0
 
 grafana_defaults_config_dataproxy:
   enabled: false
-  # This enables data proxy logging, default is false
-  logging: false
-  # How long the data proxy waits to read the headers of the response before timing out, default is 30 seconds.
-  # This setting also applies to core backend HTTP data sources where query requests use an HTTP client with timeout set.
-  timeout: 30
-  # How long the data proxy waits to establish a TCP connection before timing out, default is 10 seconds.
-  dialTimeout: 10
-  # How many seconds the data proxy waits before sending a keepalive probe request.
-  keep_alive_seconds: 30
-  # How many seconds the data proxy waits for a successful TLS Handshake before timing out.
-  tls_handshake_timeout_seconds: 10
-  # How many seconds the data proxy will wait for a server's first response headers after
-  # fully writing the request headers if the request has an "Expect: 100-continue"
-  # header. A value of 0 will result in the body being sent immediately, without
-  # waiting for the server to approve.
-  expect_continue_timeout_seconds: 1
-  # Optionally limits the total number of connections per host, including connections in the dialing,
-  # active, and idle states. On limit violation, dials will block.
-  # A value of zero (0) means no limit.
-  max_conns_per_host: 0
-  # The maximum number of idle connections that Grafana will keep alive.
-  max_idle_connections: 100
-  # How many seconds the data proxy keeps an idle connection open before timing out.
-  idle_conn_timeout_seconds: 90
-  # If enabled and user is not anonymous, data proxy will add X-Grafana-User header with username into the request, default is false.
-  send_user_header: false
-  # Limit the amount of bytes that will be read/accepted from responses of outgoing HTTP requests.
-  response_limit: 0
-  # Limits the number of rows that Grafana will process from SQL data sources.
-  row_limit: 1000000
+  logging: ""                                     # false
+  timeout: ""                                     # 30
+  dialTimeout: ""                                 # 10
+  keep_alive_seconds: ""                          # 30
+  tls_handshake_timeout_seconds: ""               # 10
+  expect_continue_timeout_seconds: ""             # 1
+  max_conns_per_host: ""                          # 0
+  max_idle_connections: ""                        # 100
+  idle_conn_timeout_seconds: ""                   # 90
+  send_user_header: ""                            # false
+  response_limit: ""                              # 0
+  row_limit: ""                                   # 1000000
 
 grafana_defaults_config_datasources:
   enabled: false
-  # Upper limit of data sources that Grafana will return.
-  # This limit is a temporary configuration and it will be deprecated when pagination will be introduced on the list data sources API.
-  datasource_limit: 5000
+  datasource_limit: ""                            # 5000
 
 grafana_defaults_config_date_formats:
   enabled: true
-  # For information on what formatting patterns that are supported https://momentjs.com/docs/#/displaying/
-  # Default system date format used in time range picker and other places where full time is displayed
   full_date: YYYY-MM-DD HH:mm:ss
-  # Used by graph and other places where we only show small intervals
   interval_second: HH:mm:ss
   interval_minute: HH:mm
   interval_hour: MM/DD HH:mm
   interval_day: MM/DD
   interval_month: YYYY-MM
   interval_year: YYYY
-  # Experimental feature
   use_browser_locale: false
-  # Default timezone for user preferences.
-  # Options are 'browser' for the browser local timezone or a timezone name from IANA Time Zone database, e.g. 'UTC' or 'Europe/Amsterdam' etc.
   default_timezone: browser
 
 grafana_defaults_config_emails:
@@ -376,15 +322,12 @@ grafana_defaults_config_emails:
   content_types: text/html
 
 grafana_defaults_config_enterprise:
-  # Path to a valid Grafana Enterprise license.jwt file
   license_path: ""
 
 grafana_defaults_config_explore:
-  # Enable the Explore section
   enabled: true
 
 grafana_defaults_config_expressions:
-  # Enable or disable the expressions functionality.
   enabled: true
 
 grafana_defaults_config_external_image_storage:
@@ -448,235 +391,127 @@ grafana_defaults_config_live:
   ha_engine_address: ""
 
 grafana_defaults_config_log:
-  # Either "console", "file", "syslog". Default is console and  file
-  # Use space to separate multiple modes, e.g. "console file"
-  mode:
+  mode:                                           # Either "console", "file", "syslog"
     - console
     - file
-  # Either "debug", "info", "warn", "error", "critical", default is "info"
-  level: info
-  # optional settings to set different levels for specific loggers. Ex filters: sqlstore:debug
-  filters: []
-  # For "console" mode only
+  level: info                                     # Either "debug", "info", "warn", "error", "critical", default is "info"
+  filters: []                                     # Ex filters: sqlstore:debug
   console:
     level: ""
-    # log line format, valid options are text, console and json
-    format: console
-  # For "file" mode only
+    format: console                               # valid options are text, console and json
   file:
     level: ""
-    # log line format, valid options are text, console and json
-    format: text
-    # This enables automated log rotate(switch of following options), default is true
-    log_rotate: true
-    # Max line number of single file, default is 1000000
-    max_lines: 1000000
-    # Max size shift of single file, default is 28 means 1 << 28, 256MB
-    max_size_shift: 28
-    # Segment log daily, default is true
-    daily_rotate: true
-    # Expired days of log file(delete after max days), default is 7
-    max_days: 7
+    format: text                                  # valid options are text, console and json
+    log_rotate: ""                                # true
+    max_lines: ""                                 # 1000000
+    max_size_shift: ""                            # default is 28 means 1 << 28, 256MB
+    daily_rotate: ""                              # true
+    max_days: ""                                  # 7
   syslog:
     level: ""
-    # log line format, valid options are text, console and json
-    format: text
-    # Syslog network type and address. This can be udp, tcp, or unix. If left blank, the default unix endpoints will be used.
-    network: ""
+    format: text                                  # valid options are text, console and json
+    network: ""                                   # This can be udp, tcp, or unix
     address: ""
-    # Syslog facility. user, daemon and local0 through local7 are valid.
-    facility: ""
-    # Syslog tag. By default, the process' argv[0] is used.
-    tag: ""
-
+    facility: ""                                  # user, daemon and local0 through local7 are valid
+    tag: ""                                       # default, the process' argv[0] is used.
   frontend:
-    # Should Sentry javascript agent be initialized
     enabled: false
-    # Defines which provider to use, default is Sentry
-    provider: Sentry
-    # Sentry DSN if you want to send events to Sentry.
+    provider: ""                                  # Sentry
     sentry_dsn: ""
-    # Custom HTTP endpoint to send events captured by the Sentry agent to. Default will log the events to stdout.
-    custom_endpoint: /log
-    # Rate of events to be reported between 0 (none) and 1 (all), float
-    sample_rate: 1.0
-    # Requests per second limit enforced an extended period, for Grafana backend log ingestion endpoint (/log).
+    custom_endpoint: ""                           # (/log) Default will log the events to stdout.
+    sample_rate: ""                               # Rate of events to be reported between 0 (none) and 1 (all), float (!)
     log_endpoint:
-      requests_per_second_limit: 3
-    # Max requests accepted per short interval of time for Grafana backend log ingestion endpoint (/log).
-      burst_limit: 15
-    # Should error instrumentation be enabled, only affects Grafana Javascript Agent
+      requests_per_second_limit: ""               # 3
+      burst_limit: ""                             # 15
     instrumentations:
-      errors_enabled: true
-      # Should console instrumentation be enabled, only affects Grafana Javascript Agent
-      console_enabled: false
-      # Should webvitals instrumentation be enabled, only affects Grafana Javascript Agent
-      webvitals_enabled: false
-    # Api Key, only applies to Grafana Javascript Agent provider
-    api_key: testApiKey
+      errors_enabled: ""                          # true
+      console_enabled: ""                         # false
+      webvitals_enabled: ""                       # false
+    api_key: ""                                   # Api Key, only applies to Grafana Javascript Agent providertest
 
 grafana_defaults_config_metrics:
-  # Metrics available at HTTP URL /metrics and /metrics/plugins/:pluginId
-  # Disable / Enable internal metrics
   enabled: false
-  # Graphite Publish interval
-  interval_seconds: 10
-  # Disable total stats (stat_totals_*) metrics to be generated
-  disable_total_stats: false
-  # If both are set, basic auth will be required for the metrics endpoints.
+  interval_seconds: ""                            # 10
+  disable_total_stats: ""                         # false
   basic_auth:
     username: ""
     password: ""
-  # Metrics environment info adds dimensions to the `grafana_environment_info` metric, which
-  # can expose more information about the Grafana instance.
   environment_info: {}
   #  exampleLabel1: exampleValue1
   #  exampleLabel2: exampleValue2
-  # Send internal metrics to Graphite
   graphite:
-    # Enable by setting the address setting (ex localhost:2003)
     address: ""
     prefix: prod.grafana.%(instance_name)s.
 
 grafana_defaults_config_panels:
-  # If set to true Grafana will allow script tags in text panels. Not recommended as it enable XSS vulnerabilities.
   disable_sanitize_html: false
 
 grafana_defaults_config_paths:
-  # Path to where grafana can store temp files, sessions, and the sqlite3 db (if that is used)
   data: /var/lib/grafana
-  # Temporary files in `data` directory older than given duration will be removed
   temp_data_lifetime: 24h
-  # Directory where grafana can store logs
   logs: /var/log/grafana
-  # Directory where grafana will automatically scan and look for plugins
   plugins: /var/lib/grafana/plugins
-  # folder that contains provisioning config files that grafana will apply on startup and while running.
   provisioning: /etc/grafana/provisioning
 
 grafana_defaults_config_plugin:
-  #################################### Grafana Image Renderer Plugin ##########################
   grafana_image_renderer:
     rendering:
-      # Instruct headless browser instance to use a default timezone when not provided by Grafana, e.g. when rendering panel image of alert.
-      # See ICU<E2><80><99>s metaZones.txt (https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt) for a list of supported
-      # timezone IDs. Fallbacks to TZ environment variable if not set.
       timezone: ""
-
-      # Instruct headless browser instance to use a default language when not provided by Grafana, e.g. when rendering panel image of alert.
-      # Please refer to the HTTP header Accept-Language to understand how to format this value, e.g. 'fr-CH, frq=0.9, enq=0.8, deq=0.7, *q=0.5'.
       language: ""
-
-      # Instruct headless browser instance to use a default device scale factor when not provided by Grafana, e.g. when rendering panel image of alert.
-      # Default is 1. Using a higher value will produce more detailed images (higher DPI), but will require more disk space to store an image.
       viewport_device_scale_factor: ""
-
-      # Instruct headless browser instance whether to ignore HTTPS errors during navigation. Per default HTTPS errors are not ignored. Due to
-      # the security risk it's not recommended to ignore HTTPS errors.
       ignore_https_errors: ""
-
-      # Instruct headless browser instance whether to capture and log verbose information when rendering an image. Default is false and will
-      # only capture and log error messages. When enabled, debug messages are captured and logged as well.
-      # For the verbose information to be included in the Grafana server log you have to adjust the rendering log level to debug, configure
-      # [log].filter: "" rendering:debug.
       verbose_logging: ""
-
-      # Instruct headless browser instance whether to output its debug and error messages into running process of remote rendering service.
-      # Default is false. This can be useful to enable (true) when troubleshooting.
       dumpio: ""
-
-      # Additional arguments to pass to the headless browser instance. Default is --no-sandbox. The list of Chromium flags can be found
-      # here (https://peter.sh/experiments/chromium-command-line-switches/). Multiple arguments is separated with comma-character.
       args: []
-
-      # You can configure the plugin to use a different browser binary instead of the pre-packaged version of Chromium.
-      # Please note that this is not recommended, since you may encounter problems if the installed version of Chrome/Chromium is not
-      # compatible with the plugin.
       chrome_bin: ""
-
-      # Instruct how headless browser instances are created. Default is 'default' and will create a new browser instance on each request.
-      # Mode 'clustered' will make sure that only a maximum of browsers/incognito pages can execute concurrently.
-      # Mode 'reusable' will have one browser instance and will create a new incognito page on each request.
       mode: ""
-
-      # When mode: "" clustered, you can instruct how many browsers or incognito pages can execute concurrently. Default is 'browser'
-      # and will cluster using browser instances.
-      # Mode 'context' will cluster using incognito pages.
       clustering:
         mode: ""
-        # When mode: "" clustered, you can define the maximum number of browser instances/incognito pages that can execute concurrently. Default is '5'.
         max_concurrency: ""
-        # When mode: "" clustered, you can specify the duration a rendering request can take before it will time out. Default is `30` seconds.
         timeout: ""
-
-      # Limit the maximum viewport width, height and device scale factor that can be requested.
       viewport:
         max_width: ""
         max_height: ""
         max_device_scale_factor: ""
-
-    # Change the listening host and port of the gRPC server. Default host is 127.0.0.1 and default port is 0 and will automatically assign
-    # a port not in use.
     grpc:
-      host: ""
-      port: ""
+      host: ""                                    # Default host is 127.0.0.1
+      port: ""                                    # default port is 0 and will automatically assign a port not in use.
 
 grafana_defaults_config_plugins:
   enable_alpha: false
   app_tls_skip_verify_insecure: false
-  # Enter a comma-separated list of plugin identifiers to identify plugins to load even if they are unsigned.
-  # Plugins with modified signatures are never loaded.
   allow_loading_unsigned_plugins: []
-  # Enable or disable installing / uninstalling / updating plugins directly from within Grafana.
   plugin_admin_enabled: false
   plugin_admin_external_manage_enabled: false
   plugin_catalog_url: https://grafana.com/grafana/plugins/
-  # Enter a comma-separated list of plugin identifiers to hide in the plugin catalog.
   plugin_catalog_hidden_plugins: ""
 
 grafana_defaults_config_profile:
-  # Enable the Profile section
   enabled: false
 
 grafana_defaults_config_query_history:
-  # Enable the Query history
   enabled: true
 
 grafana_defaults_config_quota:
   enabled: false
-  #### set quotas to -1 to make unlimited. ####
-  # limit number of users per Org.
-  org_user: 10
-  # limit number of dashboards per Org.
-  org_dashboard: 100
-  # limit number of data_sources per Org.
-  org_data_source: 10
-  # limit number of api_keys per Org.
-  org_api_key: 10
-  # limit number of alerts per Org.
-  org_alert_rule: 100
-  # limit number of orgs a user can create.
-  user_org: 10
-  # Global limit of users.
-  global_user: -1
-  # global limit of orgs.
-  global_org: -1
-  # global limit of dashboards
-  global_dashboard: -1
-  # global limit of api_keys
-  global_api_key: -1
-  # global limit on number of logged in users.
-  global_session: -1
-  # global limit of alerts
-  global_alert_rule: -1
+  org_user: ""                                    # 10
+  org_dashboard: ""                               # 100
+  org_data_source: ""                             # 10
+  org_api_key: ""                                 # 10
+  org_alert_rule: ""                              # 100
+  user_org: ""                                    # 10
+  global_user: ""                                 # -1
+  global_org: ""                                  # -1
+  global_dashboard: ""                            # -1
+  global_api_key: ""                              # -1
+  global_session: ""                              # -1
+  global_alert_rule: ""                           # -1
 
 grafana_defaults_config_rbac:
   permission_cache: true
 
 grafana_defaults_config_remote_cache:
-  # Either "redis", "memcached" or "database" default is "database"
-  type: database
-
+  type: database                                  # # Either "redis", "memcached" or "database" default is "database"
   # cache connectionstring options
   # database: will use Grafana primary database.
   # redis:    config like redis server e.g. `addr=127.0.0.1:6379,pool_size=100,db=0,ssl=false`.
@@ -685,62 +520,30 @@ grafana_defaults_config_remote_cache:
   connstr: ""
 
 grafana_defaults_config_rendering:
-  # Options to configure a remote HTTP image rendering service, e.g. using https://github.com/grafana/grafana-image-renderer.
-  # URL to a remote HTTP image renderer service, e.g. http://localhost:8081/render, will enable Grafana to render panels and dashboards to PNG-images using HTTP requests to an external service.
   server_url: ""
-  # If the remote HTTP image renderer service runs on a different server than the Grafana server you may have to configure this to a URL where Grafana is reachable, e.g. http://grafana.domain/.
   callback_url: ""
-  # Concurrent render request limit affects when the /render HTTP endpoint is used. Rendering many images at the same time can overload the server,
-  # which this setting can help protect against by only allowing a certain amount of concurrent requests.
-  concurrent_render_request_limit: 30
+  concurrent_render_request_limit: ""             # 30
 
 grafana_defaults_config_security:
-  # disable creation of admin user on first start of grafana
   disable_initial_admin_creation: false
-  # default admin user, created on startup
   admin_user: admin
-  # default admin password, can be changed before first start of grafana,  or in profile settings
   admin_password: admin
-  # used for signing
   secret_key: SW2YcwTIb9zpOOhoPsMm
-  # current key provider used for envelope encryption, default to static value specified by secret_key
-  encryption_provider: "" # secretKey.v1
-  # list of configured key providers, space separated (Enterprise only): e.g., awskms.v1 azurekv.v1
-  available_encryption_providers: []
-  # disable gravatar profile images
-  disable_gravatar: false
-  # data source proxy whitelist (ip_or_domain:port separated by spaces)
-  data_source_proxy_whitelist: []
-  # disable protection against brute force login attempts
-  disable_brute_force_login_protection: false
-  # set to true if you host Grafana behind HTTPS. default is false.
-  cookie_secure: false
-  # set cookie SameSite attribute. defaults to `lax`. can be set to "lax", "strict", "none" and "disabled"
-  cookie_samesite: lax
-  # set to true if you want to allow browsers to render Grafana in a <frame>, <iframe>, <embed> or <object>. default is false.
-  allow_embedding: false
-  # Set to true if you want to enable http strict transport security (HSTS) response header.
-  # HSTS tells browsers that the site should only be accessed using HTTPS.
-  strict_transport_security: false
-  # Sets how long a browser should cache HSTS. Only applied if strict_transport_security is enabled.
-  strict_transport_security_max_age_seconds: 86400
-  # Set to true if to enable HSTS preloading option. Only applied if strict_transport_security is enabled.
-  strict_transport_security_preload: false
-  # Set to true if to enable the HSTS includeSubDomains option. Only applied if strict_transport_security is enabled.
-  strict_transport_security_subdomains: false
-  # Set to true to enable the X-Content-Type-Options response header.
-  # The X-Content-Type-Options response HTTP header is a marker used by the server to indicate that the MIME types advertised
-  # in the Content-Type headers should not be changed and be followed.
-  x_content_type_options: true
-  # Set to true to enable the X-XSS-Protection header, which tells browsers to stop pages from loading
-  # when they detect reflected cross-site scripting (XSS) attacks.
-  x_xss_protection: true
-  # Enable adding the Content-Security-Policy header to your requests.
-  # CSP allows to control resources the user agent is allowed to load and helps prevent XSS attacks.
-  content_security_policy: false
-  # Set Content Security Policy template used when adding the Content-Security-Policy header to your requests.
-  # $NONCE in the template includes a random nonce.
-  # $ROOT_PATH is server.root_url without the protocol.
+  encryption_provider: ""                         # secretKey.v1
+  available_encryption_providers: []              # (Enterprise only) list of configured key providers, e.g., awskms.v1 azurekv.v1
+  disable_gravatar: true                          # false
+  data_source_proxy_whitelist: []                 # data source proxy whitelist (ip_or_domain:port separated by spaces)
+  disable_brute_force_login_protection: ""        # false
+  cookie_secure: ""                               # set to true if you host Grafana behind HTTPS. default is false.
+  cookie_samesite: ""                             # defaults to `lax`. can be set to "lax", "strict", "none" and "disabled"
+  allow_embedding: ""                             # false
+  strict_transport_security: ""                   # false
+  strict_transport_security_max_age_seconds: ""   # 86400
+  strict_transport_security_preload: ""           # false
+  strict_transport_security_subdomains: ""        # false
+  x_content_type_options: ""                      # true
+  x_xss_protection: ""                            # true
+  content_security_policy: ""                     # false
   content_security_policy_template:
     script-src:
       - self
@@ -772,56 +575,29 @@ grafana_defaults_config_security:
       - none
     form-action:
       - self
-
-  # Controls if old angular plugins are supported or not. This will be disabled by default in future release
-  angular_support_enabled: true
-  # List of additional allowed URLs to pass by the CSRF check, separated by spaces. Suggested when authentication comes from an IdP.
-  csrf_trusted_origins: ""
-  # List of allowed headers to be set by the user, separated by spaces. Suggested to use for if authentication lives behind reverse proxies.
-  csrf_additional_headers: ""
-
+  angular_support_enabled: ""                     # true - This will be disabled by default in future release
+  csrf_trusted_origins: []
+  csrf_additional_headers: []
   encryption:
-    # Defines the time-to-live (TTL) for decrypted data encryption keys stored in memory (cache).
-    # Please note that small values may cause performance issues due to a high frequency decryption operations.
-    data_keys_cache_ttl: 15m
-
-    # Defines the frequency of data encryption keys cache cleanup interval.
-    # On every interval, decrypted data encryption keys that reached the TTL are removed from the cache.
-    data_keys_cache_cleanup_interval: 1m
+    data_keys_cache_ttl: ""                       # 15m
+    data_keys_cache_cleanup_interval: ""          # 1m
 
 grafana_defaults_config_server:
-  # Protocol (http, https, h2, socket)
-  protocol: http
-  # The ip address to bind to, empty will bind to all interfaces
+  protocol: http                                  # (http, https, h2, socket)
   http_addr: ""
-  # The http port  to use
   http_port: 3000
-  # The public facing domain name used to access grafana from a browser
   domain: localhost
-  # Redirect to correct domain if host header does not match domain
-  # Prevents DNS rebinding attacks
   enforce_domain: false
-  # The full public facing url you use in browser, used for redirects and emails
-  # If you use reverse proxy and sub path specify full url (with sub path)
   root_url: "%(protocol)s://%(domain)s:%(http_port)s/"
-  # Serve Grafana from subpath specified in `root_url` setting. By default it is set to `false` for compatibility reasons.
-  serve_from_sub_path: false
-  # Log web requests
-  router_logging: false
-  # the path relative working path
+  serve_from_sub_path: ""                         # false
+  router_logging: ""                              # false
   static_root_path: public
-  # enable gzip
   enable_gzip: false
-  # https certs & key file
   cert_file: ""
   cert_key: ""
-  # Unix socket path
   socket: ""
-  # CDN Url
   cdn_url: ""
-  # Sets the maximum time using a duration format (5s/5m/5ms) before timing out read of an incoming request and closing idle connections.
-  # `0` means there is no timeout for reading the request.
-  read_timeout: 0
+  read_timeout: ""                                # 0
 
 grafana_defaults_config_smtp:
   enabled: false

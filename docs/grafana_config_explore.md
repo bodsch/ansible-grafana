@@ -2,6 +2,5 @@
 
 ```yaml
 grafana_config_explore:
-  # Enable the Explore section
   enabled: true
 ```

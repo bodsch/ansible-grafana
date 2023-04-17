@@ -71,19 +71,18 @@ content_security_policy         = {{ grafana_config_security.content_security_po
           grafana_config_security.content_security_policy_template | count > 0 %}
       {% set policy = grafana_config_security.content_security_policy_template | content_security_policy() %}
 content_security_policy_template = """{{ policy }}"""
-; content_security_policy_template = """script-src 'self' 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' $NONCE; object-src 'none'; font-src 'self'; style-src 'self' 'unsafe-inline' blob:; img-src * data:; base-uri 'self'; connect-src 'self' grafana.com ws://$ROOT_PATH wss://$ROOT_PATH; manifest-src 'self'; media-src 'none'; form-action 'self';"""
     {% endif %}
   {% endif %}
   {% if grafana_config_security.angular_support_enabled is defined %}
 angular_support_enabled         = {{ grafana_config_security.angular_support_enabled | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}
   {% endif %}
   {% if grafana_config_security.csrf_trusted_origins is defined and
-        grafana_config_security.csrf_trusted_origins | string | length > 0 %}
-csrf_trusted_origins            = {{ grafana_config_security.csrf_trusted_origins }}
+        grafana_config_security.csrf_trusted_origins | count %}
+csrf_trusted_origins            = {{ grafana_config_security.csrf_trusted_origins | join(' ') }}
   {% endif %}
   {% if grafana_config_security.csrf_additional_headers is defined and
-        grafana_config_security.csrf_additional_headers | string | length > 0 %}
-csrf_additional_headers         = {{ grafana_config_security.csrf_additional_headers }}
+        grafana_config_security.csrf_additional_headers | count > 0 %}
+csrf_additional_headers         = {{ grafana_config_security.csrf_additional_headers | join(' ')  }}
   {% endif %}
 
   {% if grafana_config_security.encryption is defined %}

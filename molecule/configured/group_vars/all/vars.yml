@@ -12,8 +12,11 @@ grafana_plugins:
   - grafana-worldmap-panel
   - marcusolsson-gantt-panel
 
-grafana_datasources:
+grafana_config_security:
+  secret_key: uvvC9ogZSsf.iVaq7iuM5L;jxh9t,HzKyWLxk.V:jm
+  content_security_policy: true
 
+grafana_datasources:
   prometheus:
     # state: absent
     datasource:

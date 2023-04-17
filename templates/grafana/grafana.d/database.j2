@@ -81,7 +81,8 @@ max_open_conn                   = {{ grafana_config_database.max_open_conn }}
         grafana_config_database.conn_max_lifetime | string | length > 0 %}
 conn_max_lifetime               = {{ grafana_config_database.conn_max_lifetime }}
   {% endif %}
-  {% if grafana_config_database.log_queries is defined %}
+  {% if grafana_config_database.log_queries is defined and
+        grafana_config_database.log_queries | string | length > 0 %}
 log_queries                     = {{ grafana_config_database.log_queries | bool | bodsch.core.config_bool(true_as='true', false_as='false') }}
   {% endif %}
   {% if grafana_config_database.locking_attempt_timeout_sec is defined and
