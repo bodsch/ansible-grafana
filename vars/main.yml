@@ -17,6 +17,7 @@ grafana_remote_tmp_directory: "{{ grafana_cache_directory }}/{{ grafana_version 
 grafana_requirements:
   - iproute2
   - gzip
+  - python3-pip
 
 # python requirements
 # pip install grafana-client --upgrade
