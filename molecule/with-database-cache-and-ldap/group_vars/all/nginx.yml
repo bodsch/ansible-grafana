@@ -37,7 +37,7 @@ nginx_logformat:
     # escape: json
 
 nginx_vhosts:
-  grafana.molecule.lan:
+  - name: grafana.molecule.lan
     filename: 00-grafana.molecule.lan.conf
     state: present  # default: present
     enabled: true   # default: true
