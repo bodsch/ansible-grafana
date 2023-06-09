@@ -3,6 +3,6 @@
 - name: grafana
   src: https://github.com/cloudalchemy/ansible-grafana.git
   scm: git
-  version: 0.18.0
+  version: 0.17.0
 
 ...
