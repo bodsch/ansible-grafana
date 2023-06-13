@@ -69,6 +69,7 @@
         repository: grafana
         user: "{{ lookup('env', 'GH_USER') | default(omit) }}"
         password: "{{ lookup('env', 'GH_TOKEN') | default(omit) }}"
+          filter_elements: "{{ grafana_version_filter }}"
       register: _latest_release
 
     - name: re-define grafana_version

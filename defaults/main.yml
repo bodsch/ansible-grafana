@@ -2,6 +2,11 @@
 
 grafana_version: 9.4.7
 
+grafana_version_filter:
+  - ".*preview"
+  - ".*beta"
+  - ".*rc"
+
 # enterprise or oss
 grafana_edition: oss
 
