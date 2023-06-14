@@ -18,12 +18,10 @@ grafana_requirements:
   - iproute2
   - gzip
   - python3-pip
+  - python3-virtualenv
 
-# python requirements
-# pip install grafana-client --upgrade
-
-grafana_python_packages:
-  - name: grafana-client
+grafana_python_packages: []
+#  - name: grafana-client
 ##     version: 2.0.3
 
 # https://dl.grafana.com/enterprise/release/grafana-enterprise-9.1.1.linux-amd64.tar.gz

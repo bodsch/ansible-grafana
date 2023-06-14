@@ -186,11 +186,13 @@
       when:
         - not pip_requirements.pip.present
 
-    - name: install docker python packages  # noqa no-handler
+    - name: install python packages  # noqa no-handler
       ansible.builtin.pip:
-        executable: pip3
+        # executable: pip3
         requirements: "{{ pip_requirements.requirements_file }}"
         state: present
+        virtualenv: /opt/grafana/venv
+        virtualenv_site_packages: true
       register: pip_install
       ignore_errors: false
       no_log: true
@@ -198,4 +200,23 @@
         - pip_requirements.requirements_file is defined
         - pip_requirements.changed
 
+    - name: failed
+      ansible.builtin.debug:
+        msg: "{{ pip_install.stdout }}"
+      when:
+        - pip_install.failed is defined
+        - pip_install.failed
+
+  rescue:
+    - name: remove pip requirements
+      bodsch.core.pip_requirements:
+        name: grafana
+        requirements: "{{ grafana_python_packages }}"
+        state: absent
+
+    - name: pip requirements installation failed
+      ansible.builtin.fail:
+        msg: "{{ pip_install.msg }}"
+      when:
+        - pip_install.failed
 ...
