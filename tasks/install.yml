@@ -80,16 +80,23 @@
     - _grafana_provisioning_dir.stat is defined
     - not _grafana_provisioning_dir.stat.exists | default('false')
 
+- name: find grafana binaries
+  ansible.builtin.find:
+    paths: "{{ grafana_install_path }}/bin/"
+    file_type: file
+    patterns:
+      - "grafana*"
+    recurse: false
+  register: found_binaries
+
 - name: create link to binaries
   ansible.builtin.file:
-    src: "{{ grafana_install_path }}/bin/{{ item }}"
-    dest: "/usr/sbin/{{ item }}"
+    src: "{{ item }}"
+    dest: "/usr/sbin/{{ item | basename }}"
     state: link
     force: true
     follow: false
-  loop:
-    - grafana-cli
-    - grafana-server
+  loop: "{{ found_binaries.files | file_list | reject('search', 'md5') }}"
   notify:
     - restart grafana
 

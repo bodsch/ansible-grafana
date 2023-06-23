@@ -260,13 +260,19 @@ class GrafanaCLI(object):
         plugins_array = '|'.join(data.splitlines())
         plugins_array = plugins_array.split('|')
 
-        plugins_array = list(filter(None, plugins_array))  # remove empty strings
-        plugins_array.pop()                                # remove last element ('Please restart Grafana after installing plugins. Refer to Grafana documentation for instructions if necessary.')
+        # deprecation_warning = [x for x in plugins_array if "Deprecation warning" in x]
+        plugins_array = [x for x in plugins_array if "@" in x]
+
+        # remove empty strings
+        # plugins_array = list(filter(None, plugins_array))
+        # remove last element ('Please restart Grafana after installing plugins. Refer to Grafana documentation for instructions if necessary.')
+        # plugins_array.pop()
 
         if len(plugins_array) > 0:
             """
             """
-            plugins_array.pop(0)                           # remove first element ('installed plugins:')
+            # remove first element ('installed plugins:')
+            # plugins_array.pop(0)
             # self.module.log(msg=f"  plugins_array   : {plugins_array}")
             pattern = re.compile(r"((?P<plugin>.*) @ (?P<version>.*))")
 
@@ -275,14 +281,16 @@ class GrafanaCLI(object):
             """
             res = {}
             re_result = re.search(pattern, plugin)
-            plugin_string = re_result.group('plugin')
-            version_string = re_result.group('version')
 
-            res[plugin_string] = dict(
-                version=version_string
-            )
+            if re_result:
+                plugin_string = re_result.group('plugin')
+                version_string = re_result.group('version')
 
-            result.append(res)
+                res[plugin_string] = dict(
+                    version=version_string
+                )
+
+                result.append(res)
 
         return result
 

@@ -22,10 +22,10 @@ class FilterModule(object):
     def file_list(self, data):
         """
         """
+        # display.v(f"file_list(self, {data})")
         result = []
         if isinstance(data, list):
-            for d in data:
-                result.append(d.get("path"))
+            result = [x.get("path") for x in data if x.get("path")]
 
         return result
 

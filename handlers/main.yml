@@ -12,7 +12,7 @@
     name: grafana-server
     state: reloaded
 
-- name: validate config
+- name: validate config  # noqa no-changed-when
   ansible.builtin.command: /bin/true
 
 - name: daemon-reload

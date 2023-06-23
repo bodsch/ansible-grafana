@@ -130,9 +130,9 @@
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
 
-- name: detect installed grafana binary {{ grafana_install_path }}/bin/grafana-server
+- name: detect installed grafana binary
   ansible.builtin.stat:
-    path: "{{ grafana_install_path }}/bin/grafana-server"
+    path: "{{ grafana_install_path }}/bin/{{ grafana_binary }}"
   register: stat_grafana_binary
 
 - name: create download directory

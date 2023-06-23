@@ -49,7 +49,7 @@
   ansible.builtin.wait_for:
     path: "{{ grafana_pidfile }}"
     state: present
-    delay: 5
+    delay: 2
     msg: "Timeout to find {{ grafana_pidfile }}"
   ignore_errors: false
 
