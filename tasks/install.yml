@@ -1,54 +1,32 @@
 ---
 
-- name: detect binary file for grafana
-  become: false
-  delegate_to: "{{ grafana_delegate_to }}"
-  run_once: "{{ 'false' if grafana_direct_download else 'true' }}"
-  ansible.builtin.stat:
-    path: "{{ grafana_install_path }}/bin/grafana-server"
-  register: stat_file_binary
-
-- name: handle remote binaries
+- name: user and group handling
   when:
-    - not stat_file_binary.stat.exists
-    - not stat_grafana_binary.stat.exists
+    - grafana_system_user != "root"
   block:
-    - name: create remote temp directory
-      ansible.builtin.file:
-        path: "{{ grafana_remote_tmp_directory }}"
-        state: directory
-        mode: 0755
-      when:
-        - not grafana_direct_download
+    - name: create grafana group
+      ansible.builtin.group:
+        name: "{{ grafana_system_group }}"
+        state: present
+        system: true
 
-    - name: propagate grafana archive
-      ansible.builtin.copy:
-        src: "{{ grafana_local_tmp_directory }}/{{ grafana_download_file }}"
-        dest: "{{ grafana_remote_tmp_directory }}"
-        mode: 0755
-        owner: "{{ grafana_system_user }}"
-        group: "{{ grafana_system_group }}"
-        remote_src: "{{ 'true' if grafana_direct_download else 'false' }}"
+    - name: create grafana user
+      ansible.builtin.user:
+        name: "{{ grafana_system_user }}"
+        groups: "{{ grafana_system_group }}"
+        append: true
+        shell: /usr/sbin/nologin
+        system: true
+        createhome: false
+        home: /nonexistent
 
-    - name: extract grafana archive
-      become: true
-      ansible.builtin.unarchive:
-        src: "{{ grafana_remote_tmp_directory }}/{{ grafana_download_file }}"
-        dest: "{{ grafana_install_path }}"
-        copy: false
-        extra_opts:
-          - --strip-components=1
-      register: _extract_archive
-
-- name: create link to working directory
+- name: create install directory
   ansible.builtin.file:
-    state: link
-    src: "{{ grafana_install_path }}"
-    dest: "{{ grafana_share_dir }}"
-    force: true
-    follow: false
-  notify:
-    - restart grafana
+    path: "{{ grafana_install_path }}"
+    state: directory
+    owner: "{{ grafana_system_user }}"
+    group: "{{ grafana_system_group }}"
+    mode: 0755
 
 - name: create config directory
   ansible.builtin.file:
@@ -56,6 +34,112 @@
     path: /etc/grafana
     group: "{{ grafana_system_group }}"
     mode: 0755
+
+- name: create grafana lib directory
+  ansible.builtin.file:
+    state: directory
+    path: "{{ grafana_data_dir }}/{{ item }}"
+    owner: "{{ grafana_system_user }}"
+    group: "{{ grafana_system_group }}"
+    mode: 0775
+  loop:
+    - alerting
+    - csv
+    - dashboards
+    - plugins
+    - png
+    - sessions
+    - storage
+
+- name: create grafana log directory
+  ansible.builtin.file:
+    state: directory
+    path: "{{ grafana_log_dir }}"
+    mode: 0755
+
+- name: detect installed grafana binary
+  ansible.builtin.stat:
+    path: "{{ grafana_install_path }}/bin/{{ grafana_release.binary }}"
+  register: stat_grafana_binary
+
+- name: detect activated grafana binary
+  ansible.builtin.stat:
+    path: /usr/bin/{{ grafana_release.binary }}
+  register: stat_grafana_activated
+
+- name: install and activate grafana
+  when:
+    - (stat_grafana_binary.stat is defined and not stat_grafana_binary.stat.exists | default('false')) or
+      not stat_grafana_activated.stat | bodsch.core.linked_version(grafana_install_path, grafana_version)
+  block:
+    - name: propagate files
+      block:
+        - name: create remote temp directory
+          ansible.builtin.file:
+            path: "{{ grafana_remote_tmp_directory }}"
+            state: directory
+            mode: 0755
+          when:
+            - not grafana_direct_download
+
+        - name: propagate grafana archive
+          ansible.builtin.copy:
+            src: "{{ grafana_local_tmp_directory }}/{{ grafana_release.file }}"
+            dest: "{{ grafana_remote_tmp_directory }}"
+            mode: 0755
+            owner: "{{ grafana_system_user }}"
+            group: "{{ grafana_system_group }}"
+            remote_src: "{{ 'true' if grafana_direct_download else 'false' }}"
+
+        - name: extract grafana archive
+          become: true
+          ansible.builtin.unarchive:
+            src: "{{ grafana_remote_tmp_directory }}/{{ grafana_release.file }}"
+            dest: "{{ grafana_install_path }}"
+            copy: false
+            extra_opts:
+              - --strip-components=1
+          register: _extract_archive
+
+        - name: create link to working directory
+          ansible.builtin.file:
+            state: link
+            src: "{{ grafana_install_path }}"
+            dest: "{{ grafana_share_dir }}"
+            force: true
+            follow: false
+          notify:
+            - restart grafana
+
+        - name: find grafana binaries
+          ansible.builtin.find:
+            paths: "{{ grafana_install_path }}/bin/"
+            file_type: file
+            patterns:
+              - "grafana*"
+            recurse: false
+          register: found_binaries
+
+        - name: create link to binaries
+          ansible.builtin.file:
+            src: "{{ item }}"
+            dest: "/usr/sbin/{{ item | basename }}"
+            state: link
+            force: true
+            follow: false
+          loop: "{{ found_binaries.files | file_list | reject('search', 'md5') }}"
+          notify:
+            - restart grafana
+
+      rescue:
+        - name: delete install directory
+          ansible.builtin.file:
+            path: "{{ grafana_install_path }}"
+            state: absent
+
+        - name: exit with fail
+          ansible.builtin.fail:
+            msg: A serious error occurred during the installation of the binary.
 
 - name: find grafana provisioning
   ansible.builtin.stat:
@@ -80,59 +164,22 @@
     - _grafana_provisioning_dir.stat is defined
     - not _grafana_provisioning_dir.stat.exists | default('false')
 
-- name: find grafana binaries
-  ansible.builtin.find:
-    paths: "{{ grafana_install_path }}/bin/"
-    file_type: file
-    patterns:
-      - "grafana*"
-    recurse: false
-  register: found_binaries
-
-- name: create link to binaries
-  ansible.builtin.file:
-    src: "{{ item }}"
-    dest: "/usr/sbin/{{ item | basename }}"
-    state: link
-    force: true
-    follow: false
-  loop: "{{ found_binaries.files | file_list | reject('search', 'md5') }}"
-  notify:
-    - restart grafana
-
-- name: create custom fact file
-  bodsch.core.facts:
-    name: grafana
-    facts:
-      edition: "{{ grafana_edition }}"
-      version: "{{ grafana_version }}"
-
-- name: create grafana lib directory
-  ansible.builtin.file:
-    state: directory
-    path: "{{ grafana_data_dir }}/{{ item }}"
-    owner: "{{ grafana_system_user }}"
-    group: "{{ grafana_system_group }}"
-    mode: 0775
-  loop:
-    - alerting
-    - csv
-    - dashboards
-    - plugins
-    - png
-    - sessions
-    - storage
-
-- name: create grafana log directory
-  ansible.builtin.file:
-    state: directory
-    path: "{{ grafana_log_dir }}"
-    mode: 0755
-
 - name: systemd
   when:
     - ansible_service_mgr | lower == "systemd"
   block:
+    - name: create grafana run configuration
+      ansible.builtin.template:
+        src: "default/grafana-server.j2"
+        dest: "{{ grafana_defaults_directory }}/grafana-server"
+        force: true
+        owner: root
+        group: "{{ grafana_system_group }}"
+        mode: 0644
+      notify:
+        - validate config
+        - reload grafana
+
     - name: create systemd service unit
       ansible.builtin.template:
         src: "init/systemd/grafana-server.service.j2"
@@ -143,18 +190,6 @@
       notify:
         - daemon-reload
         - restart grafana
-
-    - name: create grafana run configuration
-      ansible.builtin.template:
-        src: "grafana-server.j2"
-        dest: "{{ grafana_defaults_directory }}/grafana-server"
-        force: true
-        owner: root
-        group: "{{ grafana_system_group }}"
-        mode: 0644
-      notify:
-        - validate config
-        - reload grafana
 
 - name: openrc
   when:
@@ -176,6 +211,13 @@
         group: root
         mode: 0750
 
+- name: create custom fact file
+  bodsch.core.facts:
+    name: grafana
+    facts:
+      edition: "{{ grafana_edition }}"
+      version: "{{ grafana_version }}"
+
 - name: python support
   when:
     - grafana_python_packages is defined
@@ -195,11 +237,9 @@
 
     - name: install python packages  # noqa no-handler
       ansible.builtin.pip:
-        # executable: pip3
-        requirements: "{{ pip_requirements.requirements_file }}"
         state: present
-        virtualenv: /opt/grafana/venv
-        virtualenv_site_packages: true
+        requirements: "{{ pip_requirements.requirements_file }}"
+        extra_args: "{{ grafana_python_extra_args | default([]) | bodsch.core.python_extra_args(python_version=ansible_python.version) | default(omit) }}"
       register: pip_install
       ignore_errors: false
       no_log: true

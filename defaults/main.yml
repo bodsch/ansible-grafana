@@ -2,17 +2,19 @@
 
 grafana_version: 9.4.7
 
-grafana_version_filter:
-  - ".*preview"
-  - ".*beta"
-  - ".*rc"
+grafana_scm:
+  use_tags: true
+  without_beta: false
+  version_filter:
+    - ".*test*"
+    - ".*preview"
+    - ".*beta"
+    - ".*rc"
 
 # enterprise or oss
 grafana_edition: oss
 
-grafana_urls:
-  releases: https://github.com/grafana/grafana/releases
-  downloads: https://dl.grafana.com/{{ grafana_edition }}/release
+grafana_release: {}
 
 grafana_system_user: grafana
 grafana_system_group: grafana

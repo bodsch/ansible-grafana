@@ -1,20 +1,21 @@
 ---
 
 - name: prepare
-  ansible.builtin.include_tasks: prepare.yml
+  ansible.builtin.import_tasks: prepare.yml
 
 - name: download
-  ansible.builtin.include_tasks: download.yml
-  when:
-    - not stat_grafana_binary.stat.exists
+  ansible.builtin.import_tasks: download.yml
+
+- name: external installation
+  ansible.builtin.import_tasks: external_installation.yml
 
 - name: install
-  ansible.builtin.include_tasks: install.yml
+  ansible.builtin.import_tasks: install.yml
 
 - name: configure
-  ansible.builtin.include_tasks: configure.yml
+  ansible.builtin.import_tasks: configure.yml
 
 - name: service
-  ansible.builtin.include_tasks: service.yml
+  ansible.builtin.import_tasks: service.yml
 
 ...

@@ -27,10 +27,6 @@ grafana_python_packages: []
 #  - name: grafana-client
 ##     version: 2.0.3
 
-# https://dl.grafana.com/enterprise/release/grafana-enterprise-9.1.1.linux-amd64.tar.gz
-# https://dl.grafana.com/oss/release/grafana-9.1.1.linux-amd64.tar.gz
-grafana_download_file: "grafana{{ '-enterprise' if grafana_edition == 'enterprise' else '' }}-{{ grafana_version }}.linux-{{ system_architecture }}.tar.gz"
-
 # ----------------------------------------------------------------------------------------
 
 grafana_pidfile: /run/grafana/grafana-server.pid
@@ -816,6 +812,13 @@ grafana_defaults_config_ldap:
 grafana_upgrade: false
 
 grafana_defaults_directory: /etc/default
+
+grafana_defaults_release:
+  github_url: https://github.com/grafana/grafana/releases
+  download_url: https://dl.grafana.com/{{ grafana_edition }}/release
+  api_url: https://api.github.com/repos/grafana/grafana/releases
+  file: "grafana{{ '-enterprise' if grafana_edition == 'enterprise' else '' }}-{{ grafana_version }}.{{ ansible_facts.system | lower }}-{{ system_architecture }}.tar.gz"
+  binary: grafana
 
 go_arch_map:
   x86_64: 'amd64'
