@@ -35,6 +35,11 @@ on:
       - "!README.md"
       - "tasks/**"
 
+
+defaults:
+  run:
+    working-directory: 'ansible-grafana'
+
 jobs:
   lint:
     name: linting
