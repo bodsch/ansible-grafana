@@ -18,14 +18,21 @@ platforms:
     docker_host: "${DOCKER_HOST:-unix://run/docker.sock}"
     privileged: true
     pre_build_image: true
+    cgroupns_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - /var/lib/containerd
+    capabilities:
+      - SYS_ADMIN
+    tmpfs:
+      - /run
+      - /tmp
     published_ports:
       - 80:80
       - 443:443
       - 3000:3000
       - 389:389
       - 636:636
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
 
 provisioner:
   name: ansible

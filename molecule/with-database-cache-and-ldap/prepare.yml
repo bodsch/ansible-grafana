@@ -33,16 +33,18 @@
         - ansible_distribution | lower == 'debian'
       block:
         - name: install python3-pip
-          package:
+          ansible.builtin.package:
             name: python3-pip
             state: present
 
-    - debug:
+    - name: information
+      ansible.builtin.debug:
         msg:
           - "os family            : {{ ansible_distribution }} ({{ ansible_os_family }})"
           - "distribution version : {{ ansible_distribution_major_version }}"
           - "ansible version      : {{ ansible_version.full }}"
           - "python version       : {{ ansible_python.version.major }}.{{ ansible_python.version.minor }}"
+          - "ansible_service_mgr  : {{ ansible_service_mgr }}"
 
 - name: prepare all
   hosts: all
@@ -51,6 +53,14 @@
   roles:
     - role: apparmor
     - role: snapd
+
+- name: prepare nginx
+  hosts: nginx
+  gather_facts: true
+
+  roles:
+    - role: snakeoil
+    - role: nginx
 
 - name: prepare influxdb
   hosts: influxdb
@@ -69,6 +79,12 @@
   roles:
     - role: influxdb
 
+- name: prepare prometheus
+  hosts: prometheus
+  gather_facts: true
+  roles:
+    - role: bodsch.prometheus.prometheus
+
 - name: prepare ldap
   hosts: auth
   gather_facts: true
@@ -84,13 +100,5 @@
     - role: syslog-ng
     - role: mariadb
     - role: redis
-
-- name: prepare nginx
-  hosts: nginx
-  gather_facts: true
-
-  roles:
-    - role: snakeoil
-    - role: nginx
 
 ...
