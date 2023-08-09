@@ -64,13 +64,19 @@
 
 - name: detect activated grafana binary
   ansible.builtin.stat:
-    path: /usr/bin/{{ grafana_release.binary }}
+    path: /usr/sbin/{{ grafana_release.binary }}
   register: stat_grafana_activated
+
+- name: define install and activate
+  ansible.builtin.set_fact:
+    grafana_must_be_install_or_activate: "{{
+      (stat_grafana_binary.stat is defined and not stat_grafana_binary.stat.exists | default('false')) or
+      not stat_grafana_activated.stat | bodsch.core.linked_version(install_path=grafana_install_path + '/bin', version=grafana_version)
+    }}"
 
 - name: install and activate grafana
   when:
-    - (stat_grafana_binary.stat is defined and not stat_grafana_binary.stat.exists | default('false')) or
-      not stat_grafana_activated.stat | bodsch.core.linked_version(grafana_install_path, grafana_version)
+    - grafana_must_be_install_or_activate | default('true')
   block:
     - name: propagate files
       block:

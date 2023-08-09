@@ -810,6 +810,7 @@ grafana_defaults_config_ldap:
 # ----------------------------------------------------------------------------------------
 
 grafana_upgrade: false
+grafana_must_be_install_or_activate: false
 
 grafana_defaults_directory: /etc/default
 
