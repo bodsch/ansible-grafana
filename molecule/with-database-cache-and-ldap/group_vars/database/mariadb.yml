@@ -1,6 +1,6 @@
 ---
 
-mariadb_debian_repo: "https://ftp.nluug.nl/db/mariadb/repo"
+# mariadb_debian_repo: "https://ftp.nluug.nl/db/mariadb/repo"
 
 mariadb_root_password: Y5FZfKXzCeOWGf4kBOiFSp6Il
 

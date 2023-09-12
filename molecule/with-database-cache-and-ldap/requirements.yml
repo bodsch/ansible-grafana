@@ -19,8 +19,6 @@
 - name: nginx
   src: bodsch.nginx
   version: 0.22.1
-  #src: https://github.com/bodsch/ansible-nginx.git
-  #scm: git
 
 - name: redis
   src: bodsch.redis

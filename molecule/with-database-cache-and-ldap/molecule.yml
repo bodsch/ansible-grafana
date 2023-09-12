@@ -44,7 +44,7 @@ platforms:
         ipv4_address: "10.13.0.10"
 
   - name: influxdb
-    image: "bodsch/ansible-debian:11"
+    image: "bodsch/ansible-debian:12"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     docker_host: "${DOCKER_HOST:-unix://run/docker.sock}"
     privileged: true
@@ -70,7 +70,7 @@ platforms:
         ipv4_address: "10.13.0.11"
 
   - name: prometheus
-    image: "bodsch/ansible-debian:11"
+    image: "bodsch/ansible-debian:12"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     docker_host: "${DOCKER_HOST:-unix://run/docker.sock}"
     privileged: true
@@ -98,7 +98,7 @@ platforms:
         ipv4_address: "10.13.0.12"
 
   - name: auth
-    image: "bodsch/ansible-debian:11"
+    image: "bodsch/ansible-debian:12"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     docker_host: "${DOCKER_HOST:-unix://run/docker.sock}"
     privileged: true
@@ -126,7 +126,7 @@ platforms:
         ipv4_address: "10.13.0.13"
 
   - name: nginx
-    image: "bodsch/ansible-debian:11"
+    image: "bodsch/ansible-debian:12"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     docker_host: "${DOCKER_HOST:-unix://run/docker.sock}"
     privileged: true
@@ -150,7 +150,7 @@ platforms:
         ipv4_address: "10.13.0.14"
 
   - name: instance
-    image: "bodsch/ansible-${DISTRIBUTION:-debian:11}"
+    image: "bodsch/ansible-${DISTRIBUTION:-debian:12}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     docker_host: "${DOCKER_HOST:-unix://run/docker.sock}"
     privileged: true
@@ -184,9 +184,9 @@ provisioner:
       stdout_callback: yaml
       callbacks_enabled: profile_tasks
       gathering: smart
-      fact_caching: jsonfile
-      fact_caching_timeout: 8640
-      fact_caching_connection: ansible_facts
+      #fact_caching: jsonfile
+      #fact_caching_timeout: 8640
+      #fact_caching_connection: ansible_facts
 
 scenario:
   test_sequence:

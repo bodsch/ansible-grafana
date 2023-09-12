@@ -92,7 +92,7 @@ grafana_config_auth:
 grafana_config_ldap:
   servers:
     - hosts:
-        - database
+        - auth
       port: 389
       bind_dn: 'cn=admin,dc=molecule,dc=lan'
       bind_password: "{{ vault__ldap.admin }}"
