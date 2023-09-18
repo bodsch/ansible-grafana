@@ -25,7 +25,7 @@ class GrafanaServiceAccount(object):
         self.state = module.params.get("state")
         self.grafana_url = module.params.get("grafana_url")
         self.grafana_admin = module.params.get("grafana_admin")
-        self.grafana_api_token = module.params.get("api_token")
+        self.grafana_service_account_token = module.params.get("service_account_token")
         self.grafana_org_id = module.params.get("org_id")
         self.grafana_service_accounts = module.params.get("service_accounts")
 
@@ -74,8 +74,8 @@ class GrafanaServiceAccount(object):
             absent_keys  = [v for v in self.grafana_service_accounts if v.get('state', "present") == "absent"]
             # disabled_keys = [v for v in self.grafana_service_accounts if v.get('state', "present") == "disabled"]
 
-            self.module.log(msg=f" must present  : {present_keys}")
-            self.module.log(msg=f" must absent   : {absent_keys}")
+            # self.module.log(msg=f" must present  : {present_keys}")
+            # self.module.log(msg=f" must absent   : {absent_keys}")
             # self.module.log(msg=f" disabled : {disabled_keys}")
 
             error, existing_service_accounts = self.list_service_accounts()
@@ -90,7 +90,7 @@ class GrafanaServiceAccount(object):
             """
                 {
                     'count': 2,
-                    'service_account': [
+                    'service_accounts': [
                         {'id': 2, 'name': 'backup-service-account', 'login': 'sa-backup-service-account', 'orgId': 1, 'isDisabled': False, 'role': 'Admin', 'tokens': 0, 'avatarUrl': '/public/img/user_profile.png'},
                         {'id': 3, 'name': 'sa-importer', 'login': 'sa-sa-importer', 'orgId': 1, 'isDisabled': False, 'role': 'Viewer', 'tokens': 0, 'avatarUrl': '/public/img/user_profile.png'}
                     ]
@@ -102,10 +102,10 @@ class GrafanaServiceAccount(object):
             existing_key_names = [d['name'] for d in existing_service_accounts]
             existing_key_names_with_id = {d['name']: d['id'] for d in existing_service_accounts}
 
-            self.module.log(msg=f" -  existing #2 {existing_key_names}")
-            self.module.log(msg=f" -  existing #2 {existing_key_names_with_id}")
+            # self.module.log(msg=f" -  existing #1 {existing_key_names}")
+            # self.module.log(msg=f" -  existing #2 {existing_key_names_with_id}")
 
-            existing_service_tokens = self.service_tokens(existing_key_names_with_id)
+            # existing_service_tokens = self.service_tokens(existing_key_names_with_id)
 
             # self.module.log(msg=f" - {existing_key_names}")
 
@@ -114,7 +114,7 @@ class GrafanaServiceAccount(object):
                 if _name in existing_key_names:
                     _id = existing_key_names_with_id.get(_name)
 
-                    error, msg = self.remove_api_key(_id)
+                    error, msg = self.remove_service_account(_id)
                     res[_name] = dict(
                         msg=msg,
                         state="absent",
@@ -123,7 +123,7 @@ class GrafanaServiceAccount(object):
                     )
                 else:
                     res[_name] = dict(
-                        msg=f"api key for {_name} not exists.",
+                        msg=f"service account for {_name} not exists.",
                         state="absent",
                         failed=False,
                         changed=False
@@ -131,28 +131,41 @@ class GrafanaServiceAccount(object):
 
             for p in present_keys:
                 _name = p.get("name", None)
+
                 if _name in existing_key_names:
                     res[_name] = dict(
-                        msg=f"api key for {_name} already created.",
+                        msg=f"service account for {_name} already created.",
                         state="present",
                         failed=False,
                         changed=False
                     )
                 else:
-                    error, msg = self.create_api_key(p)
-                    res[_name] = dict(
-                        result=msg,
-                        state="present",
-                        failed=error
-                    )
+                    error, msg = self.create_service_account(p)
+
+                    self.module.log(msg=f" -> {error}:  {msg}")
+
+                    if not error:
+                        error, msg = self.create_token(msg)
+
+                        res[_name] = dict(
+                            token=msg,
+                            state="present",
+                            failed=error
+                        )
+                    else:
+                        res[_name] = dict(
+                            result=msg,
+                            state="present",
+                            failed=error
+                        )
 
             self.module.log(msg=f" = {res}")
 
             changed = (len({k: v for k, v in res.items() if v.get('changed')}) > 0)
             failed = (len({k: v for k, v in res.items() if v.get('failed')}) > 0)
 
-            self.module.log(msg=f" changed:  {changed}")
-            self.module.log(msg=f" failed :  {failed}")
+            # self.module.log(msg=f" changed:  {changed}")
+            # self.module.log(msg=f" failed :  {failed}")
 
             result = dict(
                 failed=failed,
@@ -171,7 +184,7 @@ class GrafanaServiceAccount(object):
         total_count = 0
         service_accounts = []
 
-        status_code, output = self.__call_url(path="search")
+        status_code, output = self.__call_url(key_id="search")
 
         if status_code == 200:
             error = False
@@ -183,56 +196,98 @@ class GrafanaServiceAccount(object):
             service_accounts=service_accounts
         )
 
-        self.module.log(msg=f" - error   {error}")
-        self.module.log(msg=f" - output  {output}")
+        # self.module.log(msg=f" - error   {error}")
+        # self.module.log(msg=f" - output  {output}")
 
         return error, output
 
-    def service_tokens(self, present_keys=[]):
+    def service_tokens(self, present_keys={}):
         """
         """
+        # self.module.log(msg=f"service_tokens(self, {present_keys})")
         error = True
         output = None
 
-        for key in present_keys:
-            account_id = key.get("id", None)
+        for key, value in present_keys.items():
+            account_id = value
 
             if account_id:
                 status_code, output = self.__call_url(key_id=account_id)
 
+        # self.module.log(msg=f"= {error}, {output})")
+
         return error, output
 
-    def create_api_key(self, data):
+    def create_token(self, data):
+        """
+            {
+                'id': 7,
+                'name': 'sa-export-dashboards',
+                'login': 'sa-sa-export-dashboards',
+                'orgId': 1,
+                'isDisabled': False,
+                'role': 'Viewer',
+                'tokens': 0,
+                'avatarUrl': '',
+                'key_file': None
+            }
+        """
+        # self.module.log(msg=f"create_token(self, {data})")
+        text = {}
+
+        service_account_id = data.get("id", None)
+        service_account_name = data.get("name", None)
+
+        if service_account_id and service_account_name:
+
+            payload = dict(
+                name=service_account_name
+            )
+
+            status_code, text = self.__call_url(method="POST", data=payload, key_id=f"{service_account_id}/tokens")
+
+            if status_code == 200:
+                token = text.get("key", None)
+
+                if token:
+                    key_file = self.save_keyfile(text)
+                    text.update({"key_file": key_file})
+
+                    return False, text
+
+        return True, text
+
+    def create_service_account(self, data):
         """
         """
-        self.module.log(msg=f"create_api_key(self, {data})")
+        # self.module.log(msg=f"create_service_account(self, {data})")
 
-        api_name = data.get("name", None)
-        api_role = data.get("role", "Viewer")
-        api_expiration = data.get("expiration", None)
+        service_account_name = data.get("name", None)
+        service_account_role = data.get("role", "Viewer")
+        service_account_disabled = data.get("disabled", None)
 
-        if not api_name:
+        if not service_account_name:
             msg = "missing api name"
             return True, msg
 
-        if api_role not in ["Viewer", "Editor", "Admin"]:
-            msg = f"wrong API role '{api_role}'. Can be one of the following values: Viewer, Editor or Admin."
+        if service_account_role not in ["Viewer", "Editor", "Admin"]:
+            msg = f"wrong Service Account role '{service_account_role}'. Can be one of the following values: Viewer, Editor or Admin."
             return True, msg
 
         payload = dict(
-            name=api_name,
-            role=api_role
+            name=service_account_name,
+            role=service_account_role
         )
 
-        if api_expiration:
-            payload.update({"secondsToLive": api_expiration})
+        if service_account_disabled:
+            payload.update({"isDisabled": service_account_disabled})
 
-        self.module.log(msg=f" - payload {payload}")
+        # self.module.log(msg=f" - payload {payload}")
 
         status_code, text = self.__call_url(method="POST", data=payload)
 
-        if status_code == 200:
-            self.module.log(msg=f" = {text} / {type(text)}")
+        if status_code == 200 or status_code == 201:
+            # self.module.log(msg=f" = {text}")
 
             key_file = self.save_keyfile(text)
 
@@ -243,10 +298,10 @@ class GrafanaServiceAccount(object):
 
         pass
 
-    def remove_api_key(self, id):
+    def remove_service_account(self, id):
         """
         """
-        self.module.log(msg=f"remove_api_key(self, {id})")
+        # self.module.log(msg=f"remove_service_account(self, {id})")
 
         status_code, text = self.__call_url(method="DELETE", key_id=id)
 
@@ -255,10 +310,10 @@ class GrafanaServiceAccount(object):
         else:
             return True, text
 
-    def __call_url(self, method='GET', data=None, path=None, key_id=None):
+    def __call_url(self, method='GET', data=None, key_id=None):
         """
         """
-        self.module.log(msg=f"__call_url(self, {method}, {data}, {path}, {key_id})")
+        # self.module.log(msg=f"__call_url(self, {method}, {data}, {key_id})")
 
         response = None
 
@@ -268,36 +323,42 @@ class GrafanaServiceAccount(object):
         }
 
         basic_authentication = None
-        if self.grafana_api_token:
-            headers["Authorization"] = f"Bearer {self.grafana_api_token}"
+        if self.grafana_service_account_token:
+            headers["Authorization"] = f"Bearer {self.grafana_service_account_token}"
         elif self.grafana_admin_user and self.grafana_admin_pass:
             basic_authentication = (self.grafana_admin_user, self.grafana_admin_pass)
 
-        self.module.log(msg="------------------------------------------------------------------")
-        self.module.log(msg=f" method : {method}")
-        self.module.log(msg=f" data   : {data}")
-        self.module.log(msg=f" headers: {headers}")
-        self.module.log(msg="------------------------------------------------------------------")
+        uri = f"{self.grafana_url}/api/serviceaccounts"
+
+        if key_id:
+            uri += f"/{key_id}"
+
+        # self.module.log(msg="------------------------------------------------------------------")
+        # self.module.log(msg=f" uri    : {uri}")
+        # self.module.log(msg=f" method : {method}")
+        # self.module.log(msg=f" data   : {data}")
+        # self.module.log(msg=f" headers: {headers}")
+        # self.module.log(msg="------------------------------------------------------------------")
 
         try:
 
             if method == 'POST':
                 response = requests.post(
-                    f"{self.grafana_url}/api/serviceaccounts/{path}",
+                    uri,
                     data=json.dumps(data),
                     headers=headers,
                     auth=basic_authentication
                 )
             elif method == "GET":
                 response = requests.get(
-                    f"{self.grafana_url}/api/serviceaccounts/{path}",
+                    uri,
                     headers=headers,
                     auth=basic_authentication
                 )
             elif method == "DELETE":
                 if key_id:
                     response = requests.delete(
-                        f"{self.grafana_url}/api/serviceaccounts/{key_id}",
+                        uri,
                         headers=headers,
                         auth=basic_authentication
                     )
@@ -350,6 +411,8 @@ class GrafanaServiceAccount(object):
         """
             {'id': 1, 'name': 'foo', 'key': 'eyJrIjoiOUtZd29iazRTQ3hsQ0RnbDFSZVpVY2FpZUI4ZEhsZHkiLCJuIjoiZm9vIiwiaWQiOjF9'}
         """
+        self.module.log(msg=f"save_keyfile(self, {data})")
+
         name = data.get("name", None)
         key = data.get("key", None)
 
@@ -387,7 +450,7 @@ def main():
                 required=True,
                 type="dict"
             ),
-            api_token=dict(
+            service_account_token=dict(
                 required=False,
                 type="str"
             ),
