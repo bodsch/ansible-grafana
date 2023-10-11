@@ -6,7 +6,14 @@ grafana_provisioning:
 
 grafana_api: {}
 
-grafana_service_accounts: {}
+grafana_service_accounts:
+  accounts:
+    - name: sa-backup
+      role: Admin
+      # state: absent
+    - name: sa-export-dashboards
+      role: Viewer
+      # state: absent
 
 grafana_plugins:
   - grafana-worldmap-panel

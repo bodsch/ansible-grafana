@@ -3,6 +3,6 @@
 grafana_requirements:
   - iproute
   - python-pip
-  - python-virtualenv
+  - python-requests
 
 ...

@@ -26,7 +26,7 @@
     - grafana_api['keys'] is defined
     - grafana_api['keys'] | default([]) | count > 0
 
-- name: save config file to ansible controller
+- name: save key files to ansible controller
   become: true
   ansible.builtin.fetch:
     src: "{{ item.value.result.key_file }}"
