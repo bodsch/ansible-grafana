@@ -17,6 +17,7 @@ from pathlib import Path
 class GrafanaServiceAccount(object):
     """
     """
+
     def __init__(self, module):
         """
         """
@@ -91,8 +92,11 @@ class GrafanaServiceAccount(object):
                 {
                     'count': 2,
                     'service_accounts': [
-                        {'id': 2, 'name': 'backup-service-account', 'login': 'sa-backup-service-account', 'orgId': 1, 'isDisabled': False, 'role': 'Admin', 'tokens': 0, 'avatarUrl': '/public/img/user_profile.png'},
-                        {'id': 3, 'name': 'sa-importer', 'login': 'sa-sa-importer', 'orgId': 1, 'isDisabled': False, 'role': 'Viewer', 'tokens': 0, 'avatarUrl': '/public/img/user_profile.png'}
+                        {'id': 2, 'name': 'backup-service-account',
+                           'login': 'sa-backup-service-account', 'orgId': 1, 'isDisabled': False,
+                           'role': 'Admin', 'tokens': 0, 'avatarUrl': '/public/img/user_profile.png'},
+                        {'id': 3, 'name': 'sa-importer', 'login': 'sa-sa-importer', 'orgId': 1, 'isDisabled': False,
+                           'role': 'Viewer', 'tokens': 0, 'avatarUrl': '/public/img/user_profile.png'}
                     ]
                 }
             """
@@ -103,11 +107,11 @@ class GrafanaServiceAccount(object):
             existing_key_names_with_id = {d['name']: d['id'] for d in existing_service_accounts}
 
             # self.module.log(msg=f" -  existing #1 {existing_key_names}")
-            # self.module.log(msg=f" -  existing #2 {existing_key_names_with_id}")
+            self.module.log(msg=f" -  existing #2 {existing_key_names_with_id}")
 
             # existing_service_tokens = self.service_tokens(existing_key_names_with_id)
 
-            # self.module.log(msg=f" - {existing_key_names}")
+            self.module.log(msg=f" - {existing_key_names}")
 
             for a in absent_keys:
                 _name = a.get("name", None)
@@ -135,6 +139,7 @@ class GrafanaServiceAccount(object):
                 if _name in existing_key_names:
                     res[_name] = dict(
                         msg=f"service account for {_name} already created.",
+                        key_file=os.path.join(self.apikey_directory, f"{_name}.key"),
                         state="present",
                         failed=False,
                         changed=False
@@ -196,8 +201,8 @@ class GrafanaServiceAccount(object):
             service_accounts=service_accounts
         )
 
-        # self.module.log(msg=f" - error   {error}")
-        # self.module.log(msg=f" - output  {output}")
+        self.module.log(msg=f" - error   {error}")
+        self.module.log(msg=f" - output  {output}")
 
         return error, output
 
@@ -478,8 +483,6 @@ def main():
 # import module snippets
 if __name__ == '__main__':
     main()
-
-
 
 
 """
