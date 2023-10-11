@@ -1,12 +1,3 @@
 ---
 
-grafana_service_accounts:
-  accounts:
-    - name: sa-backup
-      role: Admin
-      # state: absent
-    - name: sa-export-dashboards
-      role: Viewer
-      # state: absent
-
 ...
