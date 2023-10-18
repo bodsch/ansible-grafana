@@ -8,12 +8,13 @@
   register: install_plugins
   notify:
     - restart grafana
+    - information about grafana plugins
 
-- name: information about grafana plugins
-  ansible.builtin.debug:
-    msg: "{{ install_plugins.msg }}"
-  when:
-    - install_plugins is defined
-    - install_plugins.msg is defined
+# - name: information about grafana plugins
+#   ansible.builtin.debug:
+#     msg: "{{ install_plugins.msg }}"
+#   when:
+#     - install_plugins is defined
+#     - install_plugins.msg is defined
 
 ...

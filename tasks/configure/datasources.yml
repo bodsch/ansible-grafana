@@ -1,5 +1,11 @@
 ---
 
+# - name: validate variables
+#   ansible.builtin.fail:
+#     msg: "'grafana_datasources' should be a list!\nPlease update your configuration."
+#   when:
+#     - grafana_datasources | bodsch.core.type != "list"
+
 - name: ensure datasources are present (without provisioning)
   community.grafana.grafana_datasource:
     name: "{{ item.key }}"

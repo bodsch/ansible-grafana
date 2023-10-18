@@ -53,10 +53,12 @@
     recurse: false
     file_type: file
   register: found_api_keyfiles
+  notify:
+    - list api key files
 
-- name: list api key files
-  run_once: true
-  ansible.builtin.debug:
-    msg: "{{ found_api_keyfiles.files | file_list }}"
+# - name: list api key files
+#   run_once: true
+#   ansible.builtin.debug:
+#     msg: "{{ found_api_keyfiles.files | file_list }}"
 
 ...

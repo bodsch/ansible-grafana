@@ -40,6 +40,13 @@ grafana_datasources:
     #   tlsAuthWithCACert: false
     #   tlsSkipVerify: true
 
+  prometheus_2:
+    # state: absent
+    datasource:
+      type: "prometheus"
+      # access: "proxy"
+      url: "http://prometheus2.mydomain"
+
   loki:
     datasource:
       type: "loki"
