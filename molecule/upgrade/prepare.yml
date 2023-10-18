@@ -49,6 +49,6 @@
       admin_password: sUp3R
 
   roles:
-    - role: grafana
+    - role: ca_grafana
 
 ...
