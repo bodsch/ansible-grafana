@@ -29,8 +29,6 @@ jobs:
           - "3.11.3"
         ansible-version:
           - '6.7'
-        python_version:
-          - "3.11.3"
         scenario:
           - with-database-cache-and-ldap
 
