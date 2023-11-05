@@ -6,7 +6,7 @@ galaxy_info:
   author: Bodo Schulz
   description: ansible role to setup grafana
   license: Apache
-  min_ansible_version: "2.10"
+  min_ansible_version: "2.9"
 
   platforms:
     - name: ArchLinux
@@ -16,6 +16,7 @@ galaxy_info:
         - buster
         # 11
         - bullseye
+        - bookworm
 
   galaxy_tags:
     - grafana

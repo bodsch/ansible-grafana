@@ -49,9 +49,9 @@ Tested on
 
 * Arch Linux
 * Debian based
-    - Debian 10 / 11
-    - Ubuntu 20.10
-    
+    - Debian 10 / 11 / 12
+    - Ubuntu 20.04 / 22.04
+
 ## usage
 
 ```yaml
